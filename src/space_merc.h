@@ -254,7 +254,7 @@ bool out_of_bounds(const GPoint cell);
 bool occupiable(const GPoint cell);
 void show_narration(void);
 
-# Continue optimizing here...
+// Continue optimizing here...
 
 void show_window(Window *window);
 static void main_menu_draw_row_callback(GContext *ctx,
