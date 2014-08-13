@@ -3003,7 +3003,7 @@ void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
 {
   if (!g_game_paused)
   {
-    move_player(g_player, g_player->direction);
+    move_player(g_player->direction);
   }
 }
 
@@ -3043,7 +3043,7 @@ void graphics_down_single_repeating_click(ClickRecognizerRef recognizer,
 {
   if (!g_game_paused)
   {
-    move_player(g_player, get_opposite_direction(g_player->direction));
+    move_player(get_opposite_direction(g_player->direction));
   }
 }
 
