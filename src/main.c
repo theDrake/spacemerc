@@ -186,12 +186,12 @@ Description: Determines in which direction a character at a given position
 ******************************************************************************/
 int16_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee)
 {
-  int16_t diff_x = pursuer.x - pursuee.x,
-          diff_y = pursuer.y - pursuee.y;
+  int16_t diff_x                     = pursuer.x - pursuee.x,
+          diff_y                     = pursuer.y - pursuee.y;
   const int16_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
                 vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
-  bool checked_horizontal_direction = false,
-       checked_vertical_direction   = false;
+  bool checked_horizontal_direction  = false,
+       checked_vertical_direction    = false;
 
   // Check for alignment along the x-axis:
   if (diff_x == 0)
@@ -313,7 +313,7 @@ void damage_npc(npc_t *npc, const int16_t damage)
     g_mission->kills++;
     if (g_mission->type == ASSASSINATE &&
         npc->type == ALIEN_OFFICER)
-	{
+    {
       g_mission->completed = true;
     }
     remove_npc(npc);
@@ -653,16 +653,16 @@ GPoint get_npc_spawn_point(void)
         if (checked_right || rand() % 2)
         {
           spawn_point2 = get_cell_farther_away(spawn_point,
-                                               get_direction_to_the_left(direction),
-                                               j);
+                                          get_direction_to_the_left(direction),
+                                          j);
           checked_left = true;
         }
         // Check to the right:
         else if (!checked_right)
         {
           spawn_point2 = get_cell_farther_away(spawn_point,
-                                               get_direction_to_the_right(direction),
-                                               j);
+                                         get_direction_to_the_right(direction),
+                                         j);
           checked_right = true;
         }
         if (occupiable(spawn_point2))
@@ -696,7 +696,7 @@ GPoint get_floor_center_point(const int16_t depth, const int16_t position)
                        g_back_wall_coords[depth][position][BOTTOM_RIGHT].x);
   if (depth == 0)
   {
-    if (position < STRAIGHT_AHEAD) // Just to the left of the player.
+    if (position < STRAIGHT_AHEAD)      // Just to the left of the player.
     {
       x_midpoint2 = -0.5 * GRAPHICS_FRAME_WIDTH;
     }
@@ -704,7 +704,7 @@ GPoint get_floor_center_point(const int16_t depth, const int16_t position)
     {
       x_midpoint2 = 1.5 * GRAPHICS_FRAME_WIDTH;
     }
-    else // Directly under the player.
+    else                                // Directly under the player.
     {
       x_midpoint2 = x_midpoint1;
     }
@@ -902,8 +902,7 @@ void set_cell_type(GPoint cell, const int16_t type)
 /******************************************************************************
    Function: get_npc_at
 
-Description: Returns a pointer to the NPC occupying a given cell, or NULL if
-             there is none.
+Description: Returns a pointer to the NPC occupying a given cell.
 
      Inputs: cell - Coordinates of the cell of interest.
 
@@ -912,14 +911,8 @@ Description: Returns a pointer to the NPC occupying a given cell, or NULL if
 ******************************************************************************/
 npc_t *get_npc_at(const GPoint cell)
 {
-  npc_t *npc;
+  npc_t *npc = g_mission->location->npcs;
 
-  if (out_of_bounds(cell))
-  {
-    return NULL;
-  }
-
-  npc = g_mission->location->npcs;
   while (npc != NULL)
   {
     if (gpoint_equal(&npc->position, &cell))
@@ -944,9 +937,9 @@ Description: Determines whether a given set of cell coordinates lies outside
 ******************************************************************************/
 bool out_of_bounds(const GPoint cell)
 {
-  return cell.x < 0 ||
+  return cell.x < 0               ||
          cell.x >= LOCATION_WIDTH ||
-         cell.y < 0 ||
+         cell.y < 0               ||
          cell.y >= LOCATION_HEIGHT;
 }
 
@@ -964,7 +957,7 @@ Description: Determines whether the cell at a given set of coordinates may be
 ******************************************************************************/
 bool occupiable(const GPoint cell)
 {
-  return get_cell_type(cell) <= EMPTY &&
+  return get_cell_type(cell) <= EMPTY              &&
          !gpoint_equal(&g_player->position, &cell) &&
          get_npc_at(cell) == NULL;
 }
@@ -992,7 +985,7 @@ void show_narration(void)
 
   // Determine whether the current narration is finished:
   if ((g_current_narration <= MISSION_ACCOMPLISHED_NARRATION &&
-       g_narration_page_num > 0) ||
+       g_narration_page_num > 0)                                          ||
       (g_current_narration < INTRO_NARRATION && g_narration_page_num > 1) ||
       g_narration_page_num > 2)
   {
@@ -1155,7 +1148,7 @@ void show_window(Window *window)
   else
   {
     while (window_stack_get_top_window() != window)
-	{
+    {
       window_stack_pop(false /* not animated */);
     }
   }
@@ -1536,21 +1529,21 @@ void draw_scene(Layer *layer, GContext *ctx)
       draw_cell_walls(ctx, cell, depth, STRAIGHT_AHEAD);
       draw_cell_contents(ctx, cell, depth, STRAIGHT_AHEAD);
     }
-    
+
     // To the left and right at the same depth:
     for (i = depth + 1; i > 0; --i)
     {
       cell_2 = get_cell_farther_away(cell,
-                                     get_direction_to_the_left(g_player->direction),
-                                     i);
+                                get_direction_to_the_left(g_player->direction),
+                                i);
       if (get_cell_type(cell_2) < SOLID)
       {
         draw_cell_walls(ctx, cell_2, depth, STRAIGHT_AHEAD - i);
         draw_cell_contents(ctx, cell_2, depth, STRAIGHT_AHEAD - i);
       }
       cell_2 = get_cell_farther_away(cell,
-                                     get_direction_to_the_right(g_player->direction),
-                                     i);
+                               get_direction_to_the_right(g_player->direction),
+                               i);
       if (get_cell_type(cell_2) < SOLID)
       {
         draw_cell_walls(ctx, cell_2, depth, STRAIGHT_AHEAD + i);
@@ -1593,13 +1586,13 @@ void draw_player_laser_beam(GContext *ctx)
       graphics_context_set_stroke_color(ctx, GColorBlack);
     }
     graphics_draw_line(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X - i, GRAPHICS_FRAME_HEIGHT),
-                       GPoint(SCREEN_CENTER_POINT_X - i / 3,
-                              SCREEN_CENTER_POINT_Y));
+                      GPoint(SCREEN_CENTER_POINT_X - i, GRAPHICS_FRAME_HEIGHT),
+                      GPoint(SCREEN_CENTER_POINT_X - i / 3,
+                             SCREEN_CENTER_POINT_Y));
     graphics_draw_line(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X + i, GRAPHICS_FRAME_HEIGHT),
-                       GPoint(SCREEN_CENTER_POINT_X + i / 3,
-                              SCREEN_CENTER_POINT_Y));
+                      GPoint(SCREEN_CENTER_POINT_X + i, GRAPHICS_FRAME_HEIGHT),
+                      GPoint(SCREEN_CENTER_POINT_X + i / 3,
+                             SCREEN_CENTER_POINT_Y));
   }
 }
 
@@ -1674,11 +1667,11 @@ void draw_cell_walls(GContext *ctx,
   GPoint cell_2;
 
   // Back wall:
-  left   = g_back_wall_coords[depth][position][TOP_LEFT].x;
-  right  = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
-  top    = g_back_wall_coords[depth][position][TOP_LEFT].y;
-  bottom = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
-  exit_present = gpoint_equal(&cell, &g_mission->location->starting_point);
+  left          = g_back_wall_coords[depth][position][TOP_LEFT].x;
+  right         = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
+  top           = g_back_wall_coords[depth][position][TOP_LEFT].y;
+  bottom        = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
+  exit_present  = gpoint_equal(&cell, &g_mission->location->starting_point);
   exit_offset_y = (right - left) / 4;
   if (bottom - top < MIN_WALL_HEIGHT)
   {
@@ -1709,7 +1702,7 @@ void draw_cell_walls(GContext *ctx,
     // Entrance/exit:
     if (exit_present && get_opposite_direction(g_player->direction) ==
                         g_mission->location->starting_direction)
-	{
+    {
       graphics_context_set_fill_color(ctx, GColorBlack);
       exit_offset_x = (right - left) / 3;
       graphics_fill_rect(ctx,
@@ -1739,8 +1732,8 @@ void draw_cell_walls(GContext *ctx,
   if (position <= STRAIGHT_AHEAD)
   {
     cell_2 = get_cell_farther_away(cell,
-                                   get_direction_to_the_left(g_player->direction),
-                                   1);
+                                get_direction_to_the_left(g_player->direction),
+                                1);
     if (get_cell_type(cell_2) >= SOLID)
     {
       draw_shaded_quad(ctx,
@@ -1750,17 +1743,24 @@ void draw_cell_walls(GContext *ctx,
                        GPoint(right, bottom),
                        GPoint(left, top - y_offset));
       graphics_context_set_stroke_color(ctx, GColorBlack);
-      graphics_draw_line(ctx, GPoint(left, top - y_offset), GPoint(right, top));
-      graphics_draw_line(ctx, GPoint(left, bottom + y_offset), GPoint(right, bottom));
+      graphics_draw_line(ctx,
+                         GPoint(left, top - y_offset),
+                         GPoint(right, top));
+      graphics_draw_line(ctx,
+                         GPoint(left, bottom + y_offset),
+                         GPoint(right, bottom));
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_right(g_player->direction) ==
                           g_mission->location->starting_direction)
-	  {
+      {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
-                  GPoint(depth == 0 ? 0 : left + exit_offset_x, top - (depth == 0 ? y_offset - 4: y_offset / 3) + exit_offset_y),
-                  GPoint(depth == 0 ? 0 : left + exit_offset_x, bottom + (depth == 0 ? y_offset : y_offset / 3)),
+                  GPoint(depth == 0 ? 0 : left + exit_offset_x,
+                         top - (depth == 0 ? y_offset - 4: y_offset / 3) +
+                           exit_offset_y),
+                  GPoint(depth == 0 ? 0 : left + exit_offset_x,
+                         bottom + (depth == 0 ? y_offset : y_offset / 3)),
                   GPoint(right - exit_offset_x, top + exit_offset_y),
                   GPoint(right - exit_offset_x, bottom + 3),
                   GColorBlack);
@@ -1783,8 +1783,8 @@ void draw_cell_walls(GContext *ctx,
   if (position >= STRAIGHT_AHEAD)
   {
     cell_2 = get_cell_farther_away(cell,
-                                   get_direction_to_the_right(g_player->direction),
-                                   1);
+                               get_direction_to_the_right(g_player->direction),
+                               1);
     if (get_cell_type(cell_2) >= SOLID)
     {
       draw_shaded_quad(ctx,
@@ -1794,19 +1794,26 @@ void draw_cell_walls(GContext *ctx,
                        GPoint(right, bottom + y_offset),
                        GPoint(left, top));
       graphics_context_set_stroke_color(ctx, GColorBlack);
-      graphics_draw_line(ctx, GPoint(left, top), GPoint(right, top - y_offset));
-      graphics_draw_line(ctx, GPoint(left, bottom), GPoint(right, bottom + y_offset));
+      graphics_draw_line(ctx,
+                         GPoint(left, top),
+                         GPoint(right, top - y_offset));
+      graphics_draw_line(ctx,
+                         GPoint(left, bottom),
+                         GPoint(right, bottom + y_offset));
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_left(g_player->direction) ==
                           g_mission->location->starting_direction)
-	  {
+      {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
                   GPoint(left + exit_offset_x, top + exit_offset_y),
                   GPoint(left + exit_offset_x, bottom + 4),
-                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x, top - (depth == 0 ? y_offset - 5 : y_offset / 3) + exit_offset_y),
-                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x, bottom + (depth == 0 ? y_offset : y_offset / 3)),
+                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x,
+                         top - (depth == 0 ? y_offset - 5 : y_offset / 3) +
+                           exit_offset_y),
+                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x,
+                         bottom + (depth == 0 ? y_offset : y_offset / 3)),
                   GColorBlack);
       }
 
@@ -1819,31 +1826,31 @@ void draw_cell_walls(GContext *ctx,
   cell_2 = get_cell_farther_away(cell, g_player->direction, 1);
   if ((back_wall_drawn && (left_wall_drawn ||
        get_cell_type(get_cell_farther_away(cell_2,
-                                           get_direction_to_the_left(g_player->direction),
-                                           1)) < SOLID)) ||
+                                get_direction_to_the_left(g_player->direction),
+                                1)) < SOLID)) ||
       (left_wall_drawn &&
        get_cell_type(get_cell_farther_away(cell_2,
-                                           get_direction_to_the_left(g_player->direction),
-                                           1)) < SOLID))
+                                get_direction_to_the_left(g_player->direction),
+                                1)) < SOLID))
   {
     graphics_draw_line(ctx,
                        g_back_wall_coords[depth][position][TOP_LEFT],
                        GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x,
-                              g_back_wall_coords[depth][position][BOTTOM_RIGHT].y));
+                         g_back_wall_coords[depth][position][BOTTOM_RIGHT].y));
   }
   if ((back_wall_drawn && (right_wall_drawn ||
        get_cell_type(get_cell_farther_away(cell_2,
-                                           get_direction_to_the_right(g_player->direction),
-                                           1)) < SOLID)) ||
+                               get_direction_to_the_right(g_player->direction),
+                               1)) < SOLID)) ||
       (right_wall_drawn &&
        get_cell_type(get_cell_farther_away(cell_2,
-                                           get_direction_to_the_right(g_player->direction),
-                                           1)) < SOLID))
+                               get_direction_to_the_right(g_player->direction),
+                               1)) < SOLID))
   {
     graphics_draw_line(ctx,
-                       g_back_wall_coords[depth][position][BOTTOM_RIGHT],
-                       GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
-                              g_back_wall_coords[depth][position][TOP_LEFT].y));
+                    g_back_wall_coords[depth][position][BOTTOM_RIGHT],
+                    GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
+                           g_back_wall_coords[depth][position][TOP_LEFT].y));
   }
 }
 
@@ -1913,8 +1920,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 3),
                      GPoint(floor_center_point.x - drawing_unit,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x + 4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y + 4));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
+                              4,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y +
+                              4));
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x + drawing_unit,
                             floor_center_point.y - drawing_unit * 3),
@@ -1924,8 +1933,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 3),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x + 4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y + 4));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
+                              4,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y +
+                              4));
 
     // Waist:
     draw_shaded_quad(ctx,
@@ -1937,8 +1948,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 4),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 3),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x + 4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y + 4));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
+                              4,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y +
+                              4));
 
     // Torso:
     if (content_type == ALIEN_OFFICER)
@@ -1952,8 +1965,10 @@ void draw_cell_contents(GContext *ctx,
                               floor_center_point.y - drawing_unit * 8),
                        GPoint(floor_center_point.x + drawing_unit * 2,
                               floor_center_point.y - drawing_unit * 4),
-                       GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x - 10,
-                              g_back_wall_coords[depth][position][TOP_LEFT].y - 10));
+                       GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
+                                10,
+                              g_back_wall_coords[depth][position][TOP_LEFT].y -
+                                10));
     }
     else // content_type == ALIEN_SOLDIER || content_type == ALIEN_ELITE
     {
@@ -1976,7 +1991,7 @@ void draw_cell_contents(GContext *ctx,
                        drawing_unit / 2,
                        GCornersLeft);
     if (content_type == ALIEN_ELITE)
-	{
+    {
       graphics_fill_rect(ctx,
                          GRect(floor_center_point.x + drawing_unit * 2,
                                floor_center_point.y - drawing_unit * 8,
@@ -1986,13 +2001,15 @@ void draw_cell_contents(GContext *ctx,
                          GCornersRight);
       graphics_context_set_fill_color(ctx, GColorBlack);
       graphics_fill_circle(ctx,
-                           GPoint(floor_center_point.x + (drawing_unit * 2 + drawing_unit / 2),
-                                  floor_center_point.y - (drawing_unit * 5 + drawing_unit / 2)),
+                           GPoint(floor_center_point.x +
+                                    (drawing_unit * 2 + drawing_unit / 2),
+                                  floor_center_point.y -
+                                    (drawing_unit * 5 + drawing_unit / 2)),
                            drawing_unit / 2 + drawing_unit / 4);
-      graphics_context_set_fill_color(ctx, GColorWhite); // For drawing the head.
+      graphics_context_set_fill_color(ctx, GColorWhite); // For the head.
     }
     else
-	{
+    {
       graphics_fill_rect(ctx,
                          GRect(floor_center_point.x + drawing_unit * 2,
                                floor_center_point.y - drawing_unit * 8,
@@ -2024,15 +2041,18 @@ void draw_cell_contents(GContext *ctx,
 
     // Gun (placed here for efficiency reasons):
     graphics_fill_circle(ctx,
-                         GPoint(floor_center_point.x - (drawing_unit * 2 + drawing_unit / 2),
-                                floor_center_point.y - (drawing_unit * 5 + drawing_unit / 2)),
+                         GPoint(floor_center_point.x -
+                                  (drawing_unit * 2 + drawing_unit / 2),
+                                floor_center_point.y -
+                                  (drawing_unit * 5 + drawing_unit / 2)),
                          drawing_unit / 2 + drawing_unit / 4);
   }
   else if (content_type == HUMAN)
   {
     // Legs:
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                       GRect(floor_center_point.x -
+                               (drawing_unit + drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 3,
                              drawing_unit,
                              drawing_unit * 3),
@@ -2048,7 +2068,8 @@ void draw_cell_contents(GContext *ctx,
 
     // Waist:
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                       GRect(floor_center_point.x -
+                               (drawing_unit + drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 4,
                              drawing_unit * 3,
                              drawing_unit),
@@ -2057,16 +2078,22 @@ void draw_cell_contents(GContext *ctx,
 
     // Torso:
     draw_shaded_quad(ctx,
-                     GPoint(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                     GPoint(floor_center_point.x -
+                              (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 8),
-                     GPoint(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                     GPoint(floor_center_point.x -
+                              (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 4),
-                     GPoint(floor_center_point.x + (drawing_unit + drawing_unit / 2),
+                     GPoint(floor_center_point.x +
+                              (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 8),
-                     GPoint(floor_center_point.x + (drawing_unit + drawing_unit / 2),
+                     GPoint(floor_center_point.x +
+                              (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 4),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x - 20,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y - 20));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
+                              20,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y -
+                              20));
 
     // Arms:
     graphics_context_set_fill_color(ctx, GColorWhite);
@@ -2078,7 +2105,8 @@ void draw_cell_contents(GContext *ctx,
                        drawing_unit / 4,
                        GCornersLeft);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + (drawing_unit + drawing_unit / 2),
+                       GRect(floor_center_point.x + (drawing_unit +
+                               drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 8,
                              drawing_unit / 2,
                              drawing_unit * 4),
@@ -2099,13 +2127,17 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x - drawing_unit / 2,
                             floor_center_point.y - drawing_unit * 10),
                      GPoint(floor_center_point.x - drawing_unit / 2,
-                            floor_center_point.y - (drawing_unit * 9 + drawing_unit / 3)),
+                            floor_center_point.y -
+                              (drawing_unit * 9 + drawing_unit / 3)),
                      GPoint(floor_center_point.x + drawing_unit / 2,
                             floor_center_point.y - drawing_unit * 10),
                      GPoint(floor_center_point.x + drawing_unit / 2,
-                            floor_center_point.y - (drawing_unit * 9 + drawing_unit / 3)),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x - 10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y - 10));
+                            floor_center_point.y -
+                              (drawing_unit * 9 + drawing_unit / 3)),
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
+                              10,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y -
+                              10));
 
     // Eyes:
     graphics_context_set_fill_color(ctx, GColorBlack);
@@ -2130,8 +2162,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 2),
                      GPoint(floor_center_point.x - drawing_unit,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x + 6,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y + 6));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
+                              6,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y +
+                              6));
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x + drawing_unit,
                             floor_center_point.y - drawing_unit * 2),
@@ -2141,8 +2175,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 2),
                      GPoint(floor_center_point.x + drawing_unit * 4,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x + 6,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y + 6));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
+                              6,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y +
+                              6));
 
     // Arms:
     draw_shaded_quad(ctx,
@@ -2154,19 +2190,23 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 5),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 4),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x - 10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y - 10));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
+                              10,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y -
+                              10));
     graphics_context_set_fill_color(ctx, GColorWhite);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 4,
-                             floor_center_point.y - (drawing_unit * 5 + drawing_unit / 2),
+                             floor_center_point.y -
+                               (drawing_unit * 5 + drawing_unit / 2),
                              drawing_unit * 2,
                              drawing_unit * 2),
                        drawing_unit / 3,
                        GCornersAll);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit * 2,
-                             floor_center_point.y - (drawing_unit * 5 + drawing_unit / 2),
+                             floor_center_point.y -
+                               (drawing_unit * 5 + drawing_unit / 2),
                              drawing_unit * 2 + 1,
                              drawing_unit * 2),
                        drawing_unit / 3,
@@ -2191,8 +2231,10 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 7),
                      GPoint(floor_center_point.x + drawing_unit / 2,
                             floor_center_point.y - drawing_unit * 6),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x - 10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y - 10));
+                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
+                              10,
+                            g_back_wall_coords[depth][position][TOP_LEFT].y -
+                              10));
 
     // Head:
     graphics_fill_rect(ctx,
@@ -2217,11 +2259,13 @@ void draw_cell_contents(GContext *ctx,
     // Guns:
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit * 3,
-                                floor_center_point.y - (drawing_unit * 4 + drawing_unit / 2)),
+                                floor_center_point.y -
+                                  (drawing_unit * 4 + drawing_unit / 2)),
                          drawing_unit / 2);
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x + drawing_unit * 3,
-                                floor_center_point.y - (drawing_unit * 4 + drawing_unit / 2)),
+                                floor_center_point.y -
+                                  (drawing_unit * 4 + drawing_unit / 2)),
                          drawing_unit / 2);
   }
   else if (content_type == BEAST)
@@ -2251,7 +2295,8 @@ void draw_cell_contents(GContext *ctx,
     // Eyes:
     graphics_context_set_fill_color(ctx, GColorWhite);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                       GRect(floor_center_point.x -
+                               (drawing_unit + drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 7,
                              drawing_unit,
                              drawing_unit / 2),
@@ -2267,24 +2312,28 @@ void draw_cell_contents(GContext *ctx,
 
     // Mouth:
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x - (drawing_unit + drawing_unit / 2),
+                       GRect(floor_center_point.x -
+                               (drawing_unit + drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2 ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
+                               ? 0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2 ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
+                               ? 0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2 ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
+                               ? 0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
   }
@@ -3160,7 +3209,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     {
       determine_npc_behavior(npc_pointer);
       if (g_player->stats[CURRENT_HP] <= 0)
-	  {
+      {
         return;
       }
       npc_pointer = npc_pointer->next;
@@ -3275,7 +3324,7 @@ void cat_int_onto_str(char *dest_str, int32_t integer)
   {
     for (i = 0; integer != 0; integer /= 10)
     {
-      j = integer % 10;
+      j            = integer % 10;
       int_str[i++] = '0' + j;
     }
     int_str[i] = '\0';
@@ -3287,7 +3336,7 @@ void cat_int_onto_str(char *dest_str, int32_t integer)
     ++i;
   }
   dest_str[i--] = '\0';
-  j = 0;
+  j             = 0;
   while (int_str[j] != '\0')
   {
     dest_str[i--] = int_str[j++];
@@ -3314,12 +3363,12 @@ void init_player(void)
   {
     g_player = malloc(sizeof(player_t));
   }
-  g_player->stats[POWER] = DEFAULT_PLAYER_POWER;
-  g_player->stats[ARMOR] = DEFAULT_PLAYER_DEFENSE;
-  g_player->stats[MAX_HP] = DEFAULT_PLAYER_MAX_HP;
+  g_player->stats[POWER]      = DEFAULT_PLAYER_POWER;
+  g_player->stats[ARMOR]      = DEFAULT_PLAYER_DEFENSE;
+  g_player->stats[MAX_HP]     = DEFAULT_PLAYER_MAX_HP;
   g_player->stats[MAX_ENERGY] = DEFAULT_PLAYER_MAX_AMMO;
-  g_player->money = DEFAULT_PLAYER_MONEY;
-  g_player->damage_vibes_on = DEFAULT_VIBES_SETTING;
+  g_player->money             = DEFAULT_PLAYER_MONEY;
+  g_player->damage_vibes_on   = DEFAULT_VIBES_SETTING;
 }
 
 /******************************************************************************
@@ -3358,13 +3407,13 @@ void init_npc(npc_t *npc, int16_t type, GPoint position)
   {
     return;
   }
-  npc->type = type;
+  npc->type     = type;
   npc->position = position;
-  npc->next = NULL;
+  npc->next     = NULL;
 
   // NPC stats are based on the player's in an effort to maintain balance:
   npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 5;
-  npc->hp = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
+  npc->hp    = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
 
   // Some NPCs have extra power or HP (or both):
   if (type == ALIEN_OFFICER ||
@@ -3423,7 +3472,7 @@ void init_wall_coords(void)
   {
     for (j = 0; j < (STRAIGHT_AHEAD * 2) + 1; ++j)
     {
-      g_back_wall_coords[i][j][TOP_LEFT] = GPoint(0, 0);
+      g_back_wall_coords[i][j][TOP_LEFT]     = GPoint(0, 0);
       g_back_wall_coords[i][j][BOTTOM_RIGHT] = GPoint(0, 0);
     }
   }
@@ -3484,23 +3533,23 @@ void init_mission(int16_t type)
     g_mission->location = malloc(sizeof(location_t));
   }
 
-  g_mission->type = type;
+  g_mission->type      = type;
   g_mission->completed = false;
-  g_mission->num_npcs = rand() % (MAX_NPCS_PER_MISSION - MIN_NPCS_PER_MISSION +
-                                  1) + MIN_NPCS_PER_MISSION;
+  g_mission->num_npcs  = rand() % (MAX_NPCS_PER_MISSION - MIN_NPCS_PER_MISSION
+                                   + 1) + MIN_NPCS_PER_MISSION;
   g_mission->kills = 0;
   g_mission->demolitions = 0;
   if (type == EXCAVATE)
   {
-    g_mission->reward = 100 * (rand() % 3 + 1); // $100-$300 per wall
+    g_mission->reward = 100 * (rand() % 3 + 1);   // $100-$300 per wall
   }
   else if (type == OBLITERATE || type == RETALIATE)
   {
-    g_mission->reward = 100 * (rand() % 3 + 3); // $300-$500 per enemy +/- walls
+    g_mission->reward = 100 * (rand() % 3 + 3);   // $300-$500 per enemy/wall
   }
   else if (type == EXPROPRIATE)
   {
-    g_mission->reward = 1000 * (rand() % 6 + 5); // $5,000-$10,000
+    g_mission->reward = 1000 * (rand() % 6 + 5);  // $5,000-$10,000
   }
   else if (type == EXTRICATE || type == ASSASSINATE)
   {
@@ -3727,7 +3776,7 @@ void init_graphics(void)
     window_set_background_color(g_graphics_window, GColorBlack);
     window_set_window_handlers(g_graphics_window, (WindowHandlers)
     {
-      .appear = graphics_window_appear,
+      .appear    = graphics_window_appear,
       .disappear = graphics_window_disappear,
     });
     window_set_click_config_provider(g_graphics_window,
@@ -3780,15 +3829,15 @@ void init_upgrade_menu(void)
   if (g_upgrade_menu_window == NULL)
   {
     g_upgrade_menu_window = window_create();
-    g_upgrade_menu = menu_layer_create(FULL_SCREEN_FRAME);
+    g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
     menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
     {
-      .get_num_sections = menu_get_num_sections_callback,
-      .get_num_rows = menu_get_num_rows_callback,
+      .get_num_sections  = menu_get_num_sections_callback,
+      .get_num_rows      = menu_get_num_rows_callback,
       .get_header_height = menu_get_header_height_callback,
-      .draw_header = upgrade_menu_draw_header_callback,
-      .draw_row = upgrade_menu_draw_row_callback,
-      .select_click = upgrade_menu_select_callback,
+      .draw_header       = upgrade_menu_draw_header_callback,
+      .draw_row          = upgrade_menu_draw_row_callback,
+      .select_click      = upgrade_menu_select_callback,
     });
     menu_layer_set_click_config_onto_window(g_upgrade_menu,
                                             g_upgrade_menu_window);
@@ -3881,15 +3930,14 @@ void init(void)
   srand(time(NULL));
 
   // First, set all major global pointers to NULL:
-  g_graphics_window = NULL;
-  g_narration_window = NULL;
-  g_main_menu_window = NULL;
+  g_graphics_window     = NULL;
+  g_narration_window    = NULL;
+  g_main_menu_window    = NULL;
   g_upgrade_menu_window = NULL;
-  g_mission = NULL;
+  g_mission             = NULL;
 
   // Now, initialize other global variables, etc.:
   g_game_paused = true;
-  //light_enable(true);
   app_focus_service_subscribe(app_focus_handler);
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
