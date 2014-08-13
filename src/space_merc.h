@@ -254,6 +254,109 @@ bool out_of_bounds(const GPoint cell);
 bool occupiable(const GPoint cell);
 void show_narration(void);
 
+# Continue optimizing here...
+
+void show_window(Window *window);
+static void main_menu_draw_row_callback(GContext *ctx,
+                                        const Layer *cell_layer,
+                                        MenuIndex *cell_index,
+                                        void *data);
+void main_menu_select_callback(MenuLayer *menu_layer,
+                               MenuIndex *cell_index,
+                               void *data);
+static void upgrade_menu_draw_header_callback(GContext *ctx,
+                                              const Layer *cell_layer,
+                                              uint16_t section_index,
+                                              void *data);
+static void upgrade_menu_draw_row_callback(GContext *ctx,
+                                           const Layer *cell_layer,
+                                           MenuIndex *cell_index,
+                                           void *data);
+void upgrade_menu_select_callback(MenuLayer *menu_layer,
+                                  MenuIndex *cell_index,
+                                  void *data);
+int16_t get_upgraded_stat_value(const int16_t stat_index);
+int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
+static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer,
+                                               void *data);
+static int16_t menu_get_header_height_callback(MenuLayer *menu_layer,
+                                               uint16_t section_index,
+                                               void *data);
+static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer,
+                                           uint16_t section_index,
+                                           void *data);
+void draw_scene(Layer *layer, GContext *ctx);
+void draw_player_laser_beam(GContext *ctx);
+void draw_floor_and_ceiling(GContext *ctx);
+void draw_cell_walls(GContext *ctx,
+                     const GPoint cell,
+                     const int16_t depth,
+                     const int16_t position);
+void draw_cell_contents(GContext *ctx,
+                        const GPoint cell,
+                        const int16_t depth,
+                        const int16_t position);
+void draw_floating_monstrosity(GContext *ctx,
+                               const GPoint center,
+                               const int16_t radius,
+                               int16_t shading_offset);
+void draw_shaded_quad(GContext *ctx,
+                      const GPoint upper_left,
+                      const GPoint lower_left,
+                      const GPoint upper_right,
+                      const GPoint lower_right,
+                      const GPoint shading_ref);
+void fill_quad(GContext *ctx,
+               const GPoint upper_left,
+               const GPoint lower_left,
+               const GPoint upper_right,
+               const GPoint lower_right,
+               const GColor color);
+void draw_status_bar(GContext *ctx);
+void draw_status_meter(GContext *ctx,
+                       const GPoint origin,
+                       const float ratio);
+void flash(const int16_t num_flashes);
+static void flash_timer_callback(void *num_flashes_remaining);
+static void player_timer_callback(void *data);
+static void main_menu_window_appear(Window *window);
+static void graphics_window_appear(Window *window);
+static void graphics_window_disappear(Window *window);
+void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
+                                        void *context);
+void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context);
+void graphics_down_single_repeating_click(ClickRecognizerRef recognizer,
+                                          void *context);
+void graphics_down_multi_click(ClickRecognizerRef recognizer, void *context);
+void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
+                                            void *context);
+void graphics_click_config_provider(void *context);
+void narration_select_single_click(ClickRecognizerRef recognizer,
+                                   void *context);
+void narration_click_config_provider(void *context);
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
+void app_focus_handler(bool in_focus);
+int16_t get_opposite_direction(const int16_t direction);
+void cat_int_onto_str(char *dest_str, int32_t integer);
+void init_player(void);
+void deinit_player(void);
+void init_npc(npc_t *npc, int16_t type, GPoint position);
+void deinit_npc(npc_t *npc);
+void init_wall_coords(void);
+void init_mission(int16_t type);
+void deinit_mission(void);
+void init_location(void);
+void deinit_location(void);
+void init_narration(void);
+void deinit_narration(void);
+void init_graphics(void);
+void deinit_graphics(void);
+void init_upgrade_menu(void);
+void deinit_upgrade_menu(void);
+void init_main_menu(void);
+void deinit_main_menu(void);
+void init(void);
+void deinit(void);
 int main(void);
 
 #endif // SPACE_MERC_H_
