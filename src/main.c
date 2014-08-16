@@ -3540,37 +3540,14 @@ void init_mission(int16_t type)
   init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
-  g_player->position = g_mission->starting_point;
   set_player_direction(g_mission->starting_direction);
-  g_player->stats[CURRENT_HP] = g_player->stats[MAX_HP];
+  g_player->position              = g_mission->starting_point;
+  g_player->stats[CURRENT_HP]     = g_player->stats[MAX_HP];
   g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
 
   // Finally, present mission information:
   g_current_narration = type;
   show_narration();
-}
-
-/******************************************************************************
-   Function: deinit_mission
-
-Description: Deinitializes the global mission struct, freeing associated
-             memory.
-
-     Inputs: None.
-
-    Outputs: None.
-******************************************************************************/
-void deinit_mission(void)
-{
-  if (g_mission != NULL)
-  {
-    while (g_mission->npcs != NULL)
-    {
-      remove_npc(g_mission->npcs);
-    }
-    free(g_mission);
-    g_mission = NULL;
-  }
 }
 
 /******************************************************************************
@@ -3672,6 +3649,29 @@ void init_mission_location(void)
   else if (g_mission->type == EXTRICATE)
   {
     set_cell_type(end_point, HUMAN);
+  }
+}
+
+/******************************************************************************
+   Function: deinit_mission
+
+Description: Deinitializes the global mission struct, freeing associated
+             memory.
+
+     Inputs: None.
+
+    Outputs: None.
+******************************************************************************/
+void deinit_mission(void)
+{
+  if (g_mission != NULL)
+  {
+    while (g_mission->npcs != NULL)
+    {
+      remove_npc(g_mission->npcs);
+    }
+    free(g_mission);
+    g_mission = NULL;
   }
 }
 
@@ -3905,7 +3905,7 @@ void init(void)
   init_main_menu();
   show_window(g_main_menu_window);
 
-  // Check for saved data:
+  // Check for saved data and initialize the player struct:
   g_player = malloc(sizeof(player_t));
   if (persist_exists(STORAGE_KEY))
   {

@@ -152,6 +152,14 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
   Structures
 ******************************************************************************/
 
+typedef struct PlayerCharacter {
+  GPoint position;
+  int16_t direction,
+          stats[NUM_PLAYER_STATS];
+  int32_t money;
+  bool damage_vibes_on;
+} __attribute__((__packed__)) player_t;
+
 typedef struct NonPlayerCharacter {
   GPoint position;
   int16_t type,
@@ -172,14 +180,6 @@ typedef struct Mission {
   npc_t *npcs;
   bool completed;
 } __attribute__((__packed__)) mission_t;
-
-typedef struct PlayerCharacter {
-  GPoint position;
-  int16_t direction,
-          stats[NUM_PLAYER_STATS];
-  int32_t money;
-  bool damage_vibes_on;
-} __attribute__((__packed__)) player_t;
 
 /******************************************************************************
   Global Variables
@@ -337,8 +337,8 @@ void init_npc(npc_t *npc, int16_t type, GPoint position);
 void deinit_npc(npc_t *npc);
 void init_wall_coords(void);
 void init_mission(int16_t type);
-void deinit_mission(void);
 void init_mission_location(void);
+void deinit_mission(void);
 void init_narration(void);
 void deinit_narration(void);
 void init_graphics(void);
