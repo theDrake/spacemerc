@@ -993,7 +993,7 @@ void show_narration(void)
     // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
     {
-      init_graphics();
+      //init_graphics();
       show_window(g_graphics_window);
     }
 
@@ -1233,7 +1233,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         init_mission(rand() % NUM_MISSION_TYPES);
         break;
       }
-      init_graphics();
+      //init_graphics();
       show_window(g_graphics_window);
       break;
     case 1: // Buy an Upgrade
@@ -2952,7 +2952,7 @@ static void main_menu_window_appear(Window *window)
 {
   deinit_upgrade_menu();
   deinit_narration();
-  deinit_graphics();
+  //deinit_graphics();
 }
 
 /******************************************************************************
@@ -3733,30 +3733,26 @@ Description: Initializes the graphics window.
 ******************************************************************************/
 void init_graphics(void)
 {
-  if (g_graphics_window == NULL)
+  // Graphics window:
+  g_graphics_window = window_create();
+  window_set_background_color(g_graphics_window, GColorBlack);
+  window_set_window_handlers(g_graphics_window, (WindowHandlers)
   {
-    // Graphics window:
-    g_graphics_window = window_create();
-    window_set_background_color(g_graphics_window, GColorBlack);
-    window_set_window_handlers(g_graphics_window, (WindowHandlers)
-    {
-      .appear    = graphics_window_appear,
-      .disappear = graphics_window_disappear,
-    });
-    window_set_click_config_provider(g_graphics_window,
-                                     (ClickConfigProvider)
-                                     graphics_click_config_provider);
-    layer_set_update_proc(window_get_root_layer(g_graphics_window),
-                          draw_scene);
+    .appear    = graphics_window_appear,
+    .disappear = graphics_window_disappear,
+  });
+  window_set_click_config_provider(g_graphics_window,
+                                   (ClickConfigProvider)
+                                   graphics_click_config_provider);
+  layer_set_update_proc(window_get_root_layer(g_graphics_window), draw_scene);
 
-    // Graphics frame inverter (for the "flash" effect):
-    g_graphics_inverter = inverter_layer_create(GRAPHICS_FRAME);
-    layer_add_child(window_get_root_layer(g_graphics_window),
-                    inverter_layer_get_layer(g_graphics_inverter));
+  // Graphics frame inverter (for the "flash" effect):
+  g_graphics_inverter = inverter_layer_create(GRAPHICS_FRAME);
+  layer_add_child(window_get_root_layer(g_graphics_window),
+                  inverter_layer_get_layer(g_graphics_inverter));
 
-    // Tick timer subscription:
-    tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
-  }
+  // Tick timer subscription:
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
 }
 
 /******************************************************************************
@@ -3770,13 +3766,9 @@ Description: Deinitializes the graphics window.
 ******************************************************************************/
 void deinit_graphics(void)
 {
-  if (g_graphics_window != NULL)
-  {
-    tick_timer_service_unsubscribe();
-    inverter_layer_destroy(g_graphics_inverter);
-    window_destroy(g_graphics_window);
-    g_graphics_window = NULL;
-  }
+  tick_timer_service_unsubscribe();
+  inverter_layer_destroy(g_graphics_inverter);
+  window_destroy(g_graphics_window);
 }
 
 /******************************************************************************
@@ -3887,13 +3879,13 @@ void init(void)
   srand(time(NULL));
 
   // First, set some global pointers to NULL:
-  g_graphics_window     = NULL;
   g_narration_window    = NULL;
   g_upgrade_menu_window = NULL;
   g_mission             = NULL;
 
   // Now, initialize other global variables, etc.:
   g_game_paused = true;
+  init_graphics();
   app_focus_service_subscribe(app_focus_handler);
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
@@ -3934,7 +3926,7 @@ void deinit(void)
   app_focus_service_unsubscribe();
   //deinit_upgrade_menu();
   //deinit_narration();
-  //deinit_graphics();
+  deinit_graphics();
   deinit_main_menu();
   deinit_mission();
   deinit_player();
