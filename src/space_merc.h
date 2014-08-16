@@ -160,21 +160,17 @@ typedef struct NonPlayerCharacter {
   struct NonPlayerCharacter *next;
 } __attribute__((__packed__)) npc_t;
 
-typedef struct Location {
-  int16_t cells[LOCATION_WIDTH][LOCATION_HEIGHT],
-          starting_direction;
-  GPoint starting_point;
-  npc_t *npcs;
-} __attribute__((__packed__)) location_t;
-
 typedef struct Mission {
   int16_t type,
+          cells[LOCATION_WIDTH][LOCATION_HEIGHT],
+          starting_direction,
           num_npcs,
           kills,
           demolitions;
   int32_t reward;
+  GPoint starting_point;
+  npc_t *npcs;
   bool completed;
-  location_t *location;
 } __attribute__((__packed__)) mission_t;
 
 typedef struct PlayerCharacter {
@@ -253,9 +249,6 @@ npc_t *get_npc_at(const GPoint cell);
 bool out_of_bounds(const GPoint cell);
 bool occupiable(const GPoint cell);
 void show_narration(void);
-
-// Continue optimizing here...
-
 void show_window(Window *window);
 static void main_menu_draw_row_callback(GContext *ctx,
                                         const Layer *cell_layer,
@@ -345,8 +338,7 @@ void deinit_npc(npc_t *npc);
 void init_wall_coords(void);
 void init_mission(int16_t type);
 void deinit_mission(void);
-void init_location(void);
-void deinit_location(void);
+void init_mission_location(void);
 void init_narration(void);
 void deinit_narration(void);
 void init_graphics(void);

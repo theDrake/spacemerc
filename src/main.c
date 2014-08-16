@@ -56,10 +56,9 @@ void move_player(const int16_t direction)
   GPoint destination = get_cell_farther_away(g_player->position, direction, 1);
 
   // Check for movement into the exit, ending the current mission:
-  if (gpoint_equal(&g_player->position,
-                   &g_mission->location->starting_point) &&
+  if (gpoint_equal(&g_player->position, &g_mission->starting_point) &&
       get_opposite_direction(g_player->direction) ==
-        g_mission->location->starting_direction)
+        g_mission->starting_direction)
   {
     end_mission();
   }
@@ -336,7 +335,7 @@ void damage_cell(GPoint cell, const int16_t damage)
 {
   if (!out_of_bounds(cell) && get_cell_type(cell) > EMPTY)
   {
-    g_mission->location->cells[cell.x][cell.y] -= damage;
+    g_mission->cells[cell.x][cell.y] -= damage;
     if (get_cell_type(cell) < SOLID)
     {
       set_cell_type(cell, EMPTY);
@@ -407,7 +406,7 @@ void adjust_player_current_hp(const int16_t amount)
    Function: remove_npc
 
 Description: Handles the removal of a given NPC from memory and from the
-             current location's list of NPCs.
+             current mission's list of NPCs.
 
      Inputs: npc - Pointer to the NPC to be killed.
 
@@ -417,25 +416,25 @@ void remove_npc(npc_t *npc)
 {
   npc_t *npc_pointer, *npc_pointer_2;
 
-  npc_pointer = npc_pointer_2 = g_mission->location->npcs;
+  npc_pointer = npc_pointer_2 = g_mission->npcs;
   while (npc_pointer != NULL)
   {
     if (npc_pointer == npc)
     {
       if (npc_pointer->next != NULL)
       {
-        if (npc_pointer == g_mission->location->npcs)
+        if (npc_pointer == g_mission->npcs)
         {
-          g_mission->location->npcs = npc_pointer->next;
+          g_mission->npcs = npc_pointer->next;
         }
         else
         {
           npc_pointer_2->next = npc_pointer->next;
         }
       }
-      else if (npc_pointer == g_mission->location->npcs)
+      else if (npc_pointer == g_mission->npcs)
       {
-        g_mission->location->npcs = NULL;
+        g_mission->npcs = NULL;
       }
       else
       {
@@ -496,9 +495,8 @@ Description: Adjusts the player's visibility depth by a given amount, which may
 /******************************************************************************
    Function: end_mission
 
-Description: Called when the player exits the current location, effectively
-             ending the associated mission. Determines how much (if any) reward
-             money to bestow, etc.
+Description: Called when the player walks into the exit, ending the current
+             mission. Determines how much reward money to bestow, etc.
 
      Inputs: None.
 
@@ -559,7 +557,7 @@ void end_mission(void)
    Function: add_new_npc
 
 Description: Creates an NPC of a given type at a given location and adds it to
-             the current location's linked list of NPCs. (If this would exceed
+             the current mission's linked list of NPCs. (If this would exceed
              the max. number of NPCs at one time, or if the given position
              isn't occupiable, a new NPC is not created.)
 
@@ -571,14 +569,14 @@ Description: Creates an NPC of a given type at a given location and adds it to
 void add_new_npc(const int16_t npc_type, const GPoint position)
 {
   int16_t count = 1;
-  npc_t *npc_pointer = g_mission->location->npcs;
+  npc_t *npc_pointer = g_mission->npcs;
 
   if (occupiable(position))
   {
     if (npc_pointer == NULL)
     {
-      g_mission->location->npcs = malloc(sizeof(npc_t));
-      init_npc(g_mission->location->npcs, npc_type, position);
+      g_mission->npcs = malloc(sizeof(npc_t));
+      init_npc(g_mission->npcs, npc_type, position);
 
       return;
     }
@@ -880,7 +878,7 @@ int16_t get_cell_type(const GPoint cell)
     return SOLID;
   }
 
-  return g_mission->location->cells[cell.x][cell.y];
+  return g_mission->cells[cell.x][cell.y];
 }
 
 /******************************************************************************
@@ -896,7 +894,7 @@ Description: Sets the cell at a given set of coordinates to a given type.
 ******************************************************************************/
 void set_cell_type(GPoint cell, const int16_t type)
 {
-  g_mission->location->cells[cell.x][cell.y] = type;
+  g_mission->cells[cell.x][cell.y] = type;
 }
 
 /******************************************************************************
@@ -911,7 +909,7 @@ Description: Returns a pointer to the NPC occupying a given cell.
 ******************************************************************************/
 npc_t *get_npc_at(const GPoint cell)
 {
-  npc_t *npc = g_mission->location->npcs;
+  npc_t *npc = g_mission->npcs;
 
   while (npc != NULL)
   {
@@ -978,12 +976,9 @@ void show_narration(void)
   static char narration_str[NARRATION_STR_LEN + 1];
 
   // Ensure the narration window has been initialized:
-  if (g_narration_window == NULL)
-  {
-    init_narration();
-  }
+  init_narration();
 
-  // Determine whether the current narration is finished:
+  // Determine whether the current narration is already finished:
   if ((g_current_narration <= MISSION_ACCOMPLISHED_NARRATION &&
        g_narration_page_num > 0)                                          ||
       (g_current_narration < INTRO_NARRATION && g_narration_page_num > 1) ||
@@ -994,11 +989,15 @@ void show_narration(void)
       window_stack_pop(false /* not animated */);
     }
     deinit_narration();
+
+    // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
     {
       init_graphics();
       show_window(g_graphics_window);
     }
+
+    // Otherwise, go to the main menu:
     else
     {
       show_window(g_main_menu_window);
@@ -1137,11 +1136,7 @@ Description: Displays a given window. (Assumes that window has already been
 ******************************************************************************/
 void show_window(Window *window)
 {
-  if (window == NULL)
-  {
-    return;
-  }
-  else if (!window_stack_contains_window(window))
+  if (!window_stack_contains_window(window))
   {
     window_stack_push(window, false /* not animated */);
   }
@@ -1234,6 +1229,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
     case 0: // New Mission / Continue
       if (g_mission == NULL)
       {
+        g_mission = malloc(sizeof(mission_t));
         init_mission(rand() % NUM_MISSION_TYPES);
         break;
       }
@@ -1287,7 +1283,6 @@ static void upgrade_menu_draw_header_callback(GContext *ctx,
 
   strcpy(header_str, "Funds: $");
   cat_int_onto_str(header_str, g_player->money);
-
   menu_cell_basic_header_draw(ctx, cell_layer, header_str);
 }
 
@@ -1495,8 +1490,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer,
 Description: Draws a (simplistic) 3D scene based on the player's current
              position, direction, and visibility depth.
 
-     Inputs: layer  - Pointer to the relevant layer.
-             ctx    - Pointer to the relevant graphics context.
+     Inputs: layer - Pointer to the relevant layer.
+             ctx   - Pointer to the relevant graphics context.
 
     Outputs: None.
 ******************************************************************************/
@@ -1636,6 +1631,7 @@ void draw_floor_and_ceiling(GContext *ctx)
     {
       // Draw a point on the ceiling:
       graphics_draw_pixel(ctx, GPoint(x, y));
+
       // Draw a point on the floor:
       graphics_draw_pixel(ctx, GPoint(x, GRAPHICS_FRAME_HEIGHT - y));
     }
@@ -1671,7 +1667,7 @@ void draw_cell_walls(GContext *ctx,
   right         = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
   top           = g_back_wall_coords[depth][position][TOP_LEFT].y;
   bottom        = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
-  exit_present  = gpoint_equal(&cell, &g_mission->location->starting_point);
+  exit_present  = gpoint_equal(&cell, &g_mission->starting_point);
   exit_offset_y = (right - left) / 4;
   if (bottom - top < MIN_WALL_HEIGHT)
   {
@@ -1701,7 +1697,7 @@ void draw_cell_walls(GContext *ctx,
 
     // Entrance/exit:
     if (exit_present && get_opposite_direction(g_player->direction) ==
-                        g_mission->location->starting_direction)
+                        g_mission->starting_direction)
     {
       graphics_context_set_fill_color(ctx, GColorBlack);
       exit_offset_x = (right - left) / 3;
@@ -1752,7 +1748,7 @@ void draw_cell_walls(GContext *ctx,
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_right(g_player->direction) ==
-                          g_mission->location->starting_direction)
+                          g_mission->starting_direction)
       {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
@@ -1803,7 +1799,7 @@ void draw_cell_walls(GContext *ctx,
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_left(g_player->direction) ==
-                          g_mission->location->starting_direction)
+                          g_mission->starting_direction)
       {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
@@ -2374,8 +2370,12 @@ void draw_cell_contents(GContext *ctx,
                               GPoint(floor_center_point.x,
                                      floor_center_point.y - drawing_unit * 6),
                               drawing_unit * 4,
-                              depth == 0 ? 1 + (g_back_wall_coords[depth][position][TOP_LEFT].y / 2) / MAX_VISIBILITY_DEPTH :
-                                           1 + ((g_back_wall_coords[depth][position][TOP_LEFT].y - g_back_wall_coords[depth - 1][position][TOP_LEFT].y) / 2) / MAX_VISIBILITY_DEPTH);
+                              depth == 0 ?
+                  1 + (g_back_wall_coords[depth][position][TOP_LEFT].y / 2) /
+                    MAX_VISIBILITY_DEPTH :
+                  1 + ((g_back_wall_coords[depth][position][TOP_LEFT].y -
+                    g_back_wall_coords[depth - 1][position][TOP_LEFT].y) / 2) /
+                    MAX_VISIBILITY_DEPTH);
   }
   else // content_type == ITEM
   {
@@ -2833,8 +2833,7 @@ void flash(const int16_t num_flashes)
   if (num_flashes > 0 && g_graphics_window != NULL)
   {
     num_flashes_remaining = num_flashes - 1;
-    layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter),
-                     false);
+    layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter), false);
     g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
                                        flash_timer_callback,
                                        &num_flashes_remaining);
@@ -3022,7 +3021,6 @@ void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context)
 {
   if (!g_game_paused)
   {
-    // Turn to the left:
     set_player_direction(get_direction_to_the_left(g_player->direction));
   }
 }
@@ -3062,7 +3060,6 @@ void graphics_down_multi_click(ClickRecognizerRef recognizer, void *context)
 {
   if (!g_game_paused)
   {
-    // Turn to the right:
     set_player_direction(get_direction_to_the_right(g_player->direction));
   }
 }
@@ -3204,7 +3201,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
   if (!g_game_paused)
   {
     // Handle NPC behavior:
-    npc_pointer = g_mission->location->npcs;
+    npc_pointer = g_mission->npcs;
     while (npc_pointer != NULL)
     {
       determine_npc_behavior(npc_pointer);
@@ -3253,7 +3250,6 @@ void app_focus_handler(bool in_focus)
     {
       g_game_paused = false;
     }
-    //light_enable(true);
   }
 }
 
@@ -3359,10 +3355,6 @@ Description: Initializes the global player character struct according to
 ******************************************************************************/
 void init_player(void)
 {
-  if (g_player == NULL)
-  {
-    g_player = malloc(sizeof(player_t));
-  }
   g_player->stats[POWER]      = DEFAULT_PLAYER_POWER;
   g_player->stats[ARMOR]      = DEFAULT_PLAYER_DEFENSE;
   g_player->stats[MAX_HP]     = DEFAULT_PLAYER_MAX_HP;
@@ -3403,10 +3395,6 @@ Description: Initializes a non-player character (NPC) struct according to a
 ******************************************************************************/
 void init_npc(npc_t *npc, int16_t type, GPoint position)
 {
-  if (npc == NULL)
-  {
-    return;
-  }
   npc->type     = type;
   npc->position = position;
   npc->next     = NULL;
@@ -3527,12 +3515,6 @@ Description: Initializes the global mission struct according to a given mission
 ******************************************************************************/
 void init_mission(int16_t type)
 {
-  if (g_mission == NULL)
-  {
-    g_mission = malloc(sizeof(mission_t));
-    g_mission->location = malloc(sizeof(location_t));
-  }
-
   g_mission->type      = type;
   g_mission->completed = false;
   g_mission->num_npcs  = rand() % (MAX_NPCS_PER_MISSION - MIN_NPCS_PER_MISSION
@@ -3555,11 +3537,11 @@ void init_mission(int16_t type)
   {
     g_mission->reward = 1000 * (rand() % 6 + 10); // $10,000-$15,000
   }
-  init_location();
+  init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
-  g_player->position = g_mission->location->starting_point;
-  set_player_direction(g_mission->location->starting_direction);
+  g_player->position = g_mission->starting_point;
+  set_player_direction(g_mission->starting_direction);
   g_player->stats[CURRENT_HP] = g_player->stats[MAX_HP];
   g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
 
@@ -3582,22 +3564,26 @@ void deinit_mission(void)
 {
   if (g_mission != NULL)
   {
-    deinit_location();
+    while (g_mission->npcs != NULL)
+    {
+      remove_npc(g_mission->npcs);
+    }
     free(g_mission);
     g_mission = NULL;
   }
 }
 
 /******************************************************************************
-   Function: init_location
+   Function: init_mission_location
 
-Description: Initializes the current mission's location struct.
+Description: Initializes the current mission's location (i.e., its 2D "cells"
+             array).
 
      Inputs: None.
 
     Outputs: None.
 ******************************************************************************/
-void init_location(void)
+void init_mission_location(void)
 {
   GPoint builder_position, end_point;
   int16_t  i, j, builder_direction;
@@ -3607,35 +3593,35 @@ void init_location(void)
   {
     for (j = 0; j < LOCATION_HEIGHT; ++j)
     {
-      g_mission->location->cells[i][j] = DEFAULT_CELL_HP;
+      g_mission->cells[i][j] = DEFAULT_CELL_HP;
     }
   }
 
   // Next, set starting and exit points:
-  g_mission->location->starting_direction = rand() % NUM_DIRECTIONS;
-  switch (get_opposite_direction(g_mission->location->starting_direction))
+  g_mission->starting_direction = rand() % NUM_DIRECTIONS;
+  switch (get_opposite_direction(g_mission->starting_direction))
   {
     case NORTH:
-      g_mission->location->starting_point = RANDOM_POINT_NORTH;
+      g_mission->starting_point = RANDOM_POINT_NORTH;
       end_point = RANDOM_POINT_SOUTH;
       break;
     case SOUTH:
-      g_mission->location->starting_point = RANDOM_POINT_SOUTH;
+      g_mission->starting_point = RANDOM_POINT_SOUTH;
       end_point = RANDOM_POINT_NORTH;
       break;
     case EAST:
-      g_mission->location->starting_point = RANDOM_POINT_EAST;
+      g_mission->starting_point = RANDOM_POINT_EAST;
       end_point = RANDOM_POINT_WEST;
       break;
     default: // case WEST:
-      g_mission->location->starting_point = RANDOM_POINT_WEST;
+      g_mission->starting_point = RANDOM_POINT_WEST;
       end_point = RANDOM_POINT_EAST;
       break;
   }
 
   // Now, carve a path between the starting and end points:
-  builder_position = g_mission->location->starting_point;
-  builder_direction = g_mission->location->starting_direction;
+  builder_position = g_mission->starting_point;
+  builder_direction = g_mission->starting_direction;
   while (!gpoint_equal(&builder_position, &end_point))
   {
     set_cell_type(builder_position, EMPTY);
@@ -3674,7 +3660,7 @@ void init_location(void)
   set_cell_type(builder_position, EMPTY);
 
   // Finally, add special NPCs, etc., if applicable:
-  g_mission->location->npcs = NULL;
+  g_mission->npcs = NULL;
   if (g_mission->type == ASSASSINATE)
   {
     add_new_npc(ALIEN_OFFICER, end_point);
@@ -3686,28 +3672,6 @@ void init_location(void)
   else if (g_mission->type == EXTRICATE)
   {
     set_cell_type(end_point, HUMAN);
-  }
-}
-
-/******************************************************************************
-   Function: deinit_location
-
-Description: Deinitializes the current mission's location struct, freeing
-             associated memory.
-
-     Inputs: None.
-
-    Outputs: None.
-******************************************************************************/
-void deinit_location(void)
-{
-  if (g_mission != NULL && g_mission->location != NULL)
-  {
-    while (g_mission->location->npcs != NULL)
-    {
-      remove_npc(g_mission->location->npcs);
-    }
-    free(g_mission->location);
   }
 }
 
@@ -3769,9 +3733,9 @@ Description: Initializes the graphics window.
 ******************************************************************************/
 void init_graphics(void)
 {
-  // Graphics window:
   if (g_graphics_window == NULL)
   {
+    // Graphics window:
     g_graphics_window = window_create();
     window_set_background_color(g_graphics_window, GColorBlack);
     window_set_window_handlers(g_graphics_window, (WindowHandlers)
@@ -3785,7 +3749,7 @@ void init_graphics(void)
     layer_set_update_proc(window_get_root_layer(g_graphics_window),
                           draw_scene);
 
-    // Graphics frame inverter:
+    // Graphics frame inverter (for the "flash" effect):
     g_graphics_inverter = inverter_layer_create(GRAPHICS_FRAME);
     layer_add_child(window_get_root_layer(g_graphics_window),
                     inverter_layer_get_layer(g_graphics_inverter));
@@ -3876,24 +3840,21 @@ Description: Initializes the main menu.
 ******************************************************************************/
 void init_main_menu(void)
 {
-  if (g_main_menu_window == NULL)
+  g_main_menu_window = window_create();
+  window_set_window_handlers(g_main_menu_window, (WindowHandlers)
   {
-    g_main_menu_window = window_create();
-    window_set_window_handlers(g_main_menu_window, (WindowHandlers)
-    {
-      .appear = main_menu_window_appear,
-    });
-    g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
-    menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
-    {
-      .get_num_rows = menu_get_num_rows_callback,
-      .draw_row = main_menu_draw_row_callback,
-      .select_click = main_menu_select_callback,
-    });
-    menu_layer_set_click_config_onto_window(g_main_menu, g_main_menu_window);
-    layer_add_child(window_get_root_layer(g_main_menu_window),
-                    menu_layer_get_layer(g_main_menu));
-  }
+    .appear = main_menu_window_appear,
+  });
+  g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
+  menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
+  {
+    .get_num_rows = menu_get_num_rows_callback,
+    .draw_row = main_menu_draw_row_callback,
+    .select_click = main_menu_select_callback,
+  });
+  menu_layer_set_click_config_onto_window(g_main_menu, g_main_menu_window);
+  layer_add_child(window_get_root_layer(g_main_menu_window),
+                  menu_layer_get_layer(g_main_menu));
 }
 
 /******************************************************************************
@@ -3907,12 +3868,8 @@ Description: Deinitializes the main menu.
 ******************************************************************************/
 void deinit_main_menu(void)
 {
-  if (g_main_menu_window != NULL)
-  {
-    menu_layer_destroy(g_main_menu);
-    window_destroy(g_main_menu_window);
-    g_main_menu_window = NULL;
-  }
+  menu_layer_destroy(g_main_menu);
+  window_destroy(g_main_menu_window);
 }
 
 /******************************************************************************
@@ -3929,10 +3886,9 @@ void init(void)
 {
   srand(time(NULL));
 
-  // First, set all major global pointers to NULL:
+  // First, set some global pointers to NULL:
   g_graphics_window     = NULL;
   g_narration_window    = NULL;
-  g_main_menu_window    = NULL;
   g_upgrade_menu_window = NULL;
   g_mission             = NULL;
 
