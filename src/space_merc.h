@@ -314,6 +314,7 @@ static void flash_timer_callback(void *num_flashes_remaining);
 static void player_timer_callback(void *data);
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);
+static void narration_window_disappear(Window *window);
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
                                         void *context);
 void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context);

@@ -981,7 +981,6 @@ void show_narration(void)
       (g_current_narration < INTRO_NARRATION && g_narration_page_num > 1) ||
       g_narration_page_num > 2)
   {
-    g_narration_page_num = 0;
     if (window_stack_get_top_window() == g_narration_window)
     {
       window_stack_pop(false /* not animated */);
@@ -2944,7 +2943,7 @@ Description: Called when the graphics window appears.
 ******************************************************************************/
 static void graphics_window_appear(Window *window)
 {
-  g_game_paused = false;
+  g_game_paused           = false;
   g_player_animation_mode = 0;
   layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter), true);
 }
@@ -2961,6 +2960,20 @@ Description: Called when the graphics window disappears.
 static void graphics_window_disappear(Window *window)
 {
   g_game_paused = true;
+}
+
+/******************************************************************************
+   Function: narration_window_disappear
+
+Description: Called when the narration window disappears.
+
+     Inputs: window - Pointer to the narration window.
+
+    Outputs: None.
+******************************************************************************/
+static void narration_window_disappear(Window *window)
+{
+  g_narration_page_num = 0;
 }
 
 /******************************************************************************
@@ -3664,6 +3677,10 @@ Description: Initializes the narration window.
 void init_narration(void)
 {
   g_narration_window = window_create();
+  window_set_window_handlers(g_narration_window, (WindowHandlers)
+  {
+    .appear = narration_window_disappear,
+  });
   window_set_background_color(g_narration_window, GColorBlack);
   window_set_click_config_provider(g_narration_window,
                                    narration_click_config_provider);
@@ -3796,10 +3813,6 @@ Description: Initializes the main menu.
 void init_main_menu(void)
 {
   g_main_menu_window = window_create();
-  /*window_set_window_handlers(g_main_menu_window, (WindowHandlers)
-  {
-    .appear = main_menu_window_appear,
-  });*/
   g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
   {
