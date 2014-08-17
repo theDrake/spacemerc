@@ -976,7 +976,7 @@ void show_narration(void)
   static char narration_str[NARRATION_STR_LEN + 1];
 
   // Ensure the narration window has been initialized:
-  init_narration();
+  //init_narration();
 
   // Determine whether the current narration is already finished:
   if ((g_current_narration <= MISSION_ACCOMPLISHED_NARRATION &&
@@ -988,7 +988,7 @@ void show_narration(void)
     {
       window_stack_pop(false /* not animated */);
     }
-    deinit_narration();
+    //deinit_narration();
 
     // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
@@ -1239,7 +1239,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
     case 1: // Buy an Upgrade
       if (g_mission == NULL)
       {
-        init_upgrade_menu();
+        //init_upgrade_menu();
         menu_layer_set_selected_index(g_upgrade_menu,
                                       (MenuIndex) {0, 0},
                                       MenuRowAlignCenter,
@@ -2948,12 +2948,12 @@ Description: Called when the main menu window appears.
 
     Outputs: None.
 ******************************************************************************/
-static void main_menu_window_appear(Window *window)
+/*static void main_menu_window_appear(Window *window)
 {
   deinit_upgrade_menu();
   deinit_narration();
   //deinit_graphics();
-}
+}*/
 
 /******************************************************************************
    Function: graphics_window_appear
@@ -3686,21 +3686,18 @@ Description: Initializes the narration window.
 ******************************************************************************/
 void init_narration(void)
 {
-  if (g_narration_window == NULL)
-  {
-    g_narration_window = window_create();
-    window_set_background_color(g_narration_window, GColorBlack);
-    window_set_click_config_provider(g_narration_window,
-                                     narration_click_config_provider);
-    g_narration_text_layer = text_layer_create(NARRATION_TEXT_LAYER_FRAME);
-    text_layer_set_background_color(g_narration_text_layer, GColorBlack);
-    text_layer_set_text_color(g_narration_text_layer, GColorWhite);
-    text_layer_set_font(g_narration_text_layer, NARRATION_FONT);
-    text_layer_set_text_alignment(g_narration_text_layer, GTextAlignmentLeft);
-    layer_add_child(window_get_root_layer(g_narration_window),
-                    text_layer_get_layer(g_narration_text_layer));
-    g_narration_page_num = 0;
-  }
+  g_narration_window = window_create();
+  window_set_background_color(g_narration_window, GColorBlack);
+  window_set_click_config_provider(g_narration_window,
+                                   narration_click_config_provider);
+  g_narration_text_layer = text_layer_create(NARRATION_TEXT_LAYER_FRAME);
+  text_layer_set_background_color(g_narration_text_layer, GColorBlack);
+  text_layer_set_text_color(g_narration_text_layer, GColorWhite);
+  text_layer_set_font(g_narration_text_layer, NARRATION_FONT);
+  text_layer_set_text_alignment(g_narration_text_layer, GTextAlignmentLeft);
+  layer_add_child(window_get_root_layer(g_narration_window),
+                  text_layer_get_layer(g_narration_text_layer));
+  g_narration_page_num = 0;
 }
 
 /******************************************************************************
@@ -3714,12 +3711,9 @@ Description: Deinitializes the narration window.
 ******************************************************************************/
 void deinit_narration(void)
 {
-  if (g_narration_window != NULL)
-  {
-    text_layer_destroy(g_narration_text_layer);
-    window_destroy(g_narration_window);
-    g_narration_window = NULL;
-  }
+  text_layer_destroy(g_narration_text_layer);
+  window_destroy(g_narration_window);
+  g_narration_window = NULL;
 }
 
 /******************************************************************************
@@ -3782,24 +3776,21 @@ Description: Initializes the upgrade menu.
 ******************************************************************************/
 void init_upgrade_menu(void)
 {
-  if (g_upgrade_menu_window == NULL)
+  g_upgrade_menu_window = window_create();
+  g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
+  menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
   {
-    g_upgrade_menu_window = window_create();
-    g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
-    menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
-    {
-      .get_num_sections  = menu_get_num_sections_callback,
-      .get_num_rows      = menu_get_num_rows_callback,
-      .get_header_height = menu_get_header_height_callback,
-      .draw_header       = upgrade_menu_draw_header_callback,
-      .draw_row          = upgrade_menu_draw_row_callback,
-      .select_click      = upgrade_menu_select_callback,
-    });
-    menu_layer_set_click_config_onto_window(g_upgrade_menu,
-                                            g_upgrade_menu_window);
-    layer_add_child(window_get_root_layer(g_upgrade_menu_window),
-                    menu_layer_get_layer(g_upgrade_menu));
-  }
+    .get_num_sections  = menu_get_num_sections_callback,
+    .get_num_rows      = menu_get_num_rows_callback,
+    .get_header_height = menu_get_header_height_callback,
+    .draw_header       = upgrade_menu_draw_header_callback,
+    .draw_row          = upgrade_menu_draw_row_callback,
+    .select_click      = upgrade_menu_select_callback,
+  });
+  menu_layer_set_click_config_onto_window(g_upgrade_menu,
+                                          g_upgrade_menu_window);
+  layer_add_child(window_get_root_layer(g_upgrade_menu_window),
+                  menu_layer_get_layer(g_upgrade_menu));
 }
 
 /******************************************************************************
@@ -3813,12 +3804,9 @@ Description: Deinitializes the upgrade menu.
 ******************************************************************************/
 void deinit_upgrade_menu(void)
 {
-  if (g_upgrade_menu_window != NULL)
-  {
-    menu_layer_destroy(g_upgrade_menu);
-    window_destroy(g_upgrade_menu_window);
-    g_upgrade_menu_window = NULL;
-  }
+  menu_layer_destroy(g_upgrade_menu);
+  window_destroy(g_upgrade_menu_window);
+  g_upgrade_menu_window = NULL;
 }
 
 /******************************************************************************
@@ -3833,10 +3821,10 @@ Description: Initializes the main menu.
 void init_main_menu(void)
 {
   g_main_menu_window = window_create();
-  window_set_window_handlers(g_main_menu_window, (WindowHandlers)
+  /*window_set_window_handlers(g_main_menu_window, (WindowHandlers)
   {
     .appear = main_menu_window_appear,
-  });
+  });*/
   g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
   {
@@ -3877,24 +3865,19 @@ Description: Initializes the SpaceMerc app then displays the main menu (after
 void init(void)
 {
   srand(time(NULL));
-
-  // First, set some global pointers to NULL:
-  g_narration_window    = NULL;
-  g_upgrade_menu_window = NULL;
-  g_mission             = NULL;
-
-  // Now, initialize other global variables, etc.:
   g_game_paused = true;
-  init_graphics();
+  g_mission     = NULL;
   app_focus_service_subscribe(app_focus_handler);
+  init_main_menu();
+  init_upgrade_menu();
+  init_narration();
+  init_graphics();
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
                                          STATUS_BAR_HEIGHT / 2));
 
-  // Open the main menu:
-  init_main_menu();
   show_window(g_main_menu_window);
 
   // Check for saved data and initialize the player struct:
@@ -3924,8 +3907,8 @@ void deinit(void)
 {
   persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
   app_focus_service_unsubscribe();
-  //deinit_upgrade_menu();
-  //deinit_narration();
+  deinit_upgrade_menu();
+  deinit_narration();
   deinit_graphics();
   deinit_main_menu();
   deinit_mission();
