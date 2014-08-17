@@ -975,25 +975,21 @@ void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
 
-  // Ensure the narration window has been initialized:
-  //init_narration();
-
   // Determine whether the current narration is already finished:
   if ((g_current_narration <= MISSION_ACCOMPLISHED_NARRATION &&
        g_narration_page_num > 0)                                          ||
       (g_current_narration < INTRO_NARRATION && g_narration_page_num > 1) ||
       g_narration_page_num > 2)
   {
+    g_narration_page_num = 0;
     if (window_stack_get_top_window() == g_narration_window)
     {
       window_stack_pop(false /* not animated */);
     }
-    //deinit_narration();
 
     // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
     {
-      //init_graphics();
       show_window(g_graphics_window);
     }
 
@@ -1233,13 +1229,11 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         init_mission(rand() % NUM_MISSION_TYPES);
         break;
       }
-      //init_graphics();
       show_window(g_graphics_window);
       break;
     case 1: // Buy an Upgrade
       if (g_mission == NULL)
       {
-        //init_upgrade_menu();
         menu_layer_set_selected_index(g_upgrade_menu,
                                       (MenuIndex) {0, 0},
                                       MenuRowAlignCenter,
@@ -2940,22 +2934,6 @@ Description: Called when the narration timer reaches zero. Presents the global
 }*/
 
 /******************************************************************************
-   Function: main_menu_window_appear
-
-Description: Called when the main menu window appears.
-
-     Inputs: window - Pointer to the main menu window.
-
-    Outputs: None.
-******************************************************************************/
-/*static void main_menu_window_appear(Window *window)
-{
-  deinit_upgrade_menu();
-  deinit_narration();
-  //deinit_graphics();
-}*/
-
-/******************************************************************************
    Function: graphics_window_appear
 
 Description: Called when the graphics window appears.
@@ -2966,7 +2944,6 @@ Description: Called when the graphics window appears.
 ******************************************************************************/
 static void graphics_window_appear(Window *window)
 {
-  //deinit_narration();
   g_game_paused = false;
   g_player_animation_mode = 0;
   layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter), true);
@@ -3713,7 +3690,6 @@ void deinit_narration(void)
 {
   text_layer_destroy(g_narration_text_layer);
   window_destroy(g_narration_window);
-  g_narration_window = NULL;
 }
 
 /******************************************************************************
@@ -3806,7 +3782,6 @@ void deinit_upgrade_menu(void)
 {
   menu_layer_destroy(g_upgrade_menu);
   window_destroy(g_upgrade_menu_window);
-  g_upgrade_menu_window = NULL;
 }
 
 /******************************************************************************

@@ -312,7 +312,6 @@ void draw_status_meter(GContext *ctx,
 void flash(const int16_t num_flashes);
 static void flash_timer_callback(void *num_flashes_remaining);
 static void player_timer_callback(void *data);
-//static void main_menu_window_appear(Window *window);
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
