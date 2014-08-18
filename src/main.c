@@ -3822,7 +3822,7 @@ void init(void)
   else
   {
     init_player();
-    g_current_narration = INTRO_NARRATION;
+    g_current_narration = INTRO_NARRATION_1;
     show_narration();
   }
 }
