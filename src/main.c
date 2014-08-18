@@ -963,9 +963,8 @@ bool occupiable(const GPoint cell)
 /******************************************************************************
    Function: show_narration
 
-Description: Displays narration text via the narration window. The type of
-             narration is determined by "g_current_narration" and the specific
-             text is further determined by "g_narration_page_num".
+Description: Displays narration text via the narration window according to
+             "g_current_narration".
 
      Inputs: None.
 
@@ -975,83 +974,50 @@ void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
 
-  // Determine whether the current narration is already finished:
-  if ((g_current_narration <= MISSION_ACCOMPLISHED_NARRATION &&
-       g_narration_page_num > 0)                                          ||
-      (g_current_narration < INTRO_NARRATION && g_narration_page_num > 1) ||
-      g_narration_page_num > 2)
-  {
-    if (window_stack_get_top_window() == g_narration_window)
-    {
-      window_stack_pop(false /* not animated */);
-    }
-
-    // If it was a new mission description, go to the graphics window:
-    if (g_current_narration < NUM_MISSION_TYPES)
-    {
-      show_window(g_graphics_window);
-    }
-
-    // Otherwise, go to the main menu:
-    else
-    {
-      show_window(g_main_menu_window);
-    }
-
-    return;
-  }
-
-  // Determine what text should be displayed:
   switch (g_current_narration)
   {
     case EXCAVATE:
-      strcpy(narration_str,
-"EXCAVATE:\nWe need help in one of our mines. You'll get $");
+      strcpy(narration_str, "EXCAVATE:\nWe need help in one of our mines. "
+                            "You'll get $");
       cat_int_onto_str(narration_str, g_mission->reward);
-      strcat(narration_str,
-" per rock wall broken down.");
+      strcat(narration_str, " per rock wall broken down.");
       break;
     case RETALIATE:
-      strcpy(narration_str,
-"RETALIATE:\nA human colony is overrun! $");
+      strcpy(narration_str, "RETALIATE:\nA human colony is overrun! $");
       cat_int_onto_str(narration_str, g_mission->reward);
-      strcat(narration_str,
-" per kill, minus walls destroyed.");
+      strcat(narration_str, " per kill, minus walls destroyed.");
       break;
     case EXPROPRIATE:
-      strcpy(narration_str,
-"EXPROPRIATE:\nRetrieve data from this Fim base and you'll receive $");
+      strcpy(narration_str, "EXPROPRIATE:\nRetrieve data from this Fim base "
+                            "and you'll receive $");
       cat_int_onto_str(narration_str, g_mission->reward);
       strcat(narration_str, ".");
       break;
     case EXTRICATE:
-      strcpy(narration_str,
-"EXTRICATE:\nWe're offering $");
+      strcpy(narration_str, "EXTRICATE:\nWe're offering $");
       cat_int_onto_str(narration_str, g_mission->reward);
-      strcat(narration_str,
-" for the rescue of one of our officers!");
+      strcat(narration_str, " for the rescue of one of our officers!");
       break;
     case ASSASSINATE:
-      strcpy(narration_str,
-"ASSASSINATE:\nNeutralize the leader of this base to claim a bounty of $");
+      strcpy(narration_str, "ASSASSINATE:\nNeutralize the leader of this base "
+                            "to claim a bounty of $");
       cat_int_onto_str(narration_str, g_mission->reward);
       strcat(narration_str, ".");
       break;
     case OBLITERATE:
-      strcpy(narration_str,
-"OBLITERATE:\nLevel this Fim base to the ground! $");
+      strcpy(narration_str, "OBLITERATE:\nLevel this Fim base to the ground! "
+                            "$");
       cat_int_onto_str(narration_str, g_mission->reward);
-      strcat(narration_str,
-" per enemy/wall destroyed.");
+      strcat(narration_str, " per enemy/wall destroyed.");
       break;
     case DEATH_NARRATION:
-      strcpy(narration_str,
-"You fell in battle, but your body was found and resuscitated. Soldier on!");
+      strcpy(narration_str, "You fell in battle, but your body was found and "
+                            "resuscitated. Soldier on!");
       deinit_mission();
       break;
     case MISSION_FAILED_NARRATION:
-      strcpy(narration_str,
-"You failed to achieve the mission objectives. Better luck next time!");
+      strcpy(narration_str, "You failed to achieve the mission objectives. "
+                            "Better luck next time!");
       deinit_mission();
       break;
     case MISSION_ACCOMPLISHED_NARRATION:
@@ -1064,52 +1030,26 @@ void show_narration(void)
       deinit_mission();
       break;
     case CONTROLS_NARRATION:
-      switch (g_narration_page_num)
-      {
-        case 0:
-          strcpy(narration_str, "Forward: \"Up\"\nBackward: \"Down\"\n\n"
-                                "Left: \"Up\" x 2\nRight: \"Down\" x 2");
-          break;
-        default:
-          strcpy(narration_str, "Shoot: \"Select\"\n\nMore info online:\n"
-                                "davidcdrake.com/\n              spacemerc");
-          break;
-      }
+      strcpy(narration_str, "Forward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x"
+                            " 2\nRight: \"Down\" x 2\nShoot: \"Select\"");
       break;
     case GAME_INFO_NARRATION:
-      switch (g_narration_page_num)
-      {
-        case 0:
-          strcpy(narration_str,
-"SpaceMerc was designed and programmed by David C. Drake:\ndavidcdrake.com");
-          break;
-        default:
-          strcpy(narration_str,
-"Thanks for playing, and special thanks to all those who helped make this "
-"possible!");
-          break;
-      }
+      strcpy(narration_str, "SpaceMerc was designed and programmed by "
+                            "David C. Drake:\ndavidcdrake.com");
       break;
-    default: // case INTRO_NARRATION:
-      switch (g_narration_page_num)
-      {
-        case 0:
-          strcpy(narration_str,
-"Humankind is at war with a hostile alien race known as the Fim.");
-          break;
-        case 1:
-          strcpy(narration_str,
-"As an elite interstellar mercenary, your skills are in high demand.");
-          break;
-        default:
-          strcpy(narration_str,
-"Fame and fortune await as you risk life and limb for humanity's future!");
-          break;
-      }
+    case INTRO_NARRATION_1:
+      strcpy(narration_str, "Humankind is at war with a hostile alien race "
+                            "known as the Fim.");
+      break;
+    case INTRO_NARRATION_2:
+      strcpy(narration_str, "As an elite interstellar mercenary, your skills "
+                            "are in high demand.");
+      break;
+    default: // case INTRO_NARRATION_3:
+      strcpy(narration_str, "Fame and fortune await as you risk life and limb "
+                            "for humanity's future!");
       break;
   }
-
-  // Finally, display the current narration text:
   text_layer_set_text(g_narration_text_layer, narration_str);
   show_window(g_narration_window);
 
@@ -2963,20 +2903,6 @@ static void graphics_window_disappear(Window *window)
 }
 
 /******************************************************************************
-   Function: narration_window_disappear
-
-Description: Called when the narration window disappears.
-
-     Inputs: window - Pointer to the narration window.
-
-    Outputs: None.
-******************************************************************************/
-static void narration_window_disappear(Window *window)
-{
-  g_narration_page_num = 0;
-}
-
-/******************************************************************************
    Function: graphics_up_single_repeating_click
 
 Description: The graphics window's single-click handler for the Pebble's "up"
@@ -3154,8 +3080,32 @@ Description: The narration window's single-click handler for the "select"
 void narration_select_single_click(ClickRecognizerRef recognizer,
                                    void *context)
 {
-  g_narration_page_num++;
-  show_narration();
+  if (g_current_narration == INTRO_NARRATION_1 ||
+      g_current_narration == INTRO_NARRATION_2)
+  {
+    g_current_narration++;
+    show_narration();
+  }
+  else
+  {
+    // Remove the narration screen:
+    if (window_stack_get_top_window() == g_narration_window)
+    {
+      window_stack_pop(false /* not animated */);
+    }
+
+    // If it was a new mission description, go to the graphics window:
+    if (g_current_narration < NUM_MISSION_TYPES)
+    {
+      show_window(g_graphics_window);
+    }
+
+    // Otherwise, go to the main menu:
+    else
+    {
+      show_window(g_main_menu_window);
+    }
+  }
 }
 
 /******************************************************************************
@@ -3677,10 +3627,6 @@ Description: Initializes the narration window.
 void init_narration(void)
 {
   g_narration_window = window_create();
-  window_set_window_handlers(g_narration_window, (WindowHandlers)
-  {
-    .appear = narration_window_disappear,
-  });
   window_set_background_color(g_narration_window, GColorBlack);
   window_set_click_config_provider(g_narration_window,
                                    narration_click_config_provider);
@@ -3691,7 +3637,6 @@ void init_narration(void)
   text_layer_set_text_alignment(g_narration_text_layer, GTextAlignmentLeft);
   layer_add_child(window_get_root_layer(g_narration_window),
                   text_layer_get_layer(g_narration_text_layer));
-  g_narration_page_num = 0;
 }
 
 /******************************************************************************

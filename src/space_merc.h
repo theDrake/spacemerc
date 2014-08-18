@@ -112,8 +112,10 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MISSION_ACCOMPLISHED_NARRATION 8
 #define CONTROLS_NARRATION             9
 #define GAME_INFO_NARRATION            10
-#define INTRO_NARRATION                11
-#define NUM_NARRATION_TYPES            12
+#define INTRO_NARRATION_1              11
+#define INTRO_NARRATION_2              12
+#define INTRO_NARRATION_3              13
+#define NUM_NARRATION_TYPES            14
 
 // Cell types:
 #define SOLID 1 // "Solid" runs from 1 to DEFAULT_CELL_HP.
@@ -201,7 +203,6 @@ GPoint g_back_wall_coords[MAX_VISIBILITY_DEPTH - 1]
                          [2];
 bool g_game_paused;
 int16_t g_current_narration,
-        g_narration_page_num,
         g_player_animation_mode,
         g_laser_base_width;
 GPath *g_compass_path;
@@ -314,7 +315,6 @@ static void flash_timer_callback(void *num_flashes_remaining);
 static void player_timer_callback(void *data);
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);
-static void narration_window_disappear(Window *window);
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
                                         void *context);
 void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context);
