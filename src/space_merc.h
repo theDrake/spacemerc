@@ -80,7 +80,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define DEFAULT_PLAYER_MAX_AMMO         30
 #define DEFAULT_CELL_HP                 50
 #define STAT_BOOST_PER_UPGRADE          5
-#define UPGRADE_COST_MULTIPLIER         1000
+#define UPGRADE_COST_MULTIPLIER         100
 #define NUM_PLAYER_ANIMATIONS           2 // No. of steps in the player's attack animation.
 #define MAX_LASER_BASE_WIDTH            12
 #define MIN_LASER_BASE_WIDTH            8
@@ -89,7 +89,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MIN_DAMAGE                      2
 #define ENERGY_LOSS_PER_SHOT            -2
 #define STORAGE_KEY                     417
-#define MAX_NPCS_AT_ONE_TIME            2
+#define MAX_NPCS_AT_ONE_TIME            3
 #define MIN_NPCS_PER_MISSION            10
 #define MAX_NPCS_PER_MISSION            30
 
