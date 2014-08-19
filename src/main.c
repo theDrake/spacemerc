@@ -1,7 +1,7 @@
 /******************************************************************************
    Filename: main.c
 
-     Author: David C. Drake (www.davidcdrake.com)
+     Author: David C. Drake (http://www.davidcdrake.com)
 
 Description: Function definitions for SpaceMerc, a 3D first-person shooter
              developed for the Pebble smartwatch (SDK 2.0). Copyright 2014,
@@ -120,56 +120,6 @@ void determine_npc_behavior(npc_t *npc)
                                         g_player->position));
   }
 }
-
-/******************************************************************************
-   Function: player_is_visible_from
-
-Description: Determines whether the player is (more or less) visible from a
-             given set of cell coordinates.
-
-     Inputs: cell - Cell coordinates from which to look for the player.
-
-    Outputs: "True" if the player is (more or less) visible from the given
-             coordinates.
-******************************************************************************/
-/*bool player_is_visible_from(GPoint cell)
-{
-  int16_t diff_x = cell.x - g_player->position.x,
-          diff_y = cell.y - g_player->position.y;
-  const int16_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
-                vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
-
-  if (diff_x > MAX_VISIBILITY_DEPTH || diff_y > MAX_VISIBILITY_DEPTH)
-  {
-    return false;
-  }
-  while (!gpoint_equal(&g_player->position, &cell))
-  {
-    if ((diff_x == diff_y &&
-         get_cell_type(get_cell_farther_away(cell,
-                                             horizontal_direction,
-                                             1)) >= SOLID &&
-         get_cell_type(get_cell_farther_away(cell,
-                                             vertical_direction,
-                                             1)) >= SOLID) ||
-        (diff_x > diff_y &&
-         get_cell_type(get_cell_farther_away(cell,
-                                             horizontal_direction,
-                                             1)) >= SOLID) ||
-        (diff_x < diff_y &&
-         get_cell_type(get_cell_farther_away(cell,
-                                             vertical_direction,
-                                             1)) >= SOLID))
-    {
-      return false;
-    }
-    shift_position(&cell, get_pursuit_direction(cell, g_player->position));
-    diff_x = cell.x - g_player->position.x,
-    diff_y = cell.y - g_player->position.y;
-  }
-
-  return true;
-}*/
 
 /******************************************************************************
    Function: get_pursuit_direction
@@ -470,29 +420,6 @@ void adjust_player_current_ammo(const int16_t amount)
 }
 
 /******************************************************************************
-   Function: adjust_visibility_depth
-
-Description: Adjusts the player's visibility depth by a given amount, which may
-             be positive or negative.
-
-     Inputs: amount - Adjustment amount (which may be positive or negative).
-
-    Outputs: None.
-******************************************************************************/
-/*void adjust_visibility_depth(int16_t amount)
-{
-  g_player->visibility_depth += amount;
-  if (g_player->visibility_depth > MAX_VISIBILITY_DEPTH)
-  {
-    g_player->visibility_depth = MAX_VISIBILITY_DEPTH;
-  }
-  else if (g_player->visibility_depth < MIN_VISIBILITY_DEPTH)
-  {
-    g_player->visibility_depth = MIN_VISIBILITY_DEPTH;
-  }
-}*/
-
-/******************************************************************************
    Function: end_mission
 
 Description: Called when the player walks into the exit, ending the current
@@ -720,52 +647,6 @@ GPoint get_floor_center_point(const int16_t depth, const int16_t position)
 
   return GPoint(x, y);
 }
-
-/******************************************************************************
-   Function: get_midair_center_point
-
-Description: Returns the midair central point, with respect to the graphics
-             layer, of the cell at a given visual depth and position.
-
-     Inputs: depth    - Front-back visual depth in "g_back_wall_coords".
-             position - Left-right visual position in "g_back_wall_coords".
-
-    Outputs: GPoint coordinates of the midair central point within the
-             designated cell.
-******************************************************************************/
-/*GPoint get_midair_center_point(const int16_t depth, const int16_t position)
-{
-  int16_t x_midpoint1, x_midpoint2, x, y;
-
-  x_midpoint1 = 0.5 * (g_back_wall_coords[depth][position][TOP_LEFT].x +
-                       g_back_wall_coords[depth][position][BOTTOM_RIGHT].x);
-  if (depth == 0)
-  {
-    if (position < STRAIGHT_AHEAD) // Just to the left of the player.
-    {
-      x_midpoint2 = -0.5 * GRAPHICS_FRAME_WIDTH;
-    }
-    else if (position > STRAIGHT_AHEAD) // Just to the right of the player.
-    {
-      x_midpoint2 = 1.5 * GRAPHICS_FRAME_WIDTH;
-    }
-    else // Directly under the player.
-    {
-      x_midpoint2 = x_midpoint1;
-    }
-    //y = GRAPHICS_FRAME_HEIGHT;
-  }
-  else
-  {
-    x_midpoint2 = 0.5 *
-      (g_back_wall_coords[depth - 1][position][TOP_LEFT].x +
-       g_back_wall_coords[depth - 1][position][BOTTOM_RIGHT].x);
-  }
-  x = 0.5 * (x_midpoint1 + x_midpoint2);
-  y = SCREEN_CENTER_POINT_Y;
-
-  return GPoint(x, y);
-}*/
 
 /******************************************************************************
    Function: get_cell_farther_away
@@ -1052,11 +933,6 @@ void show_narration(void)
   }
   text_layer_set_text(g_narration_text_layer, narration_str);
   show_window(g_narration_window);
-
-  // Add text one character at a time via the narration timer:
-  /*g_narration_timer = app_timer_register(NARRATION_TIMER_DURATION,
-                                         narration_timer_callback,
-                                         NULL);*/
 }
 
 /******************************************************************************
@@ -1073,13 +949,13 @@ void show_window(Window *window)
 {
   if (!window_stack_contains_window(window))
   {
-    window_stack_push(window, false /* not animated */);
+    window_stack_push(window, NOT_ANIMATED);
   }
   else
   {
     while (window_stack_get_top_window() != window)
     {
-      window_stack_pop(false /* not animated */);
+      window_stack_pop(NOT_ANIMATED);
     }
   }
 }
@@ -1176,7 +1052,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         menu_layer_set_selected_index(g_upgrade_menu,
                                       (MenuIndex) {0, 0},
                                       MenuRowAlignCenter,
-                                      false /* not animated */);
+                                      NOT_ANIMATED);
         show_window(g_upgrade_menu_window);
       }
       break;
@@ -2562,195 +2438,6 @@ void draw_status_meter(GContext *ctx,
 }
 
 /******************************************************************************
-   Function: draw_shaded_ellipse
-
-Description: Draws a filled ellipse according to given specifications.
-
-     Inputs: ctx         - Pointer to the relevant graphics context.
-             center      - Central coordinates of the ellipse (with respect to
-                           the graphics frame).
-             h_radius    - Horizontal radius.
-             v_radius    - Vertical radius.
-             shading_ref - Reference coordinates to assist in determining
-                           shading offset values for the quad's location in
-                           the 3D environment. (For walls, this is the same as
-                           "upper_left".)
-
-    Outputs: None.
-******************************************************************************/
-/*void draw_shaded_ellipse(GContext *ctx,
-                         const GPoint center,
-                         const int16_t h_radius,
-                         const int16_t v_radius,
-                         const GPoint shading_ref)
-{
-  int32_t theta;
-  int16_t i, j, shading_offset;
-
-  // Determine the shading offset:
-  shading_offset = 1 + shading_ref.y / MAX_VISIBILITY_DEPTH;
-  if (shading_ref.y % MAX_VISIBILITY_DEPTH >= MAX_VISIBILITY_DEPTH / 2 +
-      MAX_VISIBILITY_DEPTH % 2)
-  {
-    shading_offset++;
-  }
-
-  // Proceed from left to the center, and from 0 to 90 degrees:
-  for (theta = 0, i = h_radius;
-       theta < NINETY_DEGREES && i <= 0 && i < GRAPHICS_FRAME_WIDTH;
-       theta += DEFAULT_ROTATION_RATE, ++i)
-  {
-    // Draw points from top to bottom:
-    for (j = center.y - sin_lookup(theta) * v_radius / TRIG_MAX_RATIO;
-         j < center.y + sin_lookup(theta) * v_radius / TRIG_MAX_RATIO;
-         ++j)
-    {
-      if (j % shading_offset == 0)
-      {
-        graphics_context_set_stroke_color(ctx, GColorWhite);
-      }
-      else
-      {
-        graphics_context_set_stroke_color(ctx, GColorBlack);
-      }
-      graphics_draw_pixel(ctx, GPoint(center.x - i, j));
-      graphics_draw_pixel(ctx, GPoint(center.x + i, j));
-    }
-  }
-}*/
-
-/******************************************************************************
-   Function: draw_shaded_sphere
-
-Description: Draws a shaded sphere according to given specifications.
-
-     Inputs: ctx            - Pointer to the relevant graphics context.
-             center         - The sphere's center point.
-             radius         - The sphere's radius.
-             shading_offset - Shading offset at the sphere's position relative
-                              to the player.
-
-    Outputs: "True" unless the sphere is located entirely off-screen.
-******************************************************************************/
-/*bool draw_shaded_sphere(GContext *ctx,
-                        const GPoint center,
-                        const int16_t radius,
-                        int16_t shading_offset)
-{
-  int32_t theta;
-  int16_t i, x_offset, y_offset;
-
-  if (center.x + radius < 0 ||
-      center.x - radius >= GRAPHICS_FRAME_WIDTH ||
-      center.y + radius < 0 ||
-      center.y - radius >= GRAPHICS_FRAME_HEIGHT)
-  {
-    return false;
-  }
-
-  graphics_context_set_stroke_color(ctx, GColorBlack);
-  graphics_context_set_fill_color(ctx, GColorWhite);
-
-  // First, draw a white circle:
-  graphics_fill_circle(ctx, center, radius);
-
-  // Now add shading:
-  for (i = radius;
-       i > radius / 2;
-       i -= 2)
-  {
-    for (theta = i % 2 ? 0 : ((TRIG_MAX_RATIO / 360) * shading_offset) / 2;
-         theta < NINETY_DEGREES;
-         theta += (TRIG_MAX_RATIO / 360) * (i > radius - radius / 4 ?
-                                            shading_offset :
-                                            shading_offset * 2))
-    {
-      x_offset = cos_lookup(theta) * i / TRIG_MAX_RATIO;
-      y_offset = sin_lookup(theta) * i / TRIG_MAX_RATIO;
-      graphics_draw_pixel(ctx,
-                          GPoint(center.x - x_offset, center.y - y_offset));
-      graphics_draw_pixel(ctx,
-                          GPoint(center.x + x_offset, center.y - y_offset));
-      graphics_draw_pixel(ctx,
-                          GPoint(center.x - x_offset, center.y + y_offset));
-      graphics_draw_pixel(ctx,
-                          GPoint(center.x + x_offset, center.y + y_offset));
-    }
-  }
-
-  return true;
-}*/
-
-/******************************************************************************
-   Function: fill_ellipse
-
-Description: Draws a filled ellipse according to given specifications.
-
-     Inputs: ctx      - Pointer to the relevant graphics context.
-             center   - Central coordinates of the ellipse (with respect to the
-                        graphics frame).
-             h_radius - Horizontal radius.
-             v_radius - Vertical radius.
-             color    - Desired color ("GColorBlack" or "GColorWhite").
-
-    Outputs: None.
-******************************************************************************/
-/*void fill_ellipse(GContext *ctx,
-                  const GPoint center,
-                  const int16_t h_radius,
-                  const int16_t v_radius,
-                  const GColor color)
-{
-  int32_t theta;
-  int16_t x_offset, y_offset;
-
-  graphics_context_set_stroke_color(ctx, color);
-  for (theta = 0; theta < NINETY_DEGREES; theta += DEFAULT_ROTATION_RATE)
-  {
-    x_offset = cos_lookup(theta) * h_radius / TRIG_MAX_RATIO;
-    y_offset = sin_lookup(theta) * v_radius / TRIG_MAX_RATIO;
-    graphics_draw_line(ctx,
-                       GPoint(center.x - x_offset, center.y - y_offset),
-                       GPoint(center.x + x_offset, center.y - y_offset));
-    graphics_draw_line(ctx,
-                       GPoint(center.x - x_offset, center.y + y_offset),
-                       GPoint(center.x + x_offset, center.y + y_offset));
-  }
-}*/
-
-/******************************************************************************
-   Function: draw_ellipse
-
-Description: Draws the outline of an ellipse according to given specifications.
-
-     Inputs: ctx      - Pointer to the relevant graphics context.
-             center   - Central coordinates of the ellipse (with respect to the
-                        graphics frame).
-             h_radius - Horizontal radius.
-             v_radius - Vertical radius.
-
-    Outputs: None.
-******************************************************************************/
-/*void draw_ellipse(GContext *ctx,
-                  const GPoint center,
-                  const int16_t h_radius,
-                  const int16_t v_radius)
-{
-  int32_t theta;
-  int16_t x_offset, y_offset;
-
-  for (theta = 0; theta < NINETY_DEGREES; theta += DEFAULT_ROTATION_RATE)
-  {
-    x_offset = cos_lookup(theta) * h_radius / TRIG_MAX_RATIO;
-    y_offset = sin_lookup(theta) * v_radius / TRIG_MAX_RATIO;
-    graphics_draw_pixel(ctx, GPoint(center.x - x_offset, center.y - y_offset));
-    graphics_draw_pixel(ctx, GPoint(center.x + x_offset, center.y - y_offset));
-    graphics_draw_pixel(ctx, GPoint(center.x - x_offset, center.y + y_offset));
-    graphics_draw_pixel(ctx, GPoint(center.x + x_offset, center.y + y_offset));
-  }
-}*/
-
-/******************************************************************************
    Function: flash
 
 Description: "Flashes" the graphics frame a given number of times.
@@ -2834,43 +2521,6 @@ static void player_timer_callback(void *data)
   }
   layer_mark_dirty(window_get_root_layer(g_graphics_window));
 }
-
-/******************************************************************************
-   Function: narration_timer_callback
-
-Description: Called when the narration timer reaches zero. Presents the global
-             narration string gradually, one character at a time.
-
-     Inputs: data - Pointer to additional data (not used).
-
-    Outputs: None.
-******************************************************************************/
-/*static void narration_timer_callback(void *data)
-{
-  static int16_t i;
-  static char narration_timer_str[NARRATION_STR_LEN + 1];
-
-  if (g_narration_window == NULL || i >= NARRATION_STR_LEN)
-  {
-    i = 0;
-    return;
-  }
-  if (i == 0)
-  {
-    strcpy(narration_timer_str, "");
-  }
-  strncat(narration_timer_str, g_narration_str + i, 1);
-  text_layer_set_text(g_narration_text_layer, narration_timer_str);
-  if (g_narration_str[i] == '\0')
-  {
-    i = 0;
-    return;
-  }
-  ++i;
-  g_narration_timer = app_timer_register(NARRATION_TIMER_DURATION,
-                                         narration_timer_callback,
-                                         NULL);
-}*/
 
 /******************************************************************************
    Function: graphics_window_appear
@@ -3091,7 +2741,7 @@ void narration_select_single_click(ClickRecognizerRef recognizer,
     // Remove the narration screen:
     if (window_stack_get_top_window() == g_narration_window)
     {
-      window_stack_pop(false /* not animated */);
+      window_stack_pop(NOT_ANIMATED);
     }
 
     // If it was a new mission description, go to the graphics window:

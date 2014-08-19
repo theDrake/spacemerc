@@ -1,7 +1,7 @@
 /******************************************************************************
    Filename: space_merc.h
 
-     Author: David C. Drake (www.davidcdrake.com)
+     Author: David C. Drake (http://www.davidcdrake.com)
 
 Description: Header file for SpaceMerc, a 3D first-person shooter developed for
              the Pebble smartwatch (SDK 2.0). Copyright 2014, David C. Drake.
@@ -31,25 +31,21 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define STATUS_METER_HEIGHT             8 // (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
 #define NO_CORNER_RADIUS                0
 #define SMALL_CORNER_RADIUS             3
-//#define STATUS_BAR_FONT                 fonts_get_system_font(FONT_KEY_GOTHIC_14)
 #define NINETY_DEGREES                  (TRIG_MAX_ANGLE / 4)
 #define DEFAULT_ROTATION_RATE           (TRIG_MAX_ANGLE / 30) // 12 degrees per rotation event
 #define MULTI_CLICK_MIN                 2
 #define MULTI_CLICK_MAX                 2 // We only care about double-clicks.
 #define MULTI_CLICK_TIMEOUT             0
 #define LAST_CLICK_ONLY                 true
-//#define LONG_CLICK_DELAY                0   // milliseconds
 #define MOVEMENT_REPEAT_INTERVAL        250 // milliseconds
 #define ATTACK_REPEAT_INTERVAL          250 // milliseconds
 #define PLAYER_TIMER_DURATION           20  // milliseconds
 #define FLASH_TIMER_DURATION            20  // milliseconds
-//#define NARRATION_TIMER_DURATION        20  // milliseconds
 #define DEFAULT_NUM_FLASHES             2
 #define MAX_SMALL_INT_VALUE             9999
 #define MAX_SMALL_INT_DIGITS            4
 #define MAX_LARGE_INT_VALUE             999999999
 #define MAX_LARGE_INT_DIGITS            9
-//#define MAX_SECONDS                     3599 // 59:59 (just under an hour)
 #define FIRST_WALL_OFFSET               STATUS_BAR_HEIGHT
 #define MIN_WALL_HEIGHT                 STATUS_BAR_HEIGHT
 #define GRAPHICS_FRAME_WIDTH            SCREEN_WIDTH
@@ -58,7 +54,6 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define LOCATION_WIDTH                  15
 #define LOCATION_HEIGHT                 LOCATION_WIDTH
 #define MAX_VISIBILITY_DEPTH            6 // Helps determine no. of cells visible in a given line of sight.
-//#define MIN_VISIBILITY_DEPTH            2 // Min. no. of cells visible in a given line of sight.
 #define STRAIGHT_AHEAD                  5 // (MAX_VISIBILITY_DEPTH - 1), an index value for "g_back_wall_coords".
 #define TOP_LEFT                        0 // Index value for "g_back_wall_coords".
 #define BOTTOM_RIGHT                    1 // Index value for "g_back_wall_coords".
@@ -67,12 +62,10 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define RANDOM_POINT_EAST               GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
 #define RANDOM_POINT_WEST               GPoint(0, rand() % LOCATION_HEIGHT)
 #define NARRATION_TEXT_LAYER_FRAME      GRect(2, 0, 140 /* SCREEN_WIDTH - 4 */, SCREEN_HEIGHT)
-//#define NARRATION_FONT                  fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21)
 #define NARRATION_FONT                  fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
 #define MAIN_MENU_NUM_ROWS              5
 #define UPGRADE_MENU_NUM_ROWS           4
 #define DEFAULT_VIBES_SETTING           false
-//#define DEFAULT_VISIBILITY_DEPTH        MAX_VISIBILITY_DEPTH
 #define DEFAULT_PLAYER_MONEY            0
 #define DEFAULT_PLAYER_POWER            10
 #define DEFAULT_PLAYER_DEFENSE          10
@@ -92,6 +85,8 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MAX_NPCS_AT_ONE_TIME            3
 #define MIN_NPCS_PER_MISSION            10
 #define MAX_NPCS_PER_MISSION            30
+#define ANIMATED                        true
+#define NOT_ANIMATED                    false
 
 /******************************************************************************
   Enumerations may take up precious memory, so #defines are used instead:
@@ -196,7 +191,6 @@ MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
 AppTimer *g_player_timer,
-         /*g_narration_timer,*/
          *g_flash_timer;
 GPoint g_back_wall_coords[MAX_VISIBILITY_DEPTH - 1]
                          [(STRAIGHT_AHEAD * 2) + 1]
