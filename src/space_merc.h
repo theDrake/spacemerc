@@ -23,20 +23,20 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define UPGRADE_SUBTITLE_STR_LEN        21
 #define SCREEN_WIDTH                    144
 #define SCREEN_HEIGHT                   168
-#define SCREEN_CENTER_POINT_X           72 // (SCREEN_WIDTH / 2)
-#define SCREEN_CENTER_POINT_Y           72 // (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
+#define SCREEN_CENTER_POINT_X           (SCREEN_WIDTH / 2)
+#define SCREEN_CENTER_POINT_Y           (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
 #define SCREEN_CENTER_POINT             GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
 #define STATUS_BAR_HEIGHT               16 // Applies to top and bottom status bars.
 #define FULL_SCREEN_FRAME               GRect(0, 0, SCREEN_WIDTH, 152 /* SCREEN_HEIGHT - STATUS_BAR_HEIGHT */)
 #define STATUS_BAR_FRAME                GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define COMPASS_RADIUS                  5
 #define STATUS_METER_PADDING            4
-#define STATUS_METER_WIDTH              59 // (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
-#define STATUS_METER_HEIGHT             8 // (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
+#define STATUS_METER_WIDTH              (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
+#define STATUS_METER_HEIGHT             (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
 #define NO_CORNER_RADIUS                0
 #define SMALL_CORNER_RADIUS             3
 #define NINETY_DEGREES                  (TRIG_MAX_ANGLE / 4)
-#define DEFAULT_ROTATION_RATE           (TRIG_MAX_ANGLE / 30) // 12 degrees per rotation event
+#define DEFAULT_ROTATION_RATE           (TRIG_MAX_ANGLE / 30) // 12 degrees
 #define MULTI_CLICK_MIN                 2
 #define MULTI_CLICK_MAX                 2 // We only care about double-clicks.
 #define MULTI_CLICK_TIMEOUT             0
@@ -53,12 +53,12 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define FIRST_WALL_OFFSET               STATUS_BAR_HEIGHT
 #define MIN_WALL_HEIGHT                 STATUS_BAR_HEIGHT
 #define GRAPHICS_FRAME_WIDTH            SCREEN_WIDTH
-#define GRAPHICS_FRAME_HEIGHT           136 // (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME_HEIGHT           (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME                  GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define LOCATION_WIDTH                  15
 #define LOCATION_HEIGHT                 LOCATION_WIDTH
 #define MAX_VISIBILITY_DEPTH            6 // Helps determine no. of cells visible in a given line of sight.
-#define STRAIGHT_AHEAD                  5 // (MAX_VISIBILITY_DEPTH - 1), an index value for "g_back_wall_coords".
+#define STRAIGHT_AHEAD                  (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
 #define TOP_LEFT                        0 // Index value for "g_back_wall_coords".
 #define BOTTOM_RIGHT                    1 // Index value for "g_back_wall_coords".
 #define RANDOM_POINT_NORTH              GPoint(rand() % LOCATION_WIDTH, 0)
