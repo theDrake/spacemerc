@@ -27,7 +27,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define SCREEN_CENTER_POINT_Y           (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
 #define SCREEN_CENTER_POINT             GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
 #define STATUS_BAR_HEIGHT               16 // Applies to top and bottom status bars.
-#define FULL_SCREEN_FRAME               GRect(0, 0, SCREEN_WIDTH, 152 /* SCREEN_HEIGHT - STATUS_BAR_HEIGHT */)
+#define FULL_SCREEN_FRAME               GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME                GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define COMPASS_RADIUS                  5
 #define STATUS_METER_PADDING            4
@@ -65,7 +65,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define RANDOM_POINT_SOUTH              GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
 #define RANDOM_POINT_EAST               GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
 #define RANDOM_POINT_WEST               GPoint(0, rand() % LOCATION_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME      GRect(2, 0, 140 /* SCREEN_WIDTH - 4 */, SCREEN_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME      GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
 #define NARRATION_FONT                  fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
 #define MAIN_MENU_NUM_ROWS              5
 #define UPGRADE_MENU_NUM_ROWS           4

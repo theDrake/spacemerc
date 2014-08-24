@@ -260,7 +260,7 @@ void damage_npc(npc_t *npc, const int16_t damage)
   {
     g_mission->kills++;
     if (g_mission->type == ASSASSINATE &&
-        npc->type == ALIEN_OFFICER)
+        npc->type       == ALIEN_OFFICER)
     {
       g_mission->completed = true;
     }
@@ -2370,7 +2370,7 @@ void draw_status_bar(GContext *ctx)
                     GPoint (STATUS_METER_PADDING,
                             GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
                     (float) g_player->stats[CURRENT_HP] /
-                    g_player->stats[MAX_HP]);
+                      g_player->stats[MAX_HP]);
 
   // Ammo meter:
   draw_status_meter(ctx,
@@ -2378,7 +2378,7 @@ void draw_status_bar(GContext *ctx)
                               COMPASS_RADIUS + 1,
                             GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
                     (float) g_player->stats[CURRENT_ENERGY] /
-                    g_player->stats[MAX_ENERGY]);
+                      g_player->stats[MAX_ENERGY]);
 
   // Compass:
   graphics_fill_circle(ctx,
@@ -2652,10 +2652,10 @@ void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
     // Deplete the player's ammo and set up the player's laser animation:
     adjust_player_current_ammo(ENERGY_LOSS_PER_SHOT);
     g_player_animation_mode = NUM_PLAYER_ANIMATIONS;
-    g_laser_base_width = MAX_LASER_BASE_WIDTH;
-    g_player_timer = app_timer_register(PLAYER_TIMER_DURATION,
-                                        player_timer_callback,
-                                        NULL);
+    g_laser_base_width      = MAX_LASER_BASE_WIDTH;
+    g_player_timer          = app_timer_register(PLAYER_TIMER_DURATION,
+                                                 player_timer_callback,
+                                                 NULL);
 
     // Check for a damaged NPC or cell:
     cell = get_cell_farther_away(g_player->position, g_player->direction, 1);
@@ -2804,7 +2804,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     // Periodically generate new NPCs:
     if (g_mission->type != EXCAVATE &&
         g_mission->kills < g_mission->num_npcs &&
-        rand() % 10 == 0)
+        rand() % 5 == 0)
     {
       add_new_npc(get_random_npc_type(), get_npc_spawn_point());
     }
