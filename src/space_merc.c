@@ -56,8 +56,7 @@ void move_player(const int16_t direction)
 
   // Check for movement into the exit, ending the current mission:
   if (gpoint_equal(&g_player->position, &g_mission->starting_point) &&
-      get_opposite_direction(g_player->direction) ==
-        g_mission->starting_direction)
+      g_player->direction == g_mission->entrance_direction)
   {
     end_mission();
   }
@@ -389,7 +388,7 @@ void remove_npc(npc_t *npc)
       {
         npc_pointer_2->next = NULL;
       }
-      deinit_npc(npc_pointer);
+      free(npc_pointer);
 
       return;
     }
@@ -1504,8 +1503,7 @@ void draw_cell_walls(GContext *ctx,
     }
 
     // Entrance/exit:
-    if (exit_present && get_opposite_direction(g_player->direction) ==
-                        g_mission->starting_direction)
+    if (exit_present && g_player->direction == g_mission->entrance_direction)
     {
       graphics_context_set_fill_color(ctx, GColorBlack);
       exit_offset_x = (right - left) / 3;
@@ -1555,8 +1553,8 @@ void draw_cell_walls(GContext *ctx,
                          GPoint(right, bottom));
 
       // Entrance/exit:
-      if (exit_present && get_direction_to_the_right(g_player->direction) ==
-                          g_mission->starting_direction)
+      if (exit_present && get_direction_to_the_left(g_player->direction) ==
+                          g_mission->entrance_direction)
       {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
@@ -1606,8 +1604,8 @@ void draw_cell_walls(GContext *ctx,
                          GPoint(right, bottom + y_offset));
 
       // Entrance/exit:
-      if (exit_present && get_direction_to_the_left(g_player->direction) ==
-                          g_mission->starting_direction)
+      if (exit_present && get_direction_to_the_right(g_player->direction) ==
+                          g_mission->entrance_direction)
       {
         exit_offset_x = (right - left) / 3;
         fill_quad(ctx,
@@ -1679,7 +1677,7 @@ void draw_cell_contents(GContext *ctx,
 {
   int16_t drawing_unit, // Reference variable for drawing contents at depth.
           content_type = get_cell_type(cell);
-  GPoint floor_center_point = get_floor_center_point(depth, position);
+  GPoint floor_center_point;
 
   if (content_type == EMPTY)
   {
@@ -1690,7 +1688,7 @@ void draw_cell_contents(GContext *ctx,
     content_type = get_npc_at(cell)->type;
   }
 
-  // First, determine the drawing unit:
+  // Determine the drawing unit:
   drawing_unit = (g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
                   g_back_wall_coords[depth][position][TOP_LEFT].x) / 10;
   if ((g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
@@ -1698,6 +1696,7 @@ void draw_cell_contents(GContext *ctx,
   {
     drawing_unit++;
   }
+  floor_center_point = get_floor_center_point(depth, position);
 
   // Draw a shadow on the ground:
   graphics_context_set_fill_color(ctx, GColorBlack);
@@ -2977,8 +2976,9 @@ void deinit_player(void)
 Description: Initializes a non-player character (NPC) struct according to a
              given NPC type.
 
-     Inputs: npc  - Pointer to the NPC struct to be initialized.
-             type - Integer indicating the desired NPC type.
+     Inputs: npc      - Pointer to the NPC struct to be initialized.
+             type     - Integer indicating the desired NPC type.
+             position - The NPC's starting position.
 
     Outputs: None.
 ******************************************************************************/
@@ -3006,24 +3006,6 @@ void init_npc(npc_t *npc, int16_t type, GPoint position)
       type == FLOATING_MONSTROSITY)
   {
     npc->hp *= 1.5;
-  }
-}
-
-/******************************************************************************
-   Function: deinit_npc
-
-Description: Deinitializes a given non-player character struct, freeing
-             associated memory.
-
-     Inputs: npc - Pointer to the NPC struct to be deinitialized and freed.
-
-    Outputs: None.
-******************************************************************************/
-void deinit_npc(npc_t *npc)
-{
-  if (npc != NULL)
-  {
-    free(npc);
   }
 }
 
@@ -3104,11 +3086,13 @@ Description: Initializes the global mission struct according to a given mission
 ******************************************************************************/
 void init_mission(int16_t type)
 {
-  g_mission->type      = type;
-  g_mission->completed = false;
-  g_mission->num_npcs  = rand() % (MAX_NPCS_PER_MISSION - MIN_NPCS_PER_MISSION
-                                   + 1) + MIN_NPCS_PER_MISSION;
-  g_mission->kills = 0;
+  g_mission->type        = type;
+  g_mission->completed   = false;
+  g_mission->num_npcs    = rand() % (MAX_NPCS_PER_MISSION -
+                                     MIN_NPCS_PER_MISSION + 1) +
+                             MIN_NPCS_PER_MISSION;
+  g_mission->npcs        = NULL;
+  g_mission->kills       = 0;
   g_mission->demolitions = 0;
   if (type == EXCAVATE)
   {
@@ -3129,7 +3113,7 @@ void init_mission(int16_t type)
   init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
-  set_player_direction(g_mission->starting_direction);
+  set_player_direction(get_opposite_direction(g_mission->entrance_direction));
   g_player->position              = g_mission->starting_point;
   g_player->stats[CURRENT_HP]     = g_player->stats[MAX_HP];
   g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
@@ -3164,30 +3148,29 @@ void init_mission_location(void)
   }
 
   // Next, set starting and exit points:
-  g_mission->starting_direction = rand() % NUM_DIRECTIONS;
-  switch (get_opposite_direction(g_mission->starting_direction))
+  switch (g_mission->entrance_direction = rand() % NUM_DIRECTIONS)
   {
     case NORTH:
       g_mission->starting_point = RANDOM_POINT_NORTH;
-      end_point = RANDOM_POINT_SOUTH;
+      end_point                 = RANDOM_POINT_SOUTH;
       break;
     case SOUTH:
       g_mission->starting_point = RANDOM_POINT_SOUTH;
-      end_point = RANDOM_POINT_NORTH;
+      end_point                 = RANDOM_POINT_NORTH;
       break;
     case EAST:
       g_mission->starting_point = RANDOM_POINT_EAST;
-      end_point = RANDOM_POINT_WEST;
+      end_point                 = RANDOM_POINT_WEST;
       break;
     default: // case WEST:
       g_mission->starting_point = RANDOM_POINT_WEST;
-      end_point = RANDOM_POINT_EAST;
+      end_point                 = RANDOM_POINT_EAST;
       break;
   }
 
   // Now, carve a path between the starting and end points:
   builder_position  = g_mission->starting_point;
-  builder_direction = g_mission->starting_direction;
+  builder_direction = get_opposite_direction(g_mission->entrance_direction);
   while (!gpoint_equal(&builder_position, &end_point))
   {
     set_cell_type(builder_position, EMPTY);
@@ -3226,7 +3209,6 @@ void init_mission_location(void)
   set_cell_type(builder_position, EMPTY);
 
   // Finally, add special NPCs, etc., if applicable:
-  g_mission->npcs = NULL;
   if (g_mission->type == ASSASSINATE)
   {
     add_new_npc(ALIEN_OFFICER, end_point);

@@ -172,7 +172,7 @@ typedef struct NonPlayerCharacter {
 typedef struct Mission {
   int16_t type,
           cells[LOCATION_WIDTH][LOCATION_HEIGHT],
-          starting_direction,
+          entrance_direction,
           num_npcs,
           kills,
           demolitions;
@@ -332,7 +332,6 @@ void cat_int_onto_str(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);
 void init_npc(npc_t *npc, int16_t type, GPoint position);
-void deinit_npc(npc_t *npc);
 void init_wall_coords(void);
 void init_mission(int16_t type);
 void init_mission_location(void);
