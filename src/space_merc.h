@@ -326,14 +326,14 @@ void narration_select_single_click(ClickRecognizerRef recognizer,
                                    void *context);
 void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
-void app_focus_handler(bool in_focus);
+void app_focus_handler(const bool in_focus);
 int16_t get_opposite_direction(const int16_t direction);
 void cat_int_onto_str(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);
-void init_npc(npc_t *npc, int16_t type, GPoint position);
+void init_npc(npc_t *npc, const int16_t type, const GPoint position);
 void init_wall_coords(void);
-void init_mission(int16_t type);
+void init_mission(const int16_t type);
 void init_mission_location(void);
 void deinit_mission(void);
 void init_narration(void);

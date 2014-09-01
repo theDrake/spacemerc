@@ -668,16 +668,12 @@ GPoint get_cell_farther_away(const GPoint reference_point,
   {
     case NORTH:
       return GPoint(reference_point.x, reference_point.y - distance);
-      break;
     case SOUTH:
       return GPoint(reference_point.x, reference_point.y + distance);
-      break;
     case EAST:
       return GPoint(reference_point.x + distance, reference_point.y);
-      break;
     default: // case WEST:
       return GPoint(reference_point.x - distance, reference_point.y);
-      break;
   }
 }
 
@@ -698,16 +694,12 @@ int16_t get_direction_to_the_left(const int16_t reference_direction)
   {
     case NORTH:
       return WEST;
-      break;
     case WEST:
       return SOUTH;
-      break;
     case SOUTH:
       return EAST;
-      break;
     default: // case EAST:
       return NORTH;
-      break;
   }
 }
 
@@ -728,16 +720,12 @@ int16_t get_direction_to_the_right(const int16_t reference_direction)
   {
     case NORTH:
       return EAST;
-      break;
     case EAST:
       return SOUTH;
-      break;
     case SOUTH:
       return WEST;
-      break;
     default: // case WEST:
       return NORTH;
-      break;
   }
 }
 
@@ -1148,11 +1136,7 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
   }
 
   // Finally, draw the upgrade's row in the upgrade menu:
-  menu_cell_basic_draw(ctx,
-                       cell_layer,
-                       title_str,
-                       subtitle_str,
-                       NULL);
+  menu_cell_basic_draw(ctx, cell_layer, title_str, subtitle_str, NULL);
 }
 
 /******************************************************************************
@@ -2826,7 +2810,7 @@ Description: Handles SpaceMerc going out of, or coming back into, focus (e.g.,
 
     Outputs: None.
 ******************************************************************************/
-void app_focus_handler(bool in_focus)
+void app_focus_handler(const bool in_focus)
 {
   if (!in_focus)
   {
@@ -2857,23 +2841,19 @@ int16_t get_opposite_direction(const int16_t direction)
   {
     case NORTH:
       return SOUTH;
-      break;
     case SOUTH:
       return NORTH;
-      break;
     case EAST:
       return WEST;
-      break;
     default: // case WEST:
       return EAST;
-      break;
   }
 }
 
 /******************************************************************************
    Function: cat_int_onto_str
 
-Description: Concatenates an integer value onto the end of a string. The
+Description: Concatenates a "large" integer value onto the end of a string. The
              absolute value of the integer may not exceed MAX_LARGE_INT_VALUE
              (if it does, MAX_LARGE_INT_VALUE will be used in its place). If
              the integer is negative, a minus sign will be included.
@@ -2982,7 +2962,7 @@ Description: Initializes a non-player character (NPC) struct according to a
 
     Outputs: None.
 ******************************************************************************/
-void init_npc(npc_t *npc, int16_t type, GPoint position)
+void init_npc(npc_t *npc, const int16_t type, const GPoint position)
 {
   npc->type     = type;
   npc->position = position;
@@ -3051,25 +3031,27 @@ void init_wall_coords(void)
       GRAPHICS_FRAME_WIDTH - g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x;
     g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT].y =
       GRAPHICS_FRAME_HEIGHT -
-      g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].y;
+        g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].y;
     wall_width = g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT].x -
-                 g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x;
+                   g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x;
     for (j = 1; j <= STRAIGHT_AHEAD; ++j)
     {
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT] =
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT]       =
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT];
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT].x -= wall_width * j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT] =
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT].x     -= wall_width *
+                                                                     j;
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT]   =
         g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT];
       g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT].x -= wall_width *
-                                                                   j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT] =
+                                                                     j;
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT]       =
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT];
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT].x += wall_width * j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT] =
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT].x     += wall_width *
+                                                                     j;
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT]   =
         g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT];
       g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT].x += wall_width *
-                                                                   j;
+                                                                     j;
     }
   }
 }
@@ -3084,7 +3066,7 @@ Description: Initializes the global mission struct according to a given mission
 
     Outputs: None.
 ******************************************************************************/
-void init_mission(int16_t type)
+void init_mission(const int16_t type)
 {
   g_mission->type        = type;
   g_mission->completed   = false;
@@ -3135,8 +3117,8 @@ Description: Initializes the current mission's location (i.e., its 2D "cells"
 ******************************************************************************/
 void init_mission_location(void)
 {
+  int16_t i, j, builder_direction;
   GPoint builder_position, end_point;
-  int16_t  i, j, builder_direction;
 
   // First, set each cell to full HP (i.e., "fully solid"):
   for (i = 0; i < LOCATION_WIDTH; ++i)
