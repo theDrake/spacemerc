@@ -902,7 +902,7 @@ void show_narration(void)
       break;
     case GAME_INFO_NARRATION:
       strcpy(narration_str, "SpaceMerc was designed and programmed by "
-                            "David C. Drake:\ndavidcdrake.com");
+                            "David C. Drake:\n\ndavidcdrake.com");
       break;
     case INTRO_NARRATION_1:
       strcpy(narration_str, "Humankind is at war with a hostile alien race "
@@ -1595,10 +1595,12 @@ void draw_cell_walls(GContext *ctx,
         fill_quad(ctx,
                   GPoint(left + exit_offset_x, top + exit_offset_y),
                   GPoint(left + exit_offset_x, bottom + 4),
-                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x,
+                  GPoint(depth == 0 ? GRAPHICS_FRAME_WIDTH :
+                                      right - exit_offset_x,
                          top - (depth == 0 ? y_offset - 5 : y_offset / 3) +
                            exit_offset_y),
-                  GPoint(depth == 0 ? SCREEN_WIDTH : right - exit_offset_x,
+                  GPoint(depth == 0 ? GRAPHICS_FRAME_WIDTH :
+                                      right - exit_offset_x,
                          bottom + (depth == 0 ? y_offset : y_offset / 3)),
                   GColorBlack);
       }
@@ -2489,7 +2491,7 @@ static void graphics_window_appear(Window *window)
 {
   g_game_paused           = false;
   g_player_animation_mode = 0;
-  layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter), true);
+  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
 }
 
 /******************************************************************************
@@ -3264,9 +3266,9 @@ void init_graphics(void)
   layer_set_update_proc(window_get_root_layer(g_graphics_window), draw_scene);
 
   // Graphics frame inverter (for the "flash" effect):
-  g_graphics_inverter = inverter_layer_create(GRAPHICS_FRAME);
+  g_inverter_layer = inverter_layer_create(GRAPHICS_FRAME);
   layer_add_child(window_get_root_layer(g_graphics_window),
-                  inverter_layer_get_layer(g_graphics_inverter));
+                  inverter_layer_get_layer(g_inverter_layer));
 
   // Tick timer subscription:
   tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
@@ -3284,7 +3286,7 @@ Description: Deinitializes the graphics window.
 void deinit_graphics(void)
 {
   tick_timer_service_unsubscribe();
-  inverter_layer_destroy(g_graphics_inverter);
+  inverter_layer_destroy(g_inverter_layer);
   window_destroy(g_graphics_window);
 }
 

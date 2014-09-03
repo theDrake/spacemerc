@@ -189,7 +189,7 @@ Window *g_graphics_window,
        *g_narration_window,
        *g_main_menu_window,
        *g_upgrade_menu_window;
-InverterLayer *g_graphics_inverter;
+InverterLayer *g_inverter_layer;
 MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
