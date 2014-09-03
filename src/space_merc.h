@@ -328,7 +328,7 @@ void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
 void app_focus_handler(const bool in_focus);
 int16_t get_opposite_direction(const int16_t direction);
-void cat_int_onto_str(char *dest_str, int32_t integer);
+void strcat_int(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);
 void init_npc(npc_t *npc, const int16_t type, const GPoint position);

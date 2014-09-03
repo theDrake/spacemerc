@@ -846,35 +846,35 @@ void show_narration(void)
     case EXCAVATE:
       strcpy(narration_str, "EXCAVATE:\nWe need help in one of our mines. "
                             "You'll get $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, " per rock wall broken down.");
       break;
     case RETALIATE:
       strcpy(narration_str, "RETALIATE:\nA human colony is overrun! $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, " per kill, minus walls destroyed.");
       break;
     case EXPROPRIATE:
       strcpy(narration_str, "EXPROPRIATE:\nRetrieve data from this Fim base "
                             "and you'll receive $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, ".");
       break;
     case EXTRICATE:
       strcpy(narration_str, "EXTRICATE:\nWe're offering $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, " for the rescue of one of our officers!");
       break;
     case ASSASSINATE:
       strcpy(narration_str, "ASSASSINATE:\nNeutralize the leader of this base "
                             "to claim a bounty of $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, ".");
       break;
     case OBLITERATE:
       strcpy(narration_str, "OBLITERATE:\nLevel this Fim base to the ground! "
                             "$");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       strcat(narration_str, " per enemy/wall destroyed.");
       break;
     case DEATH_NARRATION:
@@ -889,11 +889,11 @@ void show_narration(void)
       break;
     case MISSION_ACCOMPLISHED_NARRATION:
       strcpy(narration_str, " Mission Complete!\n\nKills: ");
-      cat_int_onto_str(narration_str, g_mission->kills);
+      strcat_int(narration_str, g_mission->kills);
       strcat(narration_str, "\nDemolitions: ");
-      cat_int_onto_str(narration_str, g_mission->demolitions);
+      strcat_int(narration_str, g_mission->demolitions);
       strcat(narration_str, "\nReward: $");
-      cat_int_onto_str(narration_str, g_mission->reward);
+      strcat_int(narration_str, g_mission->reward);
       deinit_mission();
       break;
     case CONTROLS_NARRATION:
@@ -1077,7 +1077,7 @@ static void upgrade_menu_draw_header_callback(GContext *ctx,
   char header_str[UPGRADE_MENU_HEADER_STR_LEN + 1];
 
   strcpy(header_str, "Funds: $");
-  cat_int_onto_str(header_str, g_player->money);
+  strcat_int(header_str, g_player->money);
   menu_cell_basic_header_draw(ctx, cell_layer, header_str);
 }
 
@@ -1127,12 +1127,12 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
   else
   {
     strcpy(subtitle_str, "");
-    cat_int_onto_str(subtitle_str, g_player->stats[cell_index->row]);
+    strcat_int(subtitle_str, g_player->stats[cell_index->row]);
     strcat(subtitle_str, "->");
     new_stat_value = get_upgraded_stat_value(cell_index->row);
-    cat_int_onto_str(subtitle_str, new_stat_value);
+    strcat_int(subtitle_str, new_stat_value);
     strcat(subtitle_str, " $");
-    cat_int_onto_str(subtitle_str, get_upgrade_cost(new_stat_value));
+    strcat_int(subtitle_str, get_upgrade_cost(new_stat_value));
   }
 
   // Finally, draw the upgrade's row in the upgrade menu:
@@ -2851,7 +2851,7 @@ int16_t get_opposite_direction(const int16_t direction)
 }
 
 /******************************************************************************
-   Function: cat_int_onto_str
+   Function: strcat_int
 
 Description: Concatenates a "large" integer value onto the end of a string. The
              absolute value of the integer may not exceed MAX_LARGE_INT_VALUE
@@ -2864,7 +2864,7 @@ Description: Concatenates a "large" integer value onto the end of a string. The
 
     Outputs: None.
 ******************************************************************************/
-void cat_int_onto_str(char *dest_str, int32_t integer)
+void strcat_int(char *dest_str, int32_t integer)
 {
   int16_t i, j;
   static char int_str[MAX_LARGE_INT_DIGITS + 1];
