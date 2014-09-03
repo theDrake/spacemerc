@@ -45,7 +45,6 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define ATTACK_REPEAT_INTERVAL          250 // milliseconds
 #define PLAYER_TIMER_DURATION           20  // milliseconds
 #define FLASH_TIMER_DURATION            20  // milliseconds
-#define DEFAULT_NUM_FLASHES             2
 #define MAX_SMALL_INT_VALUE             9999
 #define MAX_SMALL_INT_DIGITS            4
 #define MAX_LARGE_INT_VALUE             999999999
@@ -308,8 +307,8 @@ void draw_status_bar(GContext *ctx);
 void draw_status_meter(GContext *ctx,
                        const GPoint origin,
                        const float ratio);
-void flash(const int16_t num_flashes);
-static void flash_timer_callback(void *num_flashes_remaining);
+void flash_screen(void);
+static void flash_timer_callback(void *data);
 static void player_timer_callback(void *data);
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);

@@ -237,7 +237,7 @@ void damage_player(int16_t damage)
   {
     vibes_short_pulse();
   }
-  flash(1);
+  flash_screen();
   adjust_player_current_hp(damage * -1);
 }
 
@@ -2420,63 +2420,35 @@ void draw_status_meter(GContext *ctx,
 }
 
 /******************************************************************************
-   Function: flash
+   Function: flash_screen
 
-Description: "Flashes" the graphics frame a given number of times.
+Description: Briefly "flashes" the graphics frame by inverting all its pixels.
 
-     Inputs: num_flashes - Number of times to "flash" the screen.
+     Inputs: None.
 
     Outputs: None.
 ******************************************************************************/
-void flash(const int16_t num_flashes)
+void flash_screen(void)
 {
-  static int16_t num_flashes_remaining;
-
-  if (num_flashes > 0 && g_graphics_window != NULL)
-  {
-    num_flashes_remaining = num_flashes - 1;
-    layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter), false);
-    g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
-                                       flash_timer_callback,
-                                       &num_flashes_remaining);
-  }
+  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), false);
+  g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
+                                     flash_timer_callback,
+                                     NULL);
 }
 
 /******************************************************************************
    Function: flash_timer_callback
 
-Description: Called when the flash timer reaches zero. If the graphics frame
-             inverter is currently shown, it will be hidden and the timer will
-             be reset to cause a delay before any remaining flashes. If instead
-             the inverter is already hidden, "flash()" will be called again in
-             order to complete any remaining flashes.
+Description: Called when the flash timer reaches zero. Hides the inverter
+             layer, ending the "flash."
 
-     Inputs: num_flashes_remaining - Pointer to the number of flashes
-                                     remaining.
+     Inputs: data - Pointer to additional data (not used).
 
     Outputs: None.
 ******************************************************************************/
-static void flash_timer_callback(void *num_flashes_remaining)
+static void flash_timer_callback(void *data)
 {
-  if (g_graphics_window == NULL)
-  {
-    return;
-  }
-  else if (layer_get_hidden(inverter_layer_get_layer(g_graphics_inverter)))
-  {
-    flash(*(const int16_t *)num_flashes_remaining);
-  }
-  else
-  {
-    layer_set_hidden(inverter_layer_get_layer(g_graphics_inverter),
-                     true);
-    if (*(const int16_t *)num_flashes_remaining > 0)
-    {
-      g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
-                                         flash_timer_callback,
-                                         num_flashes_remaining);
-    }
-  }
+  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
 }
 
 /******************************************************************************
