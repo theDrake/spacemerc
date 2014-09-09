@@ -2825,6 +2825,45 @@ int16_t get_opposite_direction(const int16_t direction)
 }
 
 /******************************************************************************
+   Function: strcat_npc_name
+
+Description: Concatenates the SINGULAR or PLURAL name of a given NPC type onto
+             the end of a given string.
+
+     Inputs: dest_str - Pointer to the destination string.
+             npc_type - Integer representing the NPC of interest.
+             plural   - If PLURAL (i.e., "true"), a plural form of the name is
+                        concatenated.
+
+    Outputs: None.
+******************************************************************************/
+void strcat_npc_name(char *dest_str,
+                     const int16_t npc_type,
+                     const bool plural)
+{
+  switch(npc_type)
+  {
+    case ALIEN_SOLDIER:
+    case ALIEN_ELITE:
+    case ALIEN_OFFICER:
+      strcat(dest_str, "Fim");
+      return; // Because Fim is both singular and plural (doesn't need an "s").
+    case ROBOT:
+      strcat(dest_str, "robot");
+      break;
+    case BEAST:
+    case OOZE:
+    case FLOATING_MONSTROSITY:
+      strcat(dest_str, "creature");
+      break;
+  }
+  if (plural)
+  {
+    strcat(dest_str, "s");
+  }
+}
+
+/******************************************************************************
    Function: strcat_int
 
 Description: Concatenates a "large" integer value onto the end of a string. The
@@ -3050,21 +3089,15 @@ void init_mission(const int16_t type)
   g_mission->npcs        = NULL;
   g_mission->kills       = 0;
   g_mission->demolitions = 0;
-  if (type == EXCAVATE)
+  if (type == EXCAVATE || type == OBLITERATE || type == RETALIATE)
   {
-    g_mission->reward = 100 * (rand() % 3 + 1);   // $100-$300 per wall
+    g_mission->primary_npc_type = rand() % 2 == 0 ? ALIEN_SOLDIER : BEAST;
+    g_mission->reward           = 100 * (rand() % 4 + 2); // $200-$500 per kill
   }
-  else if (type == OBLITERATE || type == RETALIATE)
+  else // (type == EXPROPRIATE || type == EXTRICATE || type == ASSASSINATE)
   {
-    g_mission->reward = 100 * (rand() % 3 + 3);   // $300-$500 per enemy/wall
-  }
-  else if (type == EXPROPRIATE)
-  {
-    g_mission->reward = 1000 * (rand() % 6 + 5);  // $5,000-$10,000
-  }
-  else if (type == EXTRICATE || type == ASSASSINATE)
-  {
-    g_mission->reward = 1000 * (rand() % 6 + 10); // $10,000-$15,000
+    g_mission->primary_npc_type = ALIEN_SOLDIER;
+    g_mission->reward           = 1000 * (rand() % 11 + 5); // $5,000-$15,000
   }
   init_mission_location();
 

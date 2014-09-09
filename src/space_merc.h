@@ -90,6 +90,8 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MAX_NPCS_PER_MISSION            30
 #define ANIMATED                        true
 #define NOT_ANIMATED                    false
+#define PLURAL                          true
+#define SINGULAR                        false
 
 /******************************************************************************
   Enumerations (replaced with #defines to save memory)
@@ -172,6 +174,7 @@ typedef struct Mission {
   int16_t type,
           cells[LOCATION_WIDTH][LOCATION_HEIGHT],
           entrance_direction,
+          primary_npc_type,
           num_npcs,
           kills,
           demolitions;
@@ -327,6 +330,9 @@ void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
 void app_focus_handler(const bool in_focus);
 int16_t get_opposite_direction(const int16_t direction);
+void strcat_npc_name(char *dest_str,
+                     const int16_t npc_type,
+                     const bool plural);
 void strcat_int(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);
