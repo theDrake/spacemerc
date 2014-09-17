@@ -486,33 +486,38 @@ void add_new_npc(const int16_t npc_type, const GPoint position)
 }
 
 /******************************************************************************
-   Function: get_random_npc_type
+   Function: get_new_npc_type
 
-Description: Returns a random NPC type, excluding the ALIEN_OFFICER type which
-             is not meant to appear randomly.
+Description: Returns a new NPC type according to the current mission's primary
+             NPC type.
 
      Inputs: None.
 
     Outputs: Integer representing an NPC type.
 ******************************************************************************/
-int16_t get_random_npc_type(void)
+int16_t get_new_npc_type(void)
 {
-  return rand() % NUM_RANDOM_NPC_TYPES;
+  if (g_mission->primary_npc_type == ALIEN_SOLDIER)
+  {
+    return RANDOM_FIM_TYPE;
+  }
+
+  return g_mission->primary_npc_type;
 }
 
 /******************************************************************************
-   Function: get_npc_spawn_point
+   Function: get_new_npc_spawn_point
 
-Description: Returns a suitable NPC spawn point, outside the player's sphere of
-             visibility. If the algorithm fails to find one, (-1, -1) is
-             returned instead.
+Description: Returns a suitable spawn point for a new NPC, outside the player's
+             sphere of visibility. If the algorithm fails to find one, (-1, -1)
+             is returned instead.
 
      Inputs: None.
 
     Outputs: The coordinates of a suitable NPC spawn point, or (-1, -1) if the
              algorithm fails to find one.
 ******************************************************************************/
-GPoint get_npc_spawn_point(void)
+GPoint get_new_npc_spawn_point(void)
 {
   int16_t i, j, direction;
   bool checked_left, checked_right;
@@ -840,7 +845,7 @@ void show_narration(void)
       strcat_int(narration_str, g_mission->reward);
       break;
     case ASSASSINATE: // Max. 59 chars
-      strcpy(narration_str, "Neutralize the leader of this Fim "
+      strcpy(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
       strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
@@ -2712,12 +2717,12 @@ Description: Handles changes to the game world every second while in active
 ******************************************************************************/
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 {
-  npc_t *npc_pointer;
+  int16_t current_num_npcs = 0;
+  npc_t *npc_pointer       = g_mission->npcs;
 
   if (!g_game_paused)
   {
     // Handle NPC behavior:
-    npc_pointer = g_mission->npcs;
     while (npc_pointer != NULL)
     {
       determine_npc_behavior(npc_pointer);
@@ -2725,15 +2730,15 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
       {
         return;
       }
+      current_num_npcs++;
       npc_pointer = npc_pointer->next;
     }
 
-    // Periodically generate new NPCs:
-    if (g_mission->type != EXCAVATE &&
-        g_mission->kills < g_mission->num_npcs &&
-        rand() % 5 == 0)
+    // Determine whether a new NPC should be generated:
+    if (g_mission->kills + current_num_npcs < g_mission->num_npcs &&
+        rand() % 3 == 0)
     {
-      add_new_npc(get_random_npc_type(), get_npc_spawn_point());
+      add_new_npc(get_new_npc_type(), get_new_npc_spawn_point());
     }
 
     // Handle player stat recovery:

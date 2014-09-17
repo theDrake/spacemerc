@@ -133,15 +133,16 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define HUMAN -2
 
 // NPC types:
-#define BEAST                 0
+#define FLOATING_MONSTROSITY  0
 #define OOZE                  1
-#define FLOATING_MONSTROSITY  2
+#define BEAST                 2
 #define ROBOT                 3
 #define ALIEN_SOLDIER         4
 #define ALIEN_ELITE           5
 #define ALIEN_OFFICER         6
 #define NUM_NPC_TYPES         7
 #define NUM_PRIMARY_NPC_TYPES 5
+#define RANDOM_FIM_TYPE       (rand() % 4 + 2)
 
 // Player stats (the order here matters for the upgrade menu):
 #define ARMOR            0
@@ -245,8 +246,8 @@ void remove_npc(npc_t *npc);
 void adjust_player_current_ammo(const int16_t amount);
 void end_mission(void);
 void add_new_npc(const int16_t npc_type, const GPoint position);
-int16_t get_random_npc_type(void);
-GPoint get_npc_spawn_point(void);
+int16_t get_new_npc_type(void);
+GPoint get_new_npc_spawn_point(void);
 GPoint get_floor_center_point(const int16_t depth, const int16_t position);
 GPoint get_cell_farther_away(const GPoint reference_point,
                              const int16_t direction,
