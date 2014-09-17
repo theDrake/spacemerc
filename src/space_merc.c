@@ -859,9 +859,9 @@ void show_narration(void)
     case MISSION_ACCOMPLISHED_NARRATION:
       strcpy(narration_str, "Mission ");
       g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
-        strcpy(narration_str, "C") :
-        strcpy(narration_str, "Inc");
-      strcpy(narration_str, "omplete\n\nKills: ");
+        strcpy(narration_str, "Complete!") :
+        strcpy(narration_str, "Incomplete");
+      strcpy(narration_str, "\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
       strcat(narration_str, "\nEnemies Remaining: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
