@@ -86,8 +86,6 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define ENERGY_LOSS_PER_SHOT            -2
 #define STORAGE_KEY                     417
 #define MAX_NPCS_AT_ONE_TIME            3
-#define MIN_NPCS_PER_MISSION            10
-#define MAX_NPCS_PER_MISSION            30
 #define ANIMATED                        true
 #define NOT_ANIMATED                    false
 #define PLURAL                          true
@@ -98,13 +96,24 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 ******************************************************************************/
 
 // Mission types:
-#define EXCAVATE          0 // Blast as many walls as you wish.
-#define RETALIATE         1 // Kill enemies, protect walls.
-#define EXPROPRIATE       2 // Obtain an object.
-#define EXTRICATE         3 // Rescue a person.
-#define ASSASSINATE       4 // Kill a specific enemy.
-#define OBLITERATE        5 // Blast as many enemies/walls as you wish.
-#define NUM_MISSION_TYPES 6
+#define RETALIATE         0 // Goal: Kill all enemies.
+#define OBLITERATE        1 // Goal: Kill all enemies.
+#define EXPROPRIATE       2 // Goal: Steal an item.
+#define EXTRICATE         3 // Goal: Rescue a person.
+#define ASSASSINATE       4 // Goal: Kill a Fim officer.
+#define NUM_MISSION_TYPES 5
+
+// Location types:
+#define COLONY             0
+#define CITY               1
+#define FACTORY            2
+#define LABORATORY         3
+#define BASE               4
+#define MINE               5
+#define STARSHIP           6
+#define SPACEPORT          7
+#define SPACE_STATION      8
+#define NUM_LOCATION_TYPES 9
 
 // Narration types:
 #define DEATH_NARRATION                NUM_MISSION_TYPES
@@ -124,15 +133,15 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define HUMAN -2
 
 // NPC types:
-#define BEAST                0
-#define OOZE                 1
-#define FLOATING_MONSTROSITY 2
-#define ROBOT                3
-#define ALIEN_SOLDIER        4
-#define ALIEN_ELITE          5
-#define ALIEN_OFFICER        6
-#define NUM_NPC_TYPES        7
-#define NUM_RANDOM_NPC_TYPES 6
+#define BEAST                 0
+#define OOZE                  1
+#define FLOATING_MONSTROSITY  2
+#define ROBOT                 3
+#define ALIEN_SOLDIER         4
+#define ALIEN_ELITE           5
+#define ALIEN_OFFICER         6
+#define NUM_NPC_TYPES         7
+#define NUM_PRIMARY_NPC_TYPES 5
 
 // Player stats (the order here matters for the upgrade menu):
 #define ARMOR            0
@@ -174,10 +183,10 @@ typedef struct Mission {
   int16_t type,
           cells[LOCATION_WIDTH][LOCATION_HEIGHT],
           entrance_direction,
+          location_type,
           primary_npc_type,
           num_npcs,
-          kills,
-          demolitions;
+          kills;
   int32_t reward;
   GPoint starting_point;
   npc_t *npcs;
@@ -333,6 +342,9 @@ int16_t get_opposite_direction(const int16_t direction);
 void strcat_npc_name(char *dest_str,
                      const int16_t npc_type,
                      const bool plural);
+void strcat_location_name(char *dest_str,
+                          const int16_t location_type,
+                          const bool plural);
 void strcat_int(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);

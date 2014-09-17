@@ -258,8 +258,9 @@ void damage_npc(npc_t *npc, const int16_t damage)
   if (npc->hp <= 0)
   {
     g_mission->kills++;
-    if (g_mission->type == ASSASSINATE &&
-        npc->type       == ALIEN_OFFICER)
+    if ((g_mission->type == ASSASSINATE && npc->type == ALIEN_OFFICER) ||
+        ((g_mission->type == OBLITERATE || g_mission->type == RETALIATE) &&
+         g_mission->kills >= g_mission->num_npcs))
     {
       g_mission->completed = true;
     }
@@ -287,7 +288,6 @@ void damage_cell(GPoint cell, const int16_t damage)
     if (get_cell_type(cell) < SOLID)
     {
       set_cell_type(cell, EMPTY);
-      g_mission->demolitions++;
     }
   }
 }
@@ -431,39 +431,6 @@ void end_mission(void)
 {
   g_game_paused = true;
   show_window(g_main_menu_window);
-
-  if (g_mission->type == EXCAVATE || g_mission->type == OBLITERATE)
-  {
-    g_mission->completed = true;
-    if (g_mission->reward * g_mission->kills +
-        g_mission->reward * g_mission->demolitions >= MAX_LARGE_INT_VALUE)
-    {
-      g_mission->reward = MAX_LARGE_INT_VALUE;
-    }
-    else
-    {
-      g_mission->reward = g_mission->reward * g_mission->kills +
-                          g_mission->reward * g_mission->demolitions;
-    }
-  }
-  else if (g_mission->type == RETALIATE)
-  {
-    g_mission->completed = true;
-    if (g_mission->demolitions >= g_mission->kills)
-    {
-      g_mission->reward = 0;
-    }
-    else if ((g_mission->kills - g_mission->demolitions) *
-             g_mission->reward >= MAX_LARGE_INT_VALUE)
-    {
-      g_mission->reward = MAX_LARGE_INT_VALUE;
-    }
-    else
-    {
-      g_mission->reward = (g_mission->kills - g_mission->demolitions) *
-                          g_mission->reward;
-    }
-  }
 
   if (g_mission->completed)
   {
@@ -843,39 +810,40 @@ void show_narration(void)
 
   switch (g_current_narration)
   {
-    case EXCAVATE:
-      strcpy(narration_str, "EXCAVATE:\nWe need help in one of our mines. "
-                            "You'll get $");
+    case RETALIATE: // Max. 80 chars
+      strcpy(narration_str, "One of our ");
+      strcat_location_name(narration_str, g_mission->location_type, PLURAL);
+      strcat(narration_str, " has been overrun by ");
+      strcat_npc_name(narration_str, g_mission->primary_npc_type, PLURAL);
+      strcat(narration_str, ": kill all ");
+      strcat_int(narration_str, g_mission->num_npcs);
+      strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, " per rock wall broken down.");
       break;
-    case RETALIATE:
-      strcpy(narration_str, "RETALIATE:\nA human colony is overrun! $");
+    case OBLITERATE: // Max. 56 chars
+      strcpy(narration_str, "Eliminate all ");
+      strcat_int(narration_str, g_mission->num_npcs);
+      strcat(narration_str, " Fim from this ");
+      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
+      strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, " per kill, minus walls destroyed.");
       break;
-    case EXPROPRIATE:
-      strcpy(narration_str, "EXPROPRIATE:\nRetrieve data from this Fim base "
-                            "and you'll receive $");
+    case EXPROPRIATE: // Max. 67 chars
+      strcpy(narration_str, "Steal a data storage device from this Fim ");
+      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
+      strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, ".");
       break;
-    case EXTRICATE:
-      strcpy(narration_str, "EXTRICATE:\nWe're offering $");
+    case EXTRICATE: // Max. 66 chars
+      strcpy(narration_str, "Rescue one of our officers from this Fim prison "
+                            "to receive $");
       strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, " for the rescue of one of our officers!");
       break;
-    case ASSASSINATE:
-      strcpy(narration_str, "ASSASSINATE:\nNeutralize the leader of this base "
-                            "to claim a bounty of $");
+    case ASSASSINATE: // Max. 59 chars
+      strcpy(narration_str, "Neutralize the leader of this Fim "
+      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
+      strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, ".");
-      break;
-    case OBLITERATE:
-      strcpy(narration_str, "OBLITERATE:\nLevel this Fim base to the ground! "
-                            "$");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, " per enemy/wall destroyed.");
       break;
     case DEATH_NARRATION:
       strcpy(narration_str, "You fell in battle, but your body was found and "
@@ -883,17 +851,19 @@ void show_narration(void)
       deinit_mission();
       break;
     case MISSION_FAILED_NARRATION:
-      strcpy(narration_str, "You failed to achieve the mission objectives. "
-                            "Better luck next time!");
-      deinit_mission();
-      break;
     case MISSION_ACCOMPLISHED_NARRATION:
-      strcpy(narration_str, " Mission Complete!\n\nKills: ");
+      strcpy(narration_str, "Mission ");
+      g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
+        strcpy(narration_str, "C") :
+        strcpy(narration_str, "Inc");
+      strcpy(narration_str, "omplete\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
-      strcat(narration_str, "\nDemolitions: ");
-      strcat_int(narration_str, g_mission->demolitions);
+      strcat(narration_str, "\nEnemies Remaining: ");
+      strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
       strcat(narration_str, "\nReward: $");
-      strcat_int(narration_str, g_mission->reward);
+      g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
+        strcat_int(narration_str, g_mission->reward) :
+        strcpy(narration_str, "0");
       deinit_mission();
       break;
     case CONTROLS_NARRATION:
@@ -2844,10 +2814,8 @@ void strcat_npc_name(char *dest_str,
   switch(npc_type)
   {
     case ALIEN_SOLDIER:
-    case ALIEN_ELITE:
-    case ALIEN_OFFICER:
-      strcat(dest_str, "Fim");
-      return; // Because Fim is both singular and plural (doesn't need an "s").
+      strcat(dest_str, "the Fim");
+      return; // Fim is both singular and plural, so it doesn't need an "s".
     case ROBOT:
       strcat(dest_str, "robot");
       break;
@@ -2860,6 +2828,70 @@ void strcat_npc_name(char *dest_str,
   if (plural)
   {
     strcat(dest_str, "s");
+  }
+}
+
+/******************************************************************************
+   Function: strcat_location_name
+
+Description: Concatenates the SINGULAR or PLURAL name of a random location type
+             onto the end of a given string.
+
+     Inputs: dest_str      - Pointer to the destination string.
+             location_type - Integer representing the location of interest.
+             plural        - If PLURAL (i.e., "true"), a plural form of the
+                             name is concatenated.
+
+    Outputs: None.
+******************************************************************************/
+void strcat_location_name(char *dest_str,
+                          const int16_t location_type,
+                          const bool plural)
+{
+  int16_t i;
+
+  switch(location_type)
+  {
+    case COLONY:
+      strcat(dest_str, "colony");
+      break;
+    case CITY:
+      strcat(dest_str, "city");
+      break;
+    case FACTORY:
+      strcat(dest_str, "factory");
+      break;
+    case LABORATORY:
+      strcat(dest_str, "laboratory");
+      break;
+    case BASE:
+      strcat(dest_str, "base");
+      break;
+    case MINE:
+      strcat(dest_str, "mine");
+      break;
+    case STARSHIP:
+      strcat(dest_str, "starship");
+      break;
+    case SPACEPORT:
+      strcat(dest_str, "spaceport");
+      break;
+    case SPACE_STATION:
+      strcat(dest_str, "space station");
+      break;
+  }
+  if (plural)
+  {
+    i = strlen(dest_str);
+    if (dest_str[i - 1] == 'y')
+    {
+      dest_str[i - 1] = 'i';
+      strcat(dest_str, "es");
+    }
+    else
+    {
+      strcat(dest_str, "s");
+    }
   }
 }
 
@@ -3081,20 +3113,18 @@ Description: Initializes the global mission struct according to a given mission
 ******************************************************************************/
 void init_mission(const int16_t type)
 {
-  g_mission->type        = type;
-  g_mission->completed   = false;
-  g_mission->num_npcs    = rand() % (MAX_NPCS_PER_MISSION -
-                                     MIN_NPCS_PER_MISSION + 1) +
-                             MIN_NPCS_PER_MISSION;
-  g_mission->npcs        = NULL;
-  g_mission->kills       = 0;
-  g_mission->demolitions = 0;
-  if (type == EXCAVATE || type == OBLITERATE || type == RETALIATE)
+  g_mission->type          = type;
+  g_mission->location_type = rand() % NUM_LOCATION_TYPES;
+  g_mission->completed     = false;
+  g_mission->num_npcs      = 5 * (rand() % 6 + 1); // 5-30 enemies.
+  g_mission->npcs          = NULL;
+  g_mission->kills         = 0;
+  if (type == RETALIATE)
   {
-    g_mission->primary_npc_type = rand() % 2 == 0 ? ALIEN_SOLDIER : BEAST;
+    g_mission->primary_npc_type = rand() % NUM_PRIMARY_NPC_TYPES;
     g_mission->reward           = 100 * (rand() % 4 + 2); // $200-$500 per kill
   }
-  else // (type == EXPROPRIATE || type == EXTRICATE || type == ASSASSINATE)
+  else // type == EXPROPRIATE, EXTRICATE, ASSASSINATE, or OBLITERATE
   {
     g_mission->primary_npc_type = ALIEN_SOLDIER;
     g_mission->reward           = 1000 * (rand() % 11 + 5); // $5,000-$15,000
