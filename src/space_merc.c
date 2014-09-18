@@ -863,7 +863,7 @@ void show_narration(void)
         strcpy(narration_str, "Incomplete");
       strcpy(narration_str, "\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
-      strcat(narration_str, "\nEnemies Remaining: ");
+      strcat(narration_str, "\nEnemies Rem.: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
       strcat(narration_str, "\nReward: $");
       g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
@@ -3465,7 +3465,6 @@ void init(void)
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
                                          STATUS_BAR_HEIGHT / 2));
-
   show_window(g_main_menu_window);
 
   // Check for saved data and initialize the player struct:

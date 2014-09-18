@@ -103,6 +103,17 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define ASSASSINATE       4 // Goal: Kill a Fim officer.
 #define NUM_MISSION_TYPES 5
 
+// Narration types:
+#define DEATH_NARRATION                NUM_MISSION_TYPES
+#define MISSION_FAILED_NARRATION       6
+#define MISSION_ACCOMPLISHED_NARRATION 7
+#define CONTROLS_NARRATION             8
+#define GAME_INFO_NARRATION            9
+#define INTRO_NARRATION_1              10
+#define INTRO_NARRATION_2              11
+#define INTRO_NARRATION_3              12
+#define NUM_NARRATION_TYPES            13
+
 // Location types:
 #define COLONY             0
 #define CITY               1
@@ -114,17 +125,6 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define SPACEPORT          7
 #define SPACE_STATION      8
 #define NUM_LOCATION_TYPES 9
-
-// Narration types:
-#define DEATH_NARRATION                NUM_MISSION_TYPES
-#define MISSION_FAILED_NARRATION       7
-#define MISSION_ACCOMPLISHED_NARRATION 8
-#define CONTROLS_NARRATION             9
-#define GAME_INFO_NARRATION            10
-#define INTRO_NARRATION_1              11
-#define INTRO_NARRATION_2              12
-#define INTRO_NARRATION_3              13
-#define NUM_NARRATION_TYPES            14
 
 // Cell types:
 #define SOLID 1 // "Solid" runs from 1 to DEFAULT_CELL_HP.
