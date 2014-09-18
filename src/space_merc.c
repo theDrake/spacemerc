@@ -1191,22 +1191,6 @@ int32_t get_upgrade_cost(const int16_t upgraded_stat_value)
 }
 
 /******************************************************************************
-   Function: menu_get_num_sections_callback
-
-Description: Returns the number of sections in a given menu.
-
-     Inputs: menu_layer - Pointer to the menu of interest.
-             data       - Pointer to additional data (not used).
-
-    Outputs: The number of sections in the indicated menu.
-******************************************************************************/
-static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer,
-                                               void *data)
-{
-  return 1;
-}
-
-/******************************************************************************
    Function: menu_get_header_height_callback
 
 Description: Returns the section height for a given section of a given menu.
@@ -2924,7 +2908,7 @@ void strcat_int(char *dest_str, int32_t integer)
   if (integer < 0)
   {
     negative = true;
-    integer *= -1;
+    integer  *= -1;
   }
   if (integer > MAX_LARGE_INT_VALUE)
   {
@@ -3373,7 +3357,6 @@ void init_upgrade_menu(void)
   g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
   {
-    .get_num_sections  = menu_get_num_sections_callback,
     .get_num_rows      = menu_get_num_rows_callback,
     .get_header_height = menu_get_header_height_callback,
     .draw_header       = upgrade_menu_draw_header_callback,
@@ -3417,7 +3400,7 @@ void init_main_menu(void)
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
   {
     .get_num_rows = menu_get_num_rows_callback,
-    .draw_row = main_menu_draw_row_callback,
+    .draw_row     = main_menu_draw_row_callback,
     .select_click = main_menu_select_callback,
   });
   menu_layer_set_click_config_onto_window(g_main_menu, g_main_menu_window);

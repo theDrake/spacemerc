@@ -281,8 +281,6 @@ void upgrade_menu_select_callback(MenuLayer *menu_layer,
                                   void *data);
 int16_t get_upgraded_stat_value(const int16_t stat_index);
 int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
-static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer,
-                                               void *data);
 static int16_t menu_get_header_height_callback(MenuLayer *menu_layer,
                                                uint16_t section_index,
                                                void *data);
