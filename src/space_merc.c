@@ -3121,13 +3121,13 @@ void init_mission(const int16_t type)
   g_mission->type          = type;
   g_mission->location_type = rand() % NUM_LOCATION_TYPES;
   g_mission->completed     = false;
-  g_mission->num_npcs      = 5 * (rand() % 6 + 1); // 5-30 enemies.
+  g_mission->num_npcs      = 5 * (rand() % 6 + 1);      // 5-30 enemies.
+  g_mission->reward        = 600 * g_mission->num_npcs; // $3,000-$18,000.
   g_mission->npcs          = NULL;
   g_mission->kills         = 0;
   if (type == RETALIATE)
   {
     g_mission->primary_npc_type = rand() % NUM_PRIMARY_NPC_TYPES;
-    g_mission->reward           = 100 * (rand() % 4 + 2); // $200-$500 per kill
   }
   else // type == EXPROPRIATE, EXTRICATE, ASSASSINATE, or OBLITERATE
   {
