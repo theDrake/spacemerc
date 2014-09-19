@@ -104,15 +104,14 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define NUM_MISSION_TYPES 5
 
 // Narration types:
-#define DEATH_NARRATION                NUM_MISSION_TYPES
-#define MISSION_FAILED_NARRATION       6
-#define MISSION_ACCOMPLISHED_NARRATION 7
-#define CONTROLS_NARRATION             8
-#define GAME_INFO_NARRATION            9
-#define INTRO_NARRATION_1              10
-#define INTRO_NARRATION_2              11
-#define INTRO_NARRATION_3              12
-#define NUM_NARRATION_TYPES            13
+#define DEATH_NARRATION              NUM_MISSION_TYPES
+#define MISSION_CONCLUSION_NARRATION 6
+#define CONTROLS_NARRATION           7
+#define GAME_INFO_NARRATION          8
+#define INTRO_NARRATION_1            9
+#define INTRO_NARRATION_2            10
+#define INTRO_NARRATION_3            11
+#define NUM_NARRATION_TYPES          12
 
 // Location types:
 #define COLONY             0
@@ -133,16 +132,15 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define HUMAN -2
 
 // NPC types:
-#define FLOATING_MONSTROSITY  0
-#define OOZE                  1
-#define BEAST                 2
-#define ROBOT                 3
-#define ALIEN_SOLDIER         4
-#define ALIEN_ELITE           5
-#define ALIEN_OFFICER         6
-#define NUM_NPC_TYPES         7
-#define NUM_PRIMARY_NPC_TYPES 5
-#define RANDOM_FIM_TYPE       (rand() % 4 + 2)
+#define FLOATING_MONSTROSITY 0
+#define OOZE                 1
+#define BEAST                2
+#define ROBOT                3
+#define ALIEN_SOLDIER        4
+#define ALIEN_ELITE          5
+#define ALIEN_OFFICER        6
+#define NUM_NPC_TYPES        7
+#define RANDOM_NPC_TYPE      (rand() % ALIEN_OFFICER)
 
 // Player stats (the order here matters for the upgrade menu):
 #define ARMOR            0
@@ -185,7 +183,6 @@ typedef struct Mission {
           cells[LOCATION_WIDTH][LOCATION_HEIGHT],
           entrance_direction,
           location_type,
-          primary_npc_type,
           num_npcs,
           kills;
   int32_t reward;
@@ -246,7 +243,6 @@ void remove_npc(npc_t *npc);
 void adjust_player_current_ammo(const int16_t amount);
 void end_mission(void);
 void add_new_npc(const int16_t npc_type, const GPoint position);
-int16_t get_new_npc_type(void);
 GPoint get_new_npc_spawn_point(void);
 GPoint get_floor_center_point(const int16_t depth, const int16_t position);
 GPoint get_cell_farther_away(const GPoint reference_point,

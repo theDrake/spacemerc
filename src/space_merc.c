@@ -435,12 +435,8 @@ void end_mission(void)
   if (g_mission->completed)
   {
     adjust_player_money(g_mission->reward);
-    g_current_narration = MISSION_ACCOMPLISHED_NARRATION;
   }
-  else
-  {
-    g_current_narration = MISSION_FAILED_NARRATION;
-  }
+  g_current_narration = MISSION_CONCLUSION_NARRATION;
 
   show_narration();
 }
@@ -483,26 +479,6 @@ void add_new_npc(const int16_t npc_type, const GPoint position)
       init_npc(npc_pointer->next, npc_type, position);
     }
   }
-}
-
-/******************************************************************************
-   Function: get_new_npc_type
-
-Description: Returns a new NPC type according to the current mission's primary
-             NPC type.
-
-     Inputs: None.
-
-    Outputs: Integer representing an NPC type.
-******************************************************************************/
-int16_t get_new_npc_type(void)
-{
-  if (g_mission->primary_npc_type == ALIEN_SOLDIER)
-  {
-    return RANDOM_FIM_TYPE;
-  }
-
-  return g_mission->primary_npc_type;
 }
 
 /******************************************************************************
@@ -818,9 +794,7 @@ void show_narration(void)
     case RETALIATE: // Max. 80 chars
       strcpy(narration_str, "One of our ");
       strcat_location_name(narration_str, g_mission->location_type, PLURAL);
-      strcat(narration_str, " has been overrun by ");
-      strcat_npc_name(narration_str, g_mission->primary_npc_type, PLURAL);
-      strcat(narration_str, ": kill all ");
+      strcat(narration_str, " has been overrun by the Fim: kill all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " for $");
       strcat_int(narration_str, g_mission->reward);
@@ -855,20 +829,17 @@ void show_narration(void)
                             "resuscitated. Soldier on!");
       deinit_mission();
       break;
-    case MISSION_FAILED_NARRATION:
-    case MISSION_ACCOMPLISHED_NARRATION:
+    case MISSION_CONCLUSION_NARRATION:
       strcpy(narration_str, "Mission ");
-      g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
-        strcpy(narration_str, "Complete!") :
-        strcpy(narration_str, "Incomplete");
+      g_mission->completed ? strcpy(narration_str, "Complete!") :
+                             strcpy(narration_str, "Incomplete");
       strcpy(narration_str, "\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
       strcat(narration_str, "\nEnemies Rem.: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
       strcat(narration_str, "\nReward: $");
-      g_current_narration == MISSION_ACCOMPLISHED_NARRATION ?
-        strcat_int(narration_str, g_mission->reward) :
-        strcpy(narration_str, "0");
+      g_mission->completed ? strcat_int(narration_str, g_mission->reward) :
+                             strcpy(narration_str, "0");
       deinit_mission();
       break;
     case CONTROLS_NARRATION:
@@ -2722,7 +2693,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     if (g_mission->kills + current_num_npcs < g_mission->num_npcs &&
         rand() % 3 == 0)
     {
-      add_new_npc(get_new_npc_type(), get_new_npc_spawn_point());
+      add_new_npc(RANDOM_NPC_TYPE, get_new_npc_spawn_point());
     }
 
     // Handle player stat recovery:
@@ -3109,15 +3080,6 @@ void init_mission(const int16_t type)
   g_mission->reward        = 600 * g_mission->num_npcs; // $3,000-$18,000.
   g_mission->npcs          = NULL;
   g_mission->kills         = 0;
-  if (type == RETALIATE)
-  {
-    g_mission->primary_npc_type = rand() % NUM_PRIMARY_NPC_TYPES;
-  }
-  else // type == EXPROPRIATE, EXTRICATE, ASSASSINATE, or OBLITERATE
-  {
-    g_mission->primary_npc_type = ALIEN_SOLDIER;
-    g_mission->reward           = 1000 * (rand() % 11 + 5); // $5,000-$15,000
-  }
   init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
