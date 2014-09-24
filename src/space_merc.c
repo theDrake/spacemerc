@@ -790,7 +790,7 @@ void show_narration(void)
   // Add an "OBJECTIVE" header (18 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcpy(narration_str, "       OBJECTIVE:\n");
+    strcpy(narration_str, "       OBJECTIVE\n\n");
   }
 
   switch (g_current_narration)
@@ -808,8 +808,8 @@ void show_narration(void)
       strcat(narration_str, " hostiles in this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. total chars: 85
-      strcat(narration_str, "Steal a data storage device from this Fim ");
+    case EXPROPRIATE: // Max. total chars: 72
+      strcat(narration_str, "Steal a device from this Fim ");
       strcat_location_name(narration_str);
       break;
     case EXTRICATE: // Max. total chars: 81
