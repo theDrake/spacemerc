@@ -114,14 +114,13 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 // Location types:
 #define COLONY             0
 #define CITY               1
-#define FACTORY            2
-#define LABORATORY         3
-#define BASE               4
-#define MINE               5
-#define STARSHIP           6
-#define SPACEPORT          7
-#define SPACE_STATION      8
-#define NUM_LOCATION_TYPES 9
+#define LABORATORY         2
+#define BASE               3
+#define MINE               4
+#define STARSHIP           5
+#define SPACEPORT          6
+#define SPACE_STATION      7
+#define NUM_LOCATION_TYPES 8
 
 // Cell types:
 #define SOLID 1 // "Solid" runs from 1 to DEFAULT_CELL_HP.

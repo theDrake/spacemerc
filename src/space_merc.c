@@ -802,10 +802,10 @@ void show_narration(void)
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. total chars: 74
+    case OBLITERATE: // Max. total chars: 81
       strcat(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
-      strcat(narration_str, " Fim from this ");
+      strcat(narration_str, " hostiles in this Fim ");
       strcat_location_name(narration_str);
       break;
     case EXPROPRIATE: // Max. total chars: 85
@@ -2784,9 +2784,6 @@ void strcat_location_name(char *dest_str)
       break;
     case CITY:
       strcat(dest_str, "city");
-      break;
-    case FACTORY:
-      strcat(dest_str, "factory");
       break;
     case LABORATORY:
       strcat(dest_str, "laboratory");
