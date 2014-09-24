@@ -795,8 +795,6 @@ void show_narration(void)
       strcat(narration_str, " has been overrun by the Fim. Kill all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " for $");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, "!");
       break;
     case OBLITERATE: // Max. 56 chars
       strcpy(narration_str, "Eliminate all ");
@@ -804,28 +802,20 @@ void show_narration(void)
       strcat(narration_str, " Fim from this ");
       strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
       strcat(narration_str, " for $");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, "!");
       break;
     case EXPROPRIATE: // Max. 67 chars
       strcpy(narration_str, "Steal a data storage device from this Fim ");
       strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
       strcat(narration_str, " for $");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, "!");
       break;
     case EXTRICATE: // Max. 66 chars
       strcpy(narration_str, "Rescue one of our officers from this Fim prison "
                             "to receive $");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, "!");
       break;
     case ASSASSINATE: // Max. 59 chars
       strcpy(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
       strcat(narration_str, " for $");
-      strcat_int(narration_str, g_mission->reward);
-      strcat(narration_str, "!");
       break;
     case DEATH_NARRATION:
       strcpy(narration_str, "You fell in battle, but your body was found and "
@@ -866,6 +856,14 @@ void show_narration(void)
                             "for humanity's future!");
       break;
   }
+
+  // Add reward amounts to mission narrations:
+  if (g_current_narration < NUM_MISSION_TYPES)
+  {
+    strcat_int(narration_str, g_mission->reward);
+    strcat(narration_str, "!");
+  }
+
   text_layer_set_text(g_narration_text_layer, narration_str);
   show_window(g_narration_window);
 }
