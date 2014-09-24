@@ -88,8 +88,6 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MAX_NPCS_AT_ONE_TIME            3
 #define ANIMATED                        true
 #define NOT_ANIMATED                    false
-#define PLURAL                          true
-#define SINGULAR                        false
 
 /******************************************************************************
   Enumerations (replaced with #defines to save memory)
@@ -140,7 +138,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define ALIEN_ELITE          5
 #define ALIEN_OFFICER        6
 #define NUM_NPC_TYPES        7
-#define RANDOM_NPC_TYPE      (rand() % ALIEN_OFFICER)
+#define RANDOM_NPC_TYPE      (rand() % 6) // Excludes ALIEN_OFFICER.
 
 // Player stats (the order here matters for the upgrade menu):
 #define ARMOR            0
@@ -182,7 +180,6 @@ typedef struct Mission {
   int16_t type,
           cells[LOCATION_WIDTH][LOCATION_HEIGHT],
           entrance_direction,
-          location_type,
           num_npcs,
           kills;
   int32_t reward;
@@ -337,9 +334,7 @@ int16_t get_opposite_direction(const int16_t direction);
 void strcat_npc_name(char *dest_str,
                      const int16_t npc_type,
                      const bool plural);
-void strcat_location_name(char *dest_str,
-                          const int16_t location_type,
-                          const bool plural);
+void strcat_location_name(char *dest_str);
 void strcat_int(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);

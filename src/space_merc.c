@@ -787,46 +787,55 @@ void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
 
+  // Add an "OBJECTIVE" header (11 chars) to mission narrations:
+  if (g_current_narration < NUM_MISSION_TYPES)
+  {
+    strcat(narration_str, "OBJECTIVE:\n");
+  }
+
   switch (g_current_narration)
   {
-    case RETALIATE: // Max. 80 chars
-      strcpy(narration_str, "One of our ");
-      strcat_location_name(narration_str, g_mission->location_type, PLURAL);
-      strcat(narration_str, " has been overrun by the Fim. Kill all ");
+    case RETALIATE: // Max. total chars: 76
+      strcpy(narration_str, "Defend a human ");
+      strcat_location_name(narration_str);
+      strcat(narration_str, " from ");
       strcat_int(narration_str, g_mission->num_npcs);
-      strcat(narration_str, " for $");
+      strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. 56 chars
+    case OBLITERATE: // Max. total chars: 71
       strcpy(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " Fim from this ");
-      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
-      strcat(narration_str, " for $");
+      strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. 67 chars
+    case EXPROPRIATE: // Max. total chars: 82
       strcpy(narration_str, "Steal a data storage device from this Fim ");
-      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
-      strcat(narration_str, " for $");
+      strcat_location_name(narration_str);
       break;
-    case EXTRICATE: // Max. 66 chars
-      strcpy(narration_str, "Rescue one of our officers from this Fim prison "
-                            "to receive $");
+    case EXTRICATE: // Max. total chars: 78
+      strcpy(narration_str, "Rescue a human prisoner from this Fim ");
+      strcat_location_name(narration_str);
       break;
-    case ASSASSINATE: // Max. 59 chars
+    case ASSASSINATE: // Max. total chars: 74
       strcpy(narration_str, "Neutralize the leader of this Fim ");
-      strcat_location_name(narration_str, g_mission->location_type, SINGULAR);
-      strcat(narration_str, " for $");
+      strcat_location_name(narration_str);
       break;
-    case DEATH_NARRATION:
+    case DEATH_NARRATION: // Total chars: 73
       strcpy(narration_str, "You fell in battle, but your body was found and "
                             "resuscitated. Soldier on!");
       deinit_mission();
       break;
-    case MISSION_CONCLUSION_NARRATION:
-      strcpy(narration_str, "Mission ");
-      g_mission->completed ? strcat(narration_str, "Complete!") :
-                             strcat(narration_str, "Incomplete");
-      strcat(narration_str, "\n\nKills: ");
+    case MISSION_CONCLUSION_NARRATION: // Max. total chars: 66
+      strcpy(narration_str, "    MISSION\n");
+      if (g_mission->completed)
+      {
+        strcat(narration_str, " IN");
+      }
+      else
+      {
+        strcat(narration_str, "   ");
+      }
+      strcat(narration_str, "COMPLETE\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
       strcat(narration_str, "\nEnemies Rem.: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
@@ -835,33 +844,33 @@ void show_narration(void)
                              strcat(narration_str, "0");
       deinit_mission();
       break;
-    case CONTROLS_NARRATION:
+    case CONTROLS_NARRATION: // Total chars: 75
       strcpy(narration_str, "Forward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x"
                             " 2\nRight: \"Down\" x 2\nShoot: \"Select\"");
       break;
-    case GAME_INFO_NARRATION:
+    case GAME_INFO_NARRATION: // Total chars: 73
       strcpy(narration_str, "SpaceMerc was designed and programmed by "
                             "David C. Drake:\n\ndavidcdrake.com");
       break;
-    case INTRO_NARRATION_1:
+    case INTRO_NARRATION_1: // Total chars: 63
       strcpy(narration_str, "Humankind is at war with a hostile alien race "
                             "known as the Fim.");
       break;
-    case INTRO_NARRATION_2:
+    case INTRO_NARRATION_2: // Total chars: 67
       strcpy(narration_str, "As an elite interstellar mercenary, your skills "
                             "are in high demand.");
       break;
-    default: // case INTRO_NARRATION_3:
+    default: // INTRO_NARRATION_3; Total chars: 71
       strcpy(narration_str, "Fame and fortune await as you risk life and limb "
                             "for humanity's future!");
       break;
   }
 
-  // Add reward amounts to mission narrations:
+  // Add reward information (up to 16 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
+    strcat(narration_str, ".\nREWARD:\n$");
     strcat_int(narration_str, g_mission->reward);
-    strcat(narration_str, "!");
   }
 
   text_layer_set_text(g_narration_text_layer, narration_str);
@@ -2759,23 +2768,15 @@ int16_t get_opposite_direction(const int16_t direction)
 /******************************************************************************
    Function: strcat_location_name
 
-Description: Concatenates the SINGULAR or PLURAL name of a random location type
-             onto the end of a given string.
+Description: Concatenates a random location name to the end of a given string.
 
-     Inputs: dest_str      - Pointer to the destination string.
-             location_type - Integer representing the location of interest.
-             plural        - If PLURAL (i.e., "true"), a plural form of the
-                             name is concatenated.
+     Inputs: dest_str - Pointer to the destination string.
 
     Outputs: None.
 ******************************************************************************/
-void strcat_location_name(char *dest_str,
-                          const int16_t location_type,
-                          const bool plural)
+void strcat_location_name(char *dest_str)
 {
-  int16_t i;
-
-  switch(location_type)
+  switch(rand() % NUM_LOCATION_TYPES)
   {
     case COLONY:
       strcat(dest_str, "colony");
@@ -2804,19 +2805,6 @@ void strcat_location_name(char *dest_str,
     case SPACE_STATION:
       strcat(dest_str, "space station");
       break;
-  }
-  if (plural)
-  {
-    i = strlen(dest_str);
-    if (dest_str[i - 1] == 'y')
-    {
-      dest_str[i - 1] = 'i';
-      strcat(dest_str, "es");
-    }
-    else
-    {
-      strcat(dest_str, "s");
-    }
   }
 }
 
@@ -3038,13 +3026,12 @@ Description: Initializes the global mission struct according to a given mission
 ******************************************************************************/
 void init_mission(const int16_t type)
 {
-  g_mission->type          = type;
-  g_mission->location_type = rand() % NUM_LOCATION_TYPES;
-  g_mission->completed     = false;
-  g_mission->num_npcs      = 5 * (rand() % 6 + 1);      // 5-30 enemies.
-  g_mission->reward        = 600 * g_mission->num_npcs; // $3,000-$18,000.
-  g_mission->npcs          = NULL;
-  g_mission->kills         = 0;
+  g_mission->type      = type;
+  g_mission->completed = false;
+  g_mission->num_npcs  = 5 * (rand() % 6 + 1);      // 5-30 enemies.
+  g_mission->reward    = 600 * g_mission->num_npcs; // $3,000-$18,000.
+  g_mission->npcs      = NULL;
+  g_mission->kills     = 0;
   init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
