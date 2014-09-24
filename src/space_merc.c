@@ -787,36 +787,36 @@ void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
 
-  // Add an "OBJECTIVE" header (18 chars) to mission narrations:
+  // Add an "OBJECTIVE" header (19 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcpy(narration_str, "       OBJECTIVE\n\n");
+    strcpy(narration_str, "       OBJECTIVE:\n\n");
   }
 
   switch (g_current_narration)
   {
-    case RETALIATE: // Max. total chars: 79
+    case RETALIATE: // Max. total chars: 80
       strcat(narration_str, "Defend a human ");
       strcat_location_name(narration_str);
       strcat(narration_str, " from ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. total chars: 81
+    case OBLITERATE: // Max. total chars: 82
       strcat(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " hostiles in this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. total chars: 72
+    case EXPROPRIATE: // Max. total chars: 73
       strcat(narration_str, "Steal a device from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXTRICATE: // Max. total chars: 81
+    case EXTRICATE: // Max. total chars: 82
       strcat(narration_str, "Rescue a human prisoner from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case ASSASSINATE: // Max. total chars: 77
+    case ASSASSINATE: // Max. total chars: 78
       strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
