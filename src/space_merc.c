@@ -431,13 +431,11 @@ void end_mission(void)
 {
   g_game_paused = true;
   show_window(g_main_menu_window);
-
   if (g_mission->completed)
   {
     adjust_player_money(g_mission->reward);
   }
   g_current_narration = MISSION_CONCLUSION_NARRATION;
-
   show_narration();
 }
 
@@ -482,7 +480,7 @@ void add_new_npc(const int16_t npc_type, const GPoint position)
 }
 
 /******************************************************************************
-   Function: get_new_npc_spawn_point
+   Function: get_npc_spawn_point
 
 Description: Returns a suitable spawn point for a new NPC, outside the player's
              sphere of visibility. If the algorithm fails to find one, (-1, -1)
@@ -493,7 +491,7 @@ Description: Returns a suitable spawn point for a new NPC, outside the player's
     Outputs: The coordinates of a suitable NPC spawn point, or (-1, -1) if the
              algorithm fails to find one.
 ******************************************************************************/
-GPoint get_new_npc_spawn_point(void)
+GPoint get_npc_spawn_point(void)
 {
   int16_t i, j, direction;
   bool checked_left, checked_right;
@@ -831,15 +829,15 @@ void show_narration(void)
       break;
     case MISSION_CONCLUSION_NARRATION:
       strcpy(narration_str, "Mission ");
-      g_mission->completed ? strcpy(narration_str, "Complete!") :
-                             strcpy(narration_str, "Incomplete");
-      strcpy(narration_str, "\n\nKills: ");
+      g_mission->completed ? strcat(narration_str, "Complete!") :
+                             strcat(narration_str, "Incomplete");
+      strcat(narration_str, "\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
       strcat(narration_str, "\nEnemies Rem.: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
       strcat(narration_str, "\nReward: $");
       g_mission->completed ? strcat_int(narration_str, g_mission->reward) :
-                             strcpy(narration_str, "0");
+                             strcat(narration_str, "0");
       deinit_mission();
       break;
     case CONTROLS_NARRATION:
@@ -2673,11 +2671,12 @@ Description: Handles changes to the game world every second while in active
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 {
   int16_t current_num_npcs = 0;
-  npc_t *npc_pointer       = g_mission->npcs;
+  npc_t *npc_pointer;
 
   if (!g_game_paused)
   {
     // Handle NPC behavior:
+    npc_pointer = g_mission->npcs;
     while (npc_pointer != NULL)
     {
       determine_npc_behavior(npc_pointer);
@@ -2693,7 +2692,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     if (g_mission->kills + current_num_npcs < g_mission->num_npcs &&
         rand() % 3 == 0)
     {
-      add_new_npc(RANDOM_NPC_TYPE, get_new_npc_spawn_point());
+      add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
 
     // Handle player stat recovery:
@@ -2751,43 +2750,6 @@ int16_t get_opposite_direction(const int16_t direction)
       return WEST;
     default: // case WEST:
       return EAST;
-  }
-}
-
-/******************************************************************************
-   Function: strcat_npc_name
-
-Description: Concatenates the SINGULAR or PLURAL name of a given NPC type onto
-             the end of a given string.
-
-     Inputs: dest_str - Pointer to the destination string.
-             npc_type - Integer representing the NPC of interest.
-             plural   - If PLURAL (i.e., "true"), a plural form of the name is
-                        concatenated.
-
-    Outputs: None.
-******************************************************************************/
-void strcat_npc_name(char *dest_str,
-                     const int16_t npc_type,
-                     const bool plural)
-{
-  switch(npc_type)
-  {
-    case ALIEN_SOLDIER:
-      strcat(dest_str, "the Fim");
-      return; // Fim is both singular and plural, so it doesn't need an "s".
-    case ROBOT:
-      strcat(dest_str, "robot");
-      break;
-    case BEAST:
-    case OOZE:
-    case FLOATING_MONSTROSITY:
-      strcat(dest_str, "creature");
-      break;
-  }
-  if (plural)
-  {
-    strcat(dest_str, "s");
   }
 }
 
@@ -3319,9 +3281,9 @@ void init_upgrade_menu(void)
   g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
   {
-    .get_num_rows      = menu_get_num_rows_callback,
     .get_header_height = menu_get_header_height_callback,
     .draw_header       = upgrade_menu_draw_header_callback,
+    .get_num_rows      = menu_get_num_rows_callback,
     .draw_row          = upgrade_menu_draw_row_callback,
     .select_click      = upgrade_menu_select_callback,
   });

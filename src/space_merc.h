@@ -243,7 +243,7 @@ void remove_npc(npc_t *npc);
 void adjust_player_current_ammo(const int16_t amount);
 void end_mission(void);
 void add_new_npc(const int16_t npc_type, const GPoint position);
-GPoint get_new_npc_spawn_point(void);
+GPoint get_npc_spawn_point(void);
 GPoint get_floor_center_point(const int16_t depth, const int16_t position);
 GPoint get_cell_farther_away(const GPoint reference_point,
                              const int16_t direction,
