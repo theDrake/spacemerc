@@ -787,37 +787,37 @@ void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
 
-  // Add an "OBJECTIVE" header (11 chars) to mission narrations:
+  // Add an "OBJECTIVE" header (18 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcat(narration_str, "OBJECTIVE:\n");
+    strcpy(narration_str, "       OBJECTIVE:\n");
   }
 
   switch (g_current_narration)
   {
-    case RETALIATE: // Max. total chars: 76
-      strcpy(narration_str, "Defend a human ");
+    case RETALIATE: // Max. total chars: 79
+      strcat(narration_str, "Defend a human ");
       strcat_location_name(narration_str);
       strcat(narration_str, " from ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. total chars: 71
-      strcpy(narration_str, "Eliminate all ");
+    case OBLITERATE: // Max. total chars: 74
+      strcat(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " Fim from this ");
       strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. total chars: 82
-      strcpy(narration_str, "Steal a data storage device from this Fim ");
+    case EXPROPRIATE: // Max. total chars: 85
+      strcat(narration_str, "Steal a data storage device from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXTRICATE: // Max. total chars: 78
-      strcpy(narration_str, "Rescue a human prisoner from this Fim ");
+    case EXTRICATE: // Max. total chars: 81
+      strcat(narration_str, "Rescue a human prisoner from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case ASSASSINATE: // Max. total chars: 74
-      strcpy(narration_str, "Neutralize the leader of this Fim ");
+    case ASSASSINATE: // Max. total chars: 77
+      strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
     case DEATH_NARRATION: // Total chars: 73
@@ -825,19 +825,19 @@ void show_narration(void)
                             "resuscitated. Soldier on!");
       deinit_mission();
       break;
-    case MISSION_CONCLUSION_NARRATION: // Max. total chars: 66
-      strcpy(narration_str, "    MISSION\n");
+    case MISSION_CONCLUSION_NARRATION: // Max. total chars: 77
+      strcpy(narration_str, "          MISSION\n      ");
       if (g_mission->completed)
       {
-        strcat(narration_str, " IN");
+        strcat(narration_str, "  ");
       }
       else
       {
-        strcat(narration_str, "   ");
+        strcat(narration_str, "IN");
       }
       strcat(narration_str, "COMPLETE\n\nKills: ");
       strcat_int(narration_str, g_mission->kills);
-      strcat(narration_str, "\nEnemies Rem.: ");
+      strcat(narration_str, "\nRem. Enemies: ");
       strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
       strcat(narration_str, "\nReward: $");
       g_mission->completed ? strcat_int(narration_str, g_mission->reward) :
@@ -866,11 +866,12 @@ void show_narration(void)
       break;
   }
 
-  // Add reward information (up to 16 chars) to mission narrations:
+  // Add reward information (up to 12 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcat(narration_str, ".\nREWARD:\n$");
+    strcat(narration_str, " for $");
     strcat_int(narration_str, g_mission->reward);
+    strcat(narration_str, ".");
   }
 
   text_layer_set_text(g_narration_text_layer, narration_str);
@@ -2702,7 +2703,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 
     // Determine whether a new NPC should be generated:
     if (g_mission->kills + current_num_npcs < g_mission->num_npcs &&
-        rand() % 3 == 0)
+        rand() % 4 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
@@ -2936,14 +2937,14 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
       type == BEAST         ||
       type == FLOATING_MONSTROSITY)
   {
-    npc->power *= 1.5;
+    npc->power *= 1.4;
   }
   if (type == ALIEN_OFFICER ||
       type == ROBOT         ||
       type == OOZE          ||
       type == FLOATING_MONSTROSITY)
   {
-    npc->hp *= 1.5;
+    npc->hp *= 1.4;
   }
 }
 
