@@ -443,9 +443,8 @@ void end_mission(void)
    Function: add_new_npc
 
 Description: Creates an NPC of a given type at a given location and adds it to
-             the current mission's linked list of NPCs. (If this would exceed
-             the max. number of NPCs at one time, or if the given position
-             isn't occupiable, a new NPC is not created.)
+             the current mission's linked list of NPCs (unless the given
+             position isn't occupiable).
 
      Inputs: npc_type - Desired type for the new NPC.
              position - Desired spawn point for the new NPC.
@@ -454,7 +453,6 @@ Description: Creates an NPC of a given type at a given location and adds it to
 ******************************************************************************/
 void add_new_npc(const int16_t npc_type, const GPoint position)
 {
-  int16_t count = 1;
   npc_t *npc_pointer = g_mission->npcs;
 
   if (occupiable(position))
@@ -468,14 +466,10 @@ void add_new_npc(const int16_t npc_type, const GPoint position)
     }
     while (npc_pointer->next != NULL)
     {
-      count++;
       npc_pointer = npc_pointer->next;
     }
-    if (count < MAX_NPCS_AT_ONE_TIME)
-    {
-      npc_pointer->next = malloc(sizeof(npc_t));
-      init_npc(npc_pointer->next, npc_type, position);
-    }
+    npc_pointer->next = malloc(sizeof(npc_t));
+    init_npc(npc_pointer->next, npc_type, position);
   }
 }
 
@@ -2702,7 +2696,8 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     }
 
     // Determine whether a new NPC should be generated:
-    if (g_mission->kills + current_num_npcs < g_mission->num_npcs &&
+    if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                   &&
+        g_mission->kills + current_num_npcs < g_mission->num_npcs &&
         rand() % 4 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
