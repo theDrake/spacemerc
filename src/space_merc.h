@@ -228,8 +228,6 @@ void set_player_direction(const int16_t new_direction);
 void move_player(const int16_t direction);
 void move_npc(npc_t *npc, const int16_t direction);
 void determine_npc_behavior(npc_t *npc);
-int16_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee);
-bool touching(const GPoint cell, const GPoint cell_2);
 void damage_player(int16_t damage);
 void damage_npc(npc_t *npc, const int16_t damage);
 void damage_cell(GPoint cell, const int16_t damage);
@@ -244,13 +242,18 @@ GPoint get_floor_center_point(const int16_t depth, const int16_t position);
 GPoint get_cell_farther_away(const GPoint reference_point,
                              const int16_t direction,
                              const int16_t distance);
+int16_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee);
 int16_t get_direction_to_the_left(const int16_t reference_direction);
 int16_t get_direction_to_the_right(const int16_t reference_direction);
+int16_t get_opposite_direction(const int16_t direction);
+int16_t get_upgraded_stat_value(const int16_t stat_index);
+int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
 int16_t get_cell_type(const GPoint cell);
 void set_cell_type(GPoint cell, const int16_t type);
 npc_t *get_npc_at(const GPoint cell);
 bool out_of_bounds(const GPoint cell);
 bool occupiable(const GPoint cell);
+bool touching(const GPoint cell, const GPoint cell_2);
 void show_narration(void);
 void show_window(Window *window);
 static void main_menu_draw_row_callback(GContext *ctx,
@@ -271,8 +274,6 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
 void upgrade_menu_select_callback(MenuLayer *menu_layer,
                                   MenuIndex *cell_index,
                                   void *data);
-int16_t get_upgraded_stat_value(const int16_t stat_index);
-int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
 static int16_t menu_get_header_height_callback(MenuLayer *menu_layer,
                                                uint16_t section_index,
                                                void *data);
@@ -329,7 +330,6 @@ void narration_select_single_click(ClickRecognizerRef recognizer,
 void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
 void app_focus_handler(const bool in_focus);
-int16_t get_opposite_direction(const int16_t direction);
 void strcat_npc_name(char *dest_str,
                      const int16_t npc_type,
                      const bool plural);
