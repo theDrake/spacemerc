@@ -2473,7 +2473,7 @@ static void graphics_window_disappear(Window *window)
 /******************************************************************************
    Function: graphics_up_single_repeating_click
 
-Description: The graphics window's single-click handler for the Pebble's "up"
+Description: The graphics window's single repeating click handler for the "up"
              button. Moves the player one cell forward.
 
      Inputs: recognizer - The click recognizer.
@@ -2512,8 +2512,8 @@ void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context)
 /******************************************************************************
    Function: graphics_down_single_repeating_click
 
-Description: The graphics window's single-click handler for the "down" button.
-             Moves the player one cell backward.
+Description: The graphics window's single repeating click handler for the
+             "down" button. Moves the player one cell backward.
 
      Inputs: recognizer - The click recognizer.
              context    - Pointer to the associated context.
