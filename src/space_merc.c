@@ -2739,31 +2739,6 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 }
 
 /******************************************************************************
-   Function: app_focus_handler
-
-Description: Handles SpaceMerc going out of, or coming back into, focus (e.g.,
-             when a notification window temporarily hides this app).
-
-     Inputs: in_focus - "True" if SpaceMerc is now in focus.
-
-    Outputs: None.
-******************************************************************************/
-void app_focus_handler(const bool in_focus)
-{
-  if (!in_focus)
-  {
-    g_game_paused = true;
-  }
-  else
-  {
-    if (window_stack_get_top_window() == g_graphics_window)
-    {
-      g_game_paused = false;
-    }
-  }
-}
-
-/******************************************************************************
    Function: strcat_location_name
 
 Description: Concatenates a random location name to the end of a given string.
@@ -3305,7 +3280,7 @@ Description: Initializes the main menu.
 void init_main_menu(void)
 {
   g_main_menu_window = window_create();
-  g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
+  g_main_menu        = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
   {
     .get_num_rows = menu_get_num_rows_callback,
@@ -3347,7 +3322,6 @@ void init(void)
   srand(time(NULL));
   g_game_paused = true;
   g_mission     = NULL;
-  app_focus_service_subscribe(app_focus_handler);
   init_main_menu();
   init_upgrade_menu();
   init_narration();
@@ -3385,7 +3359,6 @@ Description: Deinitializes the SpaceMerc app.
 void deinit(void)
 {
   persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
-  app_focus_service_unsubscribe();
   deinit_upgrade_menu();
   deinit_narration();
   deinit_graphics();

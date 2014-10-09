@@ -329,7 +329,6 @@ void narration_select_single_click(ClickRecognizerRef recognizer,
                                    void *context);
 void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
-void app_focus_handler(const bool in_focus);
 void strcat_npc_name(char *dest_str,
                      const int16_t npc_type,
                      const bool plural);
