@@ -855,33 +855,33 @@ void show_narration(void)
   // Add an "OBJECTIVE" header (19 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcpy(narration_str, "       OBJECTIVE:\n\n");
+    strcpy(narration_str, "       OBJECTIVE:\n");
   }
 
   switch (g_current_narration)
   {
-    case RETALIATE: // Max. total chars: 80
+    case RETALIATE: // Max. total chars: 79
       strcat(narration_str, "Defend a human ");
       strcat_location_name(narration_str);
       strcat(narration_str, " from ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. total chars: 82
+    case OBLITERATE: // Max. total chars: 81
       strcat(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " hostiles in this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. total chars: 73
+    case EXPROPRIATE: // Max. total chars: 72
       strcat(narration_str, "Steal a device from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXTRICATE: // Max. total chars: 82
+    case EXTRICATE: // Max. total chars: 81
       strcat(narration_str, "Rescue a human prisoner from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case ASSASSINATE: // Max. total chars: 78
+    case ASSASSINATE: // Max. total chars: 77
       strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
@@ -2739,6 +2739,31 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 }
 
 /******************************************************************************
+   Function: app_focus_handler
+
+Description: Handles SpaceMerc going out of, or coming back into, focus (e.g.,
+             when a notification window temporarily hides this app).
+
+     Inputs: in_focus - "True" if SpaceMerc is now in focus.
+
+    Outputs: None.
+******************************************************************************/
+void app_focus_handler(const bool in_focus)
+{
+  if (!in_focus)
+  {
+    g_game_paused = true;
+  }
+  else
+  {
+    if (window_stack_get_top_window() == g_graphics_window)
+    {
+      g_game_paused = false;
+    }
+  }
+}
+
+/******************************************************************************
    Function: strcat_location_name
 
 Description: Concatenates a random location name to the end of a given string.
@@ -3322,6 +3347,7 @@ void init(void)
   srand(time(NULL));
   g_game_paused = true;
   g_mission     = NULL;
+  app_focus_service_subscribe(app_focus_handler);
   init_main_menu();
   init_upgrade_menu();
   init_narration();
@@ -3359,6 +3385,7 @@ Description: Deinitializes the SpaceMerc app.
 void deinit(void)
 {
   persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
+  app_focus_service_unsubscribe();
   deinit_upgrade_menu();
   deinit_narration();
   deinit_graphics();
