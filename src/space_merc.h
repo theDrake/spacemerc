@@ -4,7 +4,7 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Header file for SpaceMerc, a 3D first-person shooter developed for
-             the Pebble smartwatch (SDK 2.0). Copyright 2014, David C. Drake.
+             the Pebble smartwatch (SDK 2). Copyright 2014, David C. Drake.
              More info available online: http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
@@ -83,7 +83,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define HP_RECOVERY_RATE                1 // HP per second.
 #define ENERGY_RECOVERY_RATE            1 // Energy (ammo) per second.
 #define MIN_DAMAGE                      2
-#define ENERGY_LOSS_PER_SHOT            -2
+#define ENERGY_LOSS_PER_SHOT            2
 #define STORAGE_KEY                     417
 #define MAX_NPCS_AT_ONE_TIME            3
 #define ANIMATED                        true

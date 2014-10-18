@@ -4,8 +4,8 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Function definitions for SpaceMerc, a 3D first-person shooter
-             developed for the Pebble smartwatch (SDK 2.0). Copyright 2014,
-             David C. Drake. More info online: http://davidcdrake.com/spacemerc
+             developed for the Pebble smartwatch (SDK 2). Copyright 2014, David
+             C. Drake. More info online: http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
 #include "space_merc.h"
@@ -1427,7 +1427,7 @@ void draw_cell_walls(GContext *ctx,
     return;
   }
   back_wall_drawn = left_wall_drawn = right_wall_drawn = false;
-  cell_2 = get_cell_farther_away(cell, g_player->direction, 1);
+  cell_2          = get_cell_farther_away(cell, g_player->direction, 1);
   if (get_cell_type(cell_2) >= SOLID)
   {
     draw_shaded_quad(ctx,
@@ -1469,12 +1469,12 @@ void draw_cell_walls(GContext *ctx,
   right = left;
   if (depth == 0)
   {
-    left = 0;
+    left     = 0;
     y_offset = top;
   }
   else
   {
-    left = g_back_wall_coords[depth - 1][position][TOP_LEFT].x;
+    left     = g_back_wall_coords[depth - 1][position][TOP_LEFT].x;
     y_offset = top - g_back_wall_coords[depth - 1][position][TOP_LEFT].y;
   }
   if (position <= STRAIGHT_AHEAD)
@@ -2569,7 +2569,7 @@ void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
       g_player->stats[CURRENT_ENERGY] >= ENERGY_LOSS_PER_SHOT)
   {
     // Deplete the player's ammo and set up the player's laser animation:
-    adjust_player_current_ammo(ENERGY_LOSS_PER_SHOT);
+    adjust_player_current_ammo(ENERGY_LOSS_PER_SHOT * -1);
     g_player_animation_mode = NUM_PLAYER_ANIMATIONS;
     g_laser_base_width      = MAX_LASER_BASE_WIDTH;
     g_player_timer          = app_timer_register(PLAYER_TIMER_DURATION,
@@ -2656,12 +2656,6 @@ void narration_select_single_click(ClickRecognizerRef recognizer,
   }
   else
   {
-    // Remove the narration screen:
-    if (window_stack_get_top_window() == g_narration_window)
-    {
-      window_stack_pop(NOT_ANIMATED);
-    }
-
     // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
     {
