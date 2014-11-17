@@ -909,10 +909,6 @@ void show_narration(void)
                              strcat(narration_str, "0");
       deinit_mission();
       break;
-    case CONTROLS_NARRATION: // Total chars: 75
-      strcpy(narration_str, "Forward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x"
-                            " 2\nRight: \"Down\" x 2\nShoot: \"Select\"");
-      break;
     case GAME_INFO_NARRATION: // Total chars: 73
       strcpy(narration_str, "SpaceMerc was designed and programmed by "
                             "David C. Drake:\n\ndavidcdrake.com");
@@ -925,9 +921,18 @@ void show_narration(void)
       strcpy(narration_str, "As an elite interstellar mercenary, your skills "
                             "are in high demand.");
       break;
-    default: // INTRO_NARRATION_3; Total chars: 71
+    case INTRO_NARRATION_3: // Total chars: 71
       strcpy(narration_str, "Fame and fortune await as you risk life and limb "
                             "for humanity's future!");
+      break;
+    case INSTRUCTIONS_NARRATION_1: // Total chars: 95
+      strcpy(narration_str, "       INSTRUCTIONS\nForward: \"Up\"\nBack: "
+                            "\"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\n"
+                            "Shoot: \"Select\"");
+      break;
+    default: // case INSTRUCTIONS_NARRATION_2: // Total chars: 90
+      strcpy(narration_str, "       INSTRUCTIONS\nTo end a mission, simply "
+                            "walk through the door where the mission began.");
       break;
   }
 
@@ -1006,7 +1011,7 @@ static void main_menu_draw_row_callback(GContext *ctx,
     case 2:
       menu_cell_basic_draw(ctx,
                            cell_layer,
-                           "Controls",
+                           "Instructions",
                            "How to play.",
                            NULL);
       break;
@@ -1066,8 +1071,8 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         show_window(g_upgrade_menu_window);
       }
       break;
-    case 2: // Controls
-      g_current_narration = CONTROLS_NARRATION;
+    case 2: // Instructions
+      g_current_narration = INSTRUCTIONS_NARRATION_1;
       show_narration();
       break;
     case 3: // About
@@ -1357,7 +1362,7 @@ void draw_floor_and_ceiling(GContext *ctx)
 {
   int16_t x, y, max_y, shading_offset;
 
-  x = 2;
+  x     = 2;
   max_y = g_back_wall_coords[MAX_VISIBILITY_DEPTH - x]
                             [STRAIGHT_AHEAD]
                             [TOP_LEFT].y;
@@ -2645,11 +2650,10 @@ Description: The narration window's single-click handler for the "select"
 
     Outputs: None.
 ******************************************************************************/
-void narration_select_single_click(ClickRecognizerRef recognizer,
-                                   void *context)
+void narration_single_click(ClickRecognizerRef recognizer, void *context)
 {
-  if (g_current_narration == INTRO_NARRATION_1 ||
-      g_current_narration == INTRO_NARRATION_2)
+  if (g_current_narration >= INTRO_NARRATION_1 &&
+      g_current_narration < INSTRUCTIONS_NARRATION_2)
   {
     g_current_narration++;
     show_narration();
@@ -2681,8 +2685,10 @@ Description: Button-click configurations for the narration window.
 ******************************************************************************/
 void narration_click_config_provider(void *context)
 {
-  window_single_click_subscribe(BUTTON_ID_SELECT,
-                                narration_select_single_click);
+  window_single_click_subscribe(BUTTON_ID_SELECT, narration_single_click);
+  window_single_click_subscribe(BUTTON_ID_UP, narration_single_click);
+  window_single_click_subscribe(BUTTON_ID_DOWN, narration_single_click);
+  window_single_click_subscribe(BUTTON_ID_BACK, narration_single_click);
 }
 
 /******************************************************************************

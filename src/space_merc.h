@@ -17,7 +17,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
   Constants
 ******************************************************************************/
 
-#define NARRATION_STR_LEN               85
+#define NARRATION_STR_LEN               100
 #define UPGRADE_MENU_HEADER_STR_LEN     17
 #define UPGRADE_TITLE_STR_LEN           13
 #define UPGRADE_SUBTITLE_STR_LEN        21
@@ -104,12 +104,13 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 // Narration types:
 #define DEATH_NARRATION              NUM_MISSION_TYPES
 #define MISSION_CONCLUSION_NARRATION 6
-#define CONTROLS_NARRATION           7
-#define GAME_INFO_NARRATION          8
-#define INTRO_NARRATION_1            9
-#define INTRO_NARRATION_2            10
-#define INTRO_NARRATION_3            11
-#define NUM_NARRATION_TYPES          12
+#define GAME_INFO_NARRATION          7
+#define INTRO_NARRATION_1            8
+#define INTRO_NARRATION_2            9
+#define INTRO_NARRATION_3            10
+#define INSTRUCTIONS_NARRATION_1     11
+#define INSTRUCTIONS_NARRATION_2     12
+#define NUM_NARRATION_TYPES          13
 
 // Location types:
 #define COLONY             0
@@ -325,8 +326,7 @@ void graphics_down_multi_click(ClickRecognizerRef recognizer, void *context);
 void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
                                             void *context);
 void graphics_click_config_provider(void *context);
-void narration_select_single_click(ClickRecognizerRef recognizer,
-                                   void *context);
+void narration_single_click(ClickRecognizerRef recognizer, void *context);
 void narration_click_config_provider(void *context);
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
 void app_focus_handler(const bool in_focus);
