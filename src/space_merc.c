@@ -4,8 +4,8 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Function definitions for SpaceMerc, a 3D first-person shooter
-             developed for the Pebble smartwatch (SDK 2). Copyright 2014, David
-             C. Drake. More info online: http://davidcdrake.com/spacemerc
+             developed for the Pebble smartwatch (SDK 2). More information
+             available online: http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
 #include "space_merc.h"
@@ -885,9 +885,9 @@ void show_narration(void)
       strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
-    case DEATH_NARRATION: // Total chars: 73
-      strcpy(narration_str, "You fell in battle, but your body was found and "
-                            "resuscitated. Soldier on!");
+    case DEATH_NARRATION: // Total chars: 74
+      strcpy(narration_str, "\nYou fell in battle, but your body was found and"
+                            " resuscitated. Soldier on!");
       deinit_mission();
       break;
     case MISSION_CONCLUSION_NARRATION: // Max. total chars: 77
@@ -912,10 +912,12 @@ void show_narration(void)
     case GAME_INFO_NARRATION_1: // Total chars: 73
       strcpy(narration_str, "SpaceMerc was designed and programmed by "
                             "David C. Drake:\n\ndavidcdrake.com");
+      break;
     case GAME_INFO_NARRATION_2: // Total chars: 108
       strcpy(narration_str, "Thanks for playing! And special thanks to "
                             "Team Pebble for creating these wonderfully "
                             "fun and useful devices!");
+      break;
     case INTRO_NARRATION_1: // Total chars: 64
       strcpy(narration_str, "\nHumankind is at war with a hostile alien race "
                             "known as the Fim.");

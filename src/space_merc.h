@@ -4,8 +4,8 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Header file for SpaceMerc, a 3D first-person shooter developed for
-             the Pebble smartwatch (SDK 2). Copyright 2014, David C. Drake.
-             More info available online: http://davidcdrake.com/spacemerc
+             the Pebble smartwatch (SDK 2). More information available online:
+             http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
 #ifndef SPACE_MERC_H_
