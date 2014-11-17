@@ -17,7 +17,7 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
   Constants
 ******************************************************************************/
 
-#define NARRATION_STR_LEN               100
+#define NARRATION_STR_LEN               110
 #define UPGRADE_MENU_HEADER_STR_LEN     17
 #define UPGRADE_TITLE_STR_LEN           13
 #define UPGRADE_SUBTITLE_STR_LEN        21
@@ -104,13 +104,14 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 // Narration types:
 #define DEATH_NARRATION              NUM_MISSION_TYPES
 #define MISSION_CONCLUSION_NARRATION 6
-#define GAME_INFO_NARRATION          7
-#define INTRO_NARRATION_1            8
-#define INTRO_NARRATION_2            9
-#define INTRO_NARRATION_3            10
-#define INSTRUCTIONS_NARRATION_1     11
-#define INSTRUCTIONS_NARRATION_2     12
-#define NUM_NARRATION_TYPES          13
+#define GAME_INFO_NARRATION_1        7
+#define GAME_INFO_NARRATION_2        8
+#define INTRO_NARRATION_1            9
+#define INTRO_NARRATION_2            10
+#define INTRO_NARRATION_3            11
+#define INSTRUCTIONS_NARRATION_1     12
+#define INSTRUCTIONS_NARRATION_2     13
+#define NUM_NARRATION_TYPES          14
 
 // Location types:
 #define COLONY             0

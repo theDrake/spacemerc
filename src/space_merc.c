@@ -855,33 +855,33 @@ void show_narration(void)
   // Add an "OBJECTIVE" header (19 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcpy(narration_str, "       OBJECTIVE:\n");
+    strcpy(narration_str, "       OBJECTIVE\n");
   }
 
   switch (g_current_narration)
   {
-    case RETALIATE: // Max. total chars: 79
+    case RETALIATE: // Max. total chars: 78
       strcat(narration_str, "Defend a human ");
       strcat_location_name(narration_str);
       strcat(narration_str, " from ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " invading Fim");
       break;
-    case OBLITERATE: // Max. total chars: 81
+    case OBLITERATE: // Max. total chars: 80
       strcat(narration_str, "Eliminate all ");
       strcat_int(narration_str, g_mission->num_npcs);
       strcat(narration_str, " hostiles in this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXPROPRIATE: // Max. total chars: 72
+    case EXPROPRIATE: // Max. total chars: 71
       strcat(narration_str, "Steal a device from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case EXTRICATE: // Max. total chars: 81
+    case EXTRICATE: // Max. total chars: 80
       strcat(narration_str, "Rescue a human prisoner from this Fim ");
       strcat_location_name(narration_str);
       break;
-    case ASSASSINATE: // Max. total chars: 77
+    case ASSASSINATE: // Max. total chars: 78
       strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
@@ -909,30 +909,34 @@ void show_narration(void)
                              strcat(narration_str, "0");
       deinit_mission();
       break;
-    case GAME_INFO_NARRATION: // Total chars: 73
+    case GAME_INFO_NARRATION_1: // Total chars: 73
       strcpy(narration_str, "SpaceMerc was designed and programmed by "
                             "David C. Drake:\n\ndavidcdrake.com");
-      break;
-    case INTRO_NARRATION_1: // Total chars: 63
-      strcpy(narration_str, "Humankind is at war with a hostile alien race "
+    case GAME_INFO_NARRATION_2: // Total chars: 108
+      strcpy(narration_str, "Thanks for playing! And special thanks to "
+                            "Team Pebble for creating these wonderfully "
+                            "fun and useful devices!");
+    case INTRO_NARRATION_1: // Total chars: 64
+      strcpy(narration_str, "\nHumankind is at war with a hostile alien race "
                             "known as the Fim.");
       break;
-    case INTRO_NARRATION_2: // Total chars: 67
-      strcpy(narration_str, "As an elite interstellar mercenary, your skills "
+    case INTRO_NARRATION_2: // Total chars: 68
+      strcpy(narration_str, "\nAs an elite interstellar mercenary, your skills "
                             "are in high demand.");
       break;
-    case INTRO_NARRATION_3: // Total chars: 71
-      strcpy(narration_str, "Fame and fortune await as you risk life and limb "
+    case INTRO_NARRATION_3: // Total chars: 72
+      strcpy(narration_str, "\nFame and fortune await as you risk life and limb "
                             "for humanity's future!");
       break;
-    case INSTRUCTIONS_NARRATION_1: // Total chars: 95
-      strcpy(narration_str, "       INSTRUCTIONS\nForward: \"Up\"\nBack: "
-                            "\"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\n"
-                            "Shoot: \"Select\"");
+    case INSTRUCTIONS_NARRATION_1: // Total chars: 92
+      strcpy(narration_str, "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\""
+                            "\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: "
+                            "\"Select\"");
       break;
-    default: // case INSTRUCTIONS_NARRATION_2: // Total chars: 90
-      strcpy(narration_str, "       INSTRUCTIONS\nTo end a mission, simply "
-                            "walk through the door where the mission began.");
+    default: // case INSTRUCTIONS_NARRATION_2: // Total chars: 91
+      strcpy(narration_str, "    INSTRUCTIONS\nTo end a mission, simply "
+                            "walk out through the door where the mission "
+                            "began.");
       break;
   }
 
@@ -1076,7 +1080,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
       show_narration();
       break;
     case 3: // About
-      g_current_narration = GAME_INFO_NARRATION;
+      g_current_narration = GAME_INFO_NARRATION_1;
       show_narration();
       break;
     default: // Vibrations On/Off
@@ -2639,11 +2643,11 @@ void graphics_click_config_provider(void *context)
 }
 
 /******************************************************************************
-   Function: narration_select_single_click
+   Function: narration_single_click
 
-Description: The narration window's single-click handler for the "select"
-             button. Either the next page of narration text will be displayed
-             or the narration window will be closed.
+Description: The narration window's single-click handler for all buttons.
+             Either the next page of narration text will be displayed or the
+             narration window will be closed.
 
      Inputs: recognizer - The click recognizer.
              context    - Pointer to the associated context.
@@ -2652,14 +2656,17 @@ Description: The narration window's single-click handler for the "select"
 ******************************************************************************/
 void narration_single_click(ClickRecognizerRef recognizer, void *context)
 {
-  if (g_current_narration >= INTRO_NARRATION_1 &&
-      g_current_narration < INSTRUCTIONS_NARRATION_2)
+  if (g_current_narration == GAME_INFO_NARRATION_1 ||
+      (g_current_narration >= INTRO_NARRATION_1 &&
+       g_current_narration < INSTRUCTIONS_NARRATION_2))
   {
     g_current_narration++;
     show_narration();
   }
   else
   {
+    window_stack_pop(NOT_ANIMATED);
+
     // If it was a new mission description, go to the graphics window:
     if (g_current_narration < NUM_MISSION_TYPES)
     {
