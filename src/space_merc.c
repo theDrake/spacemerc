@@ -915,8 +915,8 @@ void show_narration(void)
       break;
     case GAME_INFO_NARRATION_2: // Total chars: 108
       strcpy(narration_str, "Thanks for playing! And special thanks to "
-                            "Team Pebble for creating these wonderfully "
-                            "fun and useful devices!");
+                            "Team Pebble for creating these wonderful, "
+                            "fun, and useful devices!");
       break;
     case INTRO_NARRATION_1: // Total chars: 64
       strcpy(narration_str, "\nHumankind is at war with a hostile alien race "
