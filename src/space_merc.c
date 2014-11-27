@@ -885,8 +885,8 @@ void show_narration(void)
       strcat(narration_str, "Neutralize the leader of this Fim ");
       strcat_location_name(narration_str);
       break;
-    case DEATH_NARRATION: // Total chars: 74
-      strcpy(narration_str, "\nYou fell in battle, but your body was found and"
+    case DEATH_NARRATION: // Total chars: 73
+      strcpy(narration_str, "You fell in battle, but your body was found and"
                             " resuscitated. Soldier on!");
       deinit_mission();
       break;
@@ -918,16 +918,16 @@ void show_narration(void)
                             "Team Pebble for creating these wonderful, "
                             "fun, and useful devices!");
       break;
-    case INTRO_NARRATION_1: // Total chars: 64
-      strcpy(narration_str, "\nHumankind is at war with a hostile alien race "
+    case INTRO_NARRATION_1: // Total chars: 63
+      strcpy(narration_str, "Humankind is at war with a hostile alien race "
                             "known as the Fim.");
       break;
-    case INTRO_NARRATION_2: // Total chars: 68
-      strcpy(narration_str, "\nAs an elite interstellar mercenary, your skills "
+    case INTRO_NARRATION_2: // Total chars: 67
+      strcpy(narration_str, "As an elite interstellar mercenary, your skills "
                             "are in high demand.");
       break;
-    case INTRO_NARRATION_3: // Total chars: 72
-      strcpy(narration_str, "\nFame and fortune await as you risk life and limb "
+    case INTRO_NARRATION_3: // Total chars: 71
+      strcpy(narration_str, "Fame and fortune await as you risk life and limb "
                             "for humanity's future!");
       break;
     case INSTRUCTIONS_NARRATION_1: // Total chars: 92
@@ -1794,11 +1794,11 @@ void draw_cell_contents(GContext *ctx,
     graphics_context_set_fill_color(ctx, GColorBlack);
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit / 2,
-                                floor_center_point.y - (drawing_unit * 9)),
+                                floor_center_point.y - drawing_unit * 9),
                          drawing_unit / 4);
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x + drawing_unit / 2,
-                                floor_center_point.y - (drawing_unit * 9)),
+                                floor_center_point.y - drawing_unit * 9),
                          drawing_unit / 4);
 
     // Gun (placed here for efficiency reasons):
