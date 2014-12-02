@@ -335,7 +335,6 @@ void strcat_npc_name(char *dest_str,
                      const int16_t npc_type,
                      const bool plural);
 void strcat_location_name(char *dest_str);
-void strcat_int(char *dest_str, int32_t integer);
 void init_player(void);
 void deinit_player(void);
 void init_npc(npc_t *npc, const int16_t type, const GPoint position);

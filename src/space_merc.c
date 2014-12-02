@@ -863,14 +863,16 @@ void show_narration(void)
     case RETALIATE: // Max. total chars: 78
       strcat(narration_str, "Defend a human ");
       strcat_location_name(narration_str);
-      strcat(narration_str, " from ");
-      strcat_int(narration_str, g_mission->num_npcs);
-      strcat(narration_str, " invading Fim");
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               " from %d invading Fim",
+               (int) g_mission->num_npcs);
       break;
     case OBLITERATE: // Max. total chars: 80
-      strcat(narration_str, "Eliminate all ");
-      strcat_int(narration_str, g_mission->num_npcs);
-      strcat(narration_str, " hostiles in this Fim ");
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               "Eliminate all %d hostiles in this Fim ",
+               (int) g_mission->num_npcs);
       strcat_location_name(narration_str);
       break;
     case EXPROPRIATE: // Max. total chars: 71
@@ -900,13 +902,12 @@ void show_narration(void)
       {
         strcat(narration_str, "IN");
       }
-      strcat(narration_str, "COMPLETE\n\nKills: ");
-      strcat_int(narration_str, g_mission->kills);
-      strcat(narration_str, "\nRem. Enemies: ");
-      strcat_int(narration_str,  g_mission->num_npcs - g_mission->kills);
-      strcat(narration_str, "\nReward: $");
-      g_mission->completed ? strcat_int(narration_str, g_mission->reward) :
-                             strcat(narration_str, "0");
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%d",
+               g_mission->kills,
+               g_mission->num_npcs - g_mission->kills,
+               g_mission->completed ? g_mission->reward : 0);
       deinit_mission();
       break;
     case GAME_INFO_NARRATION_1: // Total chars: 73
@@ -945,9 +946,10 @@ void show_narration(void)
   // Add reward information (up to 12 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
-    strcat(narration_str, " for $");
-    strcat_int(narration_str, g_mission->reward);
-    strcat(narration_str, ".");
+    snprintf(narration_str + strlen(narration_str),
+             NARRATION_STR_LEN - strlen(narration_str) + 1,
+             " for $%d.",
+             g_mission->reward);
   }
 
   text_layer_set_text(g_narration_text_layer, narration_str);
@@ -1109,10 +1111,12 @@ static void upgrade_menu_draw_header_callback(GContext *ctx,
                                               uint16_t section_index,
                                               void *data)
 {
-  char header_str[UPGRADE_MENU_HEADER_STR_LEN + 1];
+  char header_str[UPGRADE_MENU_HEADER_STR_LEN + 1] = "";
 
-  strcpy(header_str, "Funds: $");
-  strcat_int(header_str, g_player->money);
+  snprintf(header_str,
+           UPGRADE_MENU_HEADER_STR_LEN + 1,
+           "Funds: $%d",
+           g_player->money);
   menu_cell_basic_header_draw(ctx, cell_layer, header_str);
 }
 
@@ -1134,8 +1138,8 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
                                            void *data)
 {
   int16_t new_stat_value;
-  char title_str[UPGRADE_TITLE_STR_LEN + 1],
-       subtitle_str[UPGRADE_SUBTITLE_STR_LEN + 1];
+  char title_str[UPGRADE_TITLE_STR_LEN + 1]       = "",
+       subtitle_str[UPGRADE_SUBTITLE_STR_LEN + 1] = "";
 
   // Determine the upgrade's title:
   switch (cell_index->row)
@@ -1161,13 +1165,13 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
   }
   else
   {
-    strcpy(subtitle_str, "");
-    strcat_int(subtitle_str, g_player->stats[cell_index->row]);
-    strcat(subtitle_str, "->");
     new_stat_value = get_upgraded_stat_value(cell_index->row);
-    strcat_int(subtitle_str, new_stat_value);
-    strcat(subtitle_str, " $");
-    strcat_int(subtitle_str, get_upgrade_cost(new_stat_value));
+    snprintf(subtitle_str,
+             UPGRADE_SUBTITLE_STR_LEN + 1,
+             "%d->%d $%d",
+             g_player->stats[cell_index->row],
+             new_stat_value,
+             get_upgrade_cost(new_stat_value));
   }
 
   // Finally, draw the upgrade's row in the upgrade menu:
@@ -2809,67 +2813,6 @@ void strcat_location_name(char *dest_str)
     case SPACE_STATION:
       strcat(dest_str, "space station");
       break;
-  }
-}
-
-/******************************************************************************
-   Function: strcat_int
-
-Description: Concatenates a "large" integer value onto the end of a string. The
-             absolute value of the integer may not exceed MAX_LARGE_INT_VALUE
-             (if it does, MAX_LARGE_INT_VALUE will be used in its place). If
-             the integer is negative, a minus sign will be included.
-
-     Inputs: dest_str - Pointer to the destination string.
-             integer  - Integer value to be converted to characters and
-                        appended to the string.
-
-    Outputs: None.
-******************************************************************************/
-void strcat_int(char *dest_str, int32_t integer)
-{
-  int16_t i, j;
-  static char int_str[MAX_LARGE_INT_DIGITS + 1];
-  bool negative = false;
-
-  int_str[0] = '\0';
-  if (integer < 0)
-  {
-    negative = true;
-    integer  *= -1;
-  }
-  if (integer > MAX_LARGE_INT_VALUE)
-  {
-    integer = MAX_LARGE_INT_VALUE;
-  }
-  if (integer == 0)
-  {
-    strcpy(int_str, "0");
-  }
-  else
-  {
-    for (i = 0; integer != 0; integer /= 10)
-    {
-      j            = integer % 10;
-      int_str[i++] = '0' + j;
-    }
-    int_str[i] = '\0';
-  }
-
-  i = strlen(dest_str) + strlen(int_str);
-  if (negative)
-  {
-    ++i;
-  }
-  dest_str[i--] = '\0';
-  j             = 0;
-  while (int_str[j] != '\0')
-  {
-    dest_str[i--] = int_str[j++];
-  }
-  if (negative)
-  {
-    dest_str[i--] = '-';
   }
 }
 
