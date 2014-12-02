@@ -708,9 +708,9 @@ Description: Determines the cost for upgrading one of the player's stats to a
 
     Outputs: The cost for upgrading a stat to the given value.
 ******************************************************************************/
-int32_t get_upgrade_cost(const int16_t upgraded_stat_value)
+uint16_t get_upgrade_cost(const int16_t upgraded_stat_value)
 {
-  int32_t cost = upgraded_stat_value * UPGRADE_COST_MULTIPLIER;
+  uint16_t cost = upgraded_stat_value * UPGRADE_COST_MULTIPLIER;
 
   if (cost >= MAX_LARGE_INT_VALUE || cost < upgraded_stat_value)
   {
@@ -904,10 +904,10 @@ void show_narration(void)
       }
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%d",
+               "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%u",
                g_mission->kills,
                g_mission->num_npcs - g_mission->kills,
-               g_mission->completed ? g_mission->reward : 0);
+               (uint) (g_mission->completed ? g_mission->reward : 0));
       deinit_mission();
       break;
     case GAME_INFO_NARRATION_1: // Total chars: 73
@@ -948,7 +948,7 @@ void show_narration(void)
   {
     snprintf(narration_str + strlen(narration_str),
              NARRATION_STR_LEN - strlen(narration_str) + 1,
-             " for $%d.",
+             " for $%u.",
              g_mission->reward);
   }
 
@@ -1115,8 +1115,8 @@ static void upgrade_menu_draw_header_callback(GContext *ctx,
 
   snprintf(header_str,
            UPGRADE_MENU_HEADER_STR_LEN + 1,
-           "Funds: $%d",
-           g_player->money);
+           "Funds: $%u",
+           (uint) g_player->money);
   menu_cell_basic_header_draw(ctx, cell_layer, header_str);
 }
 
@@ -1168,7 +1168,7 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
     new_stat_value = get_upgraded_stat_value(cell_index->row);
     snprintf(subtitle_str,
              UPGRADE_SUBTITLE_STR_LEN + 1,
-             "%d->%d $%d",
+             "%d->%d $%u",
              g_player->stats[cell_index->row],
              new_stat_value,
              get_upgrade_cost(new_stat_value));
