@@ -249,7 +249,7 @@ int16_t get_direction_to_the_left(const int16_t reference_direction);
 int16_t get_direction_to_the_right(const int16_t reference_direction);
 int16_t get_opposite_direction(const int16_t direction);
 int16_t get_upgraded_stat_value(const int16_t stat_index);
-uint16_t get_upgrade_cost(const int16_t upgraded_stat_value);
+int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
 int16_t get_cell_type(const GPoint cell);
 void set_cell_type(GPoint cell, const int16_t type);
 npc_t *get_npc_at(const GPoint cell);
