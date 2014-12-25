@@ -184,7 +184,7 @@ typedef struct Mission {
           num_npcs,
           kills;
   int32_t reward;
-  GPoint starting_point;
+  GPoint entrance;
   npc_t *npcs;
   bool completed;
 } __attribute__((__packed__)) mission_t;

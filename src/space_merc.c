@@ -55,7 +55,7 @@ void move_player(const int16_t direction)
   GPoint destination = get_cell_farther_away(g_player->position, direction, 1);
 
   // Check for movement into the exit, ending the current mission:
-  if (gpoint_equal(&g_player->position, &g_mission->starting_point) &&
+  if (gpoint_equal(&g_player->position, &g_mission->entrance) &&
       g_player->direction == g_mission->entrance_direction)
   {
     end_mission();
@@ -937,9 +937,8 @@ void show_narration(void)
                             "\"Select\"");
       break;
     default: // case INSTRUCTIONS_NARRATION_2: // Total chars: 91
-      strcpy(narration_str, "    INSTRUCTIONS\nTo end a mission, simply "
-                            "walk out through the door where the mission "
-                            "began.");
+      strcpy(narration_str, "    INSTRUCTIONS\nTo end a mission, walk out "
+                            "through the door where the mission began.");
       break;
   }
 
@@ -1321,8 +1320,11 @@ void draw_scene(Layer *layer, GContext *ctx)
     draw_player_laser_beam(ctx);
   }
 
-  // Finally, draw the lower status bar:
+  // Draw the lower status bar:
   draw_status_bar(ctx);
+
+  // Finally, ensure the backlight is on:
+  light_enable_interaction();
 }
 
 /******************************************************************************
@@ -1435,7 +1437,7 @@ void draw_cell_walls(GContext *ctx,
   right         = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
   top           = g_back_wall_coords[depth][position][TOP_LEFT].y;
   bottom        = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
-  exit_present  = gpoint_equal(&cell, &g_mission->starting_point);
+  exit_present  = gpoint_equal(&cell, &g_mission->entrance);
   exit_offset_y = (right - left) / 4;
   if (bottom - top < MIN_WALL_HEIGHT)
   {
@@ -2983,7 +2985,7 @@ void init_mission(const int16_t type)
 
   // Move and orient the player and restore his/her HP and ammo:
   set_player_direction(get_opposite_direction(g_mission->entrance_direction));
-  g_player->position              = g_mission->starting_point;
+  g_player->position              = g_mission->entrance;
   g_player->stats[CURRENT_HP]     = g_player->stats[MAX_HP];
   g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
 
@@ -3020,25 +3022,25 @@ void init_mission_location(void)
   switch (g_mission->entrance_direction = rand() % NUM_DIRECTIONS)
   {
     case NORTH:
-      g_mission->starting_point = RANDOM_POINT_NORTH;
-      end_point                 = RANDOM_POINT_SOUTH;
+      g_mission->entrance = RANDOM_POINT_NORTH;
+      end_point           = RANDOM_POINT_SOUTH;
       break;
     case SOUTH:
-      g_mission->starting_point = RANDOM_POINT_SOUTH;
-      end_point                 = RANDOM_POINT_NORTH;
+      g_mission->entrance = RANDOM_POINT_SOUTH;
+      end_point           = RANDOM_POINT_NORTH;
       break;
     case EAST:
-      g_mission->starting_point = RANDOM_POINT_EAST;
-      end_point                 = RANDOM_POINT_WEST;
+      g_mission->entrance = RANDOM_POINT_EAST;
+      end_point           = RANDOM_POINT_WEST;
       break;
     default: // case WEST:
-      g_mission->starting_point = RANDOM_POINT_WEST;
-      end_point                 = RANDOM_POINT_EAST;
+      g_mission->entrance = RANDOM_POINT_WEST;
+      end_point           = RANDOM_POINT_EAST;
       break;
   }
 
   // Now, carve a path between the starting and end points:
-  builder_position  = g_mission->starting_point;
+  builder_position  = g_mission->entrance;
   builder_direction = get_opposite_direction(g_mission->entrance_direction);
   while (!gpoint_equal(&builder_position, &end_point))
   {
