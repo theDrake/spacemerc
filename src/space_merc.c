@@ -920,7 +920,7 @@ void show_narration(void)
                             "useful devices!");
       break;
     case GAME_INFO_NARRATION_3:
-      strcpy(narration_str, "Also, be sure to check out my PebbleQuest RPG:"
+      strcpy(narration_str, "BTW, be sure to check out my PebbleQuest RPG:"
                             "\n\ndavidcdrake.com/\n           pebblequest");
       break;
     case INTRO_NARRATION_1: // Total chars: 63
