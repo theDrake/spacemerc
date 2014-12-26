@@ -106,12 +106,13 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MISSION_CONCLUSION_NARRATION 6
 #define GAME_INFO_NARRATION_1        7
 #define GAME_INFO_NARRATION_2        8
-#define INTRO_NARRATION_1            9
-#define INTRO_NARRATION_2            10
-#define INTRO_NARRATION_3            11
-#define INSTRUCTIONS_NARRATION_1     12
-#define INSTRUCTIONS_NARRATION_2     13
-#define NUM_NARRATION_TYPES          14
+#define GAME_INFO_NARRATION_3        9
+#define INTRO_NARRATION_1            10
+#define INTRO_NARRATION_2            11
+#define INTRO_NARRATION_3            12
+#define INSTRUCTIONS_NARRATION_1     13
+#define INSTRUCTIONS_NARRATION_2     14
+#define NUM_NARRATION_TYPES          15
 
 // Location types:
 #define COLONY             0

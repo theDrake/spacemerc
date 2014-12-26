@@ -915,9 +915,13 @@ void show_narration(void)
                             "David C. Drake:\n\ndavidcdrake.com");
       break;
     case GAME_INFO_NARRATION_2: // Total chars: 108
-      strcpy(narration_str, "Thanks for playing! And special thanks to "
-                            "Team Pebble for creating these wonderful, "
-                            "fun, and useful devices!");
+      strcpy(narration_str, "Thanks for playing! And special thanks to Team "
+                            "Pebble for creating these wonderful, fun, and "
+                            "useful devices!");
+      break;
+    case GAME_INFO_NARRATION_3:
+      strcpy(narration_str, "Also, be sure to check out my PebbleQuest RPG:"
+                            "\n\ndavidcdrake.com/\n           pebblequest");
       break;
     case INTRO_NARRATION_1: // Total chars: 63
       strcpy(narration_str, "Humankind is at war with a hostile alien race "
@@ -2665,10 +2669,16 @@ Description: The narration window's single-click handler for all buttons.
 void narration_single_click(ClickRecognizerRef recognizer, void *context)
 {
   if (g_current_narration == GAME_INFO_NARRATION_1 ||
+      g_current_narration == GAME_INFO_NARRATION_2 ||
       (g_current_narration >= INTRO_NARRATION_1 &&
        g_current_narration < INSTRUCTIONS_NARRATION_2))
   {
     g_current_narration++;
+    show_narration();
+  }
+  else if (g_current_narration == INSTRUCTIONS_NARRATION_2)
+  {
+    g_current_narration = GAME_INFO_NARRATION_3;
     show_narration();
   }
   else
