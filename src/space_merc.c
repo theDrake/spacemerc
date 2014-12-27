@@ -108,7 +108,37 @@ Description: Determines what a given NPC should do.
 ******************************************************************************/
 void determine_npc_behavior(npc_t *npc)
 {
-  if (touching(npc->position, g_player->position))
+  bool ranged_attack_possible = false;
+  int8_t i,
+         diff_x,
+         diff_y,
+         horizontal_direction,
+         vertical_direction;
+  GPoint cell;
+
+  if (npc->type >= ROBOT && (diff_x == 0 || diff_y == 0))
+  {
+    i                    = 0;
+    cell                 = npc->position;
+    diff_x               = npc->position.x - g_player->position.x,
+    diff_y               = npc->position.y - g_player->position.y,
+    horizontal_direction = diff_x > 0 ? WEST  : EAST;
+    vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
+    do
+    {
+      cell = get_cell_farther_away(cell,
+                                   diff_x == 0 ?
+                                     vertical_direction :
+                                     horizontal_direction,
+                                   1);
+      if (gpoint_equal(&g_player->position, &cell))
+      {
+        ranged_attack_possible = true;
+        break;
+      }
+    }while (occupiable(cell) && ++j < (MAX_VISIBILITY_DEPTH - 2));
+  }
+  if (ranged_attack_possible || touching(npc->position, g_player->position))
   {
     damage_player(npc->power);
   }
