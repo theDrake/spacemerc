@@ -223,6 +223,17 @@ static const GPathInfo COMPASS_PATH_INFO = {
                          {-3, -3}}
 };
 
+static const char *const g_narration_strings[] = {
+  "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
+  "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
+  "BTW, be sure to check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
+  "Humankind is at war with a hostile alien race known as the Fim.",
+  "As an elite interstellar mercenary, your skills are in high demand.",
+  "Fame and fortune await as you risk life and limb for humanity's future!",
+  "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: \"Select\"",
+  "    INSTRUCTIONS\nTo end a mission, walk out through the door where the mission began.",
+};
+
 /******************************************************************************
   Function Declarations
 ******************************************************************************/
