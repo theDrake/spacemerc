@@ -897,7 +897,7 @@ void show_narration(void)
     case OBLITERATE: // Max. total chars: 80
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Eliminate all %d hostiles in this Fim ",
+               "Eliminate all %d hostiles in this Fim %s",
                (int) g_mission->num_npcs,
                g_location_strings[rand() % NUM_LOCATION_TYPES]);
       break;
