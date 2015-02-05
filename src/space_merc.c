@@ -880,112 +880,73 @@ void show_narration(void)
   static char narration_str[NARRATION_STR_LEN + 1];
   int8_t location = rand() % NUM_LOCATION_TYPES;
 
-  // Add an "OBJECTIVE" header (19 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
   {
     strcpy(narration_str, "       OBJECTIVE\n");
-  }
-
-  switch (g_current_narration)
-  {
-    case RETALIATE: // Max. total chars: 78
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Defend a human %s from %d invading Fim",
-               g_location_strings[location],
-               (int) g_mission->num_npcs);
-      break;
-    case OBLITERATE: // Max. total chars: 80
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Eliminate all %d hostiles in this Fim %s",
-               (int) g_mission->num_npcs,
-               g_location_strings[location]);
-      break;
-    case EXPROPRIATE: // Max. total chars: 71
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Steal a device from this Fim %s",
-               g_location_strings[location]);
-      break;
-    case EXTRICATE: // Max. total chars: 80
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Rescue a human prisoner from this Fim %s",
-               g_location_strings[location]);
-      break;
-    case ASSASSINATE: // Max. total chars: 78
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "Neutralize the leader of this Fim %s",
-               g_location_strings[location]);
-      break;
-    case DEATH_NARRATION: // Total chars: 73
-      strcpy(narration_str, "You fell in battle, but your body was found and"
-                            " resuscitated. Soldier on!");
-      deinit_mission();
-      break;
-    case MISSION_CONCLUSION_NARRATION: // Max. total chars: 77
-      strcpy(narration_str, "          MISSION\n      ");
-      if (g_mission->completed)
-      {
-        strcat(narration_str, "  ");
-      }
-      else
-      {
-        strcat(narration_str, "IN");
-      }
-      snprintf(narration_str + strlen(narration_str),
-               NARRATION_STR_LEN - strlen(narration_str) + 1,
-               "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%ld",
-               g_mission->kills,
-               g_mission->num_npcs - g_mission->kills,
-               g_mission->completed ? g_mission->reward : 0);
-      deinit_mission();
-      break;
-    case GAME_INFO_NARRATION_1: // Total chars: 73
-      strcpy(narration_str, "SpaceMerc was designed and programmed by "
-                            "David C. Drake:\n\ndavidcdrake.com");
-      break;
-    case GAME_INFO_NARRATION_2: // Total chars: 108
-      strcpy(narration_str, "Thanks for playing! And special thanks to Team "
-                            "Pebble for creating these wonderful, fun, and "
-                            "useful devices!");
-      break;
-    case GAME_INFO_NARRATION_3:
-      strcpy(narration_str, "BTW, be sure to check out my PebbleQuest RPG:"
-                            "\n\ndavidcdrake.com/\n           pebblequest");
-      break;
-    case INTRO_NARRATION_1: // Total chars: 63
-      strcpy(narration_str, "Humankind is at war with a hostile alien race "
-                            "known as the Fim.");
-      break;
-    case INTRO_NARRATION_2: // Total chars: 67
-      strcpy(narration_str, "As an elite interstellar mercenary, your skills "
-                            "are in high demand.");
-      break;
-    case INTRO_NARRATION_3: // Total chars: 71
-      strcpy(narration_str, "Fame and fortune await as you risk life and limb "
-                            "for humanity's future!");
-      break;
-    case INSTRUCTIONS_NARRATION_1: // Total chars: 92
-      strcpy(narration_str, "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\""
-                            "\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: "
-                            "\"Select\"");
-      break;
-    default: // case INSTRUCTIONS_NARRATION_2: // Total chars: 91
-      strcpy(narration_str, "    INSTRUCTIONS\nTo end a mission, walk out "
-                            "through the door where the mission began.");
-      break;
-  }
-
-  // Add reward information (up to 12 chars) to mission narrations:
-  if (g_current_narration < NUM_MISSION_TYPES)
-  {
+    switch (g_current_narration)
+    {
+      case RETALIATE: // Max. total chars: 78
+        snprintf(narration_str + strlen(narration_str),
+                 NARRATION_STR_LEN - strlen(narration_str) + 1,
+                 "Defend a human %s from %d invading Fim",
+                 g_location_strings[location],
+                 (int) g_mission->num_npcs);
+        break;
+      case OBLITERATE: // Max. total chars: 80
+        snprintf(narration_str + strlen(narration_str),
+                 NARRATION_STR_LEN - strlen(narration_str) + 1,
+                 "Eliminate all %d hostiles in this Fim %s",
+                 (int) g_mission->num_npcs,
+                 g_location_strings[location]);
+        break;
+      case EXPROPRIATE: // Max. total chars: 71
+        snprintf(narration_str + strlen(narration_str),
+                 NARRATION_STR_LEN - strlen(narration_str) + 1,
+                 "Steal a device from this Fim %s",
+                 g_location_strings[location]);
+        break;
+      case EXTRICATE: // Max. total chars: 80
+        snprintf(narration_str + strlen(narration_str),
+                 NARRATION_STR_LEN - strlen(narration_str) + 1,
+                 "Rescue a human prisoner from this Fim %s",
+                 g_location_strings[location]);
+        break;
+      case ASSASSINATE: // Max. total chars: 78
+        snprintf(narration_str + strlen(narration_str),
+                 NARRATION_STR_LEN - strlen(narration_str) + 1,
+                 "Neutralize the leader of this Fim %s",
+                 g_location_strings[location]);
+        break;
+    }
     snprintf(narration_str + strlen(narration_str),
              NARRATION_STR_LEN - strlen(narration_str) + 1,
              " for $%ld.",
              g_mission->reward);
+  }
+  else if (g_current_narration == MISSION_CONCLUSION_NARRATION) // ~77 chars
+  {
+    strcpy(narration_str, "          MISSION\n      ");
+    if (g_mission->completed)
+    {
+      strcat(narration_str, "  ");
+    }
+    else
+    {
+      strcat(narration_str, "IN");
+    }
+    snprintf(narration_str + strlen(narration_str),
+             NARRATION_STR_LEN - strlen(narration_str) + 1,
+             "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%ld",
+             g_mission->kills,
+             g_mission->num_npcs - g_mission->kills,
+             g_mission->completed ? g_mission->reward : 0);
+    deinit_mission();
+  }
+  else
+  {
+    snprintf(narration_str,
+             NARRATION_STR_LEN + 1,
+             g_narration_strings[g_current_narration - NUM_MISSION_TYPES - 1]);
   }
 
   text_layer_set_text(g_narration_text_layer, narration_str);

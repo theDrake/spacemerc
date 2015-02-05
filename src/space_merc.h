@@ -142,8 +142,8 @@ enum {
 
 // Narration types:
 enum {
-  DEATH_NARRATION = NUM_MISSION_TYPES,
-  MISSION_CONCLUSION_NARRATION,
+  MISSION_CONCLUSION_NARRATION = NUM_MISSION_TYPES,
+  DEATH_NARRATION,
   GAME_INFO_NARRATION_1,
   GAME_INFO_NARRATION_2,
   GAME_INFO_NARRATION_3,
@@ -241,6 +241,7 @@ static const GPathInfo COMPASS_PATH_INFO = {
 };
 
 static const char *const g_narration_strings[] = {
+  "You fell in battle, but your body was found and resuscitated. Soldier on!",
   "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
   "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
   "BTW, be sure to check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
