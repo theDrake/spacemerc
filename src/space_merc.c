@@ -878,6 +878,7 @@ Description: Displays narration text via the narration window according to
 void show_narration(void)
 {
   static char narration_str[NARRATION_STR_LEN + 1];
+  int8_t location = rand() % NUM_LOCATION_TYPES;
 
   // Add an "OBJECTIVE" header (19 chars) to mission narrations:
   if (g_current_narration < NUM_MISSION_TYPES)
@@ -891,7 +892,7 @@ void show_narration(void)
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Defend a human %s from %d invading Fim",
-               g_location_strings[rand() % NUM_LOCATION_TYPES],
+               g_location_strings[location],
                (int) g_mission->num_npcs);
       break;
     case OBLITERATE: // Max. total chars: 80
@@ -899,25 +900,25 @@ void show_narration(void)
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Eliminate all %d hostiles in this Fim %s",
                (int) g_mission->num_npcs,
-               g_location_strings[rand() % NUM_LOCATION_TYPES]);
+               g_location_strings[location]);
       break;
     case EXPROPRIATE: // Max. total chars: 71
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Steal a device from this Fim %s",
-               g_location_strings[rand() % NUM_LOCATION_TYPES]);
+               g_location_strings[location]);
       break;
     case EXTRICATE: // Max. total chars: 80
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Rescue a human prisoner from this Fim %s",
-               g_location_strings[rand() % NUM_LOCATION_TYPES]);
+               g_location_strings[location]);
       break;
     case ASSASSINATE: // Max. total chars: 78
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Neutralize the leader of this Fim %s",
-               g_location_strings[rand() % NUM_LOCATION_TYPES]);
+               g_location_strings[location]);
       break;
     case DEATH_NARRATION: // Total chars: 73
       strcpy(narration_str, "You fell in battle, but your body was found and"
