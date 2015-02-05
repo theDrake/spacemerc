@@ -2744,7 +2744,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     // Determine whether a new NPC should be generated:
     if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                   &&
         g_mission->kills + current_num_npcs < g_mission->num_npcs &&
-        rand() % 4 == 0)
+        rand() % 9 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
@@ -2840,8 +2840,9 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
   npc->next     = NULL;
 
   // NPC stats are based on the player's in an effort to maintain balance:
-  npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 5;
+  npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 6;
   npc->hp    = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
+  npc->hp   -= npc->hp / 3;
 
   // Some NPCs have extra power or HP (or both):
   if (type == ALIEN_OFFICER ||
@@ -2849,14 +2850,14 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
       type == BEAST         ||
       type == FLOATING_MONSTROSITY)
   {
-    npc->power *= 1.4;
+    npc->power *= 1.5;
   }
   if (type == ALIEN_OFFICER ||
       type == ROBOT         ||
       type == OOZE          ||
       type == FLOATING_MONSTROSITY)
   {
-    npc->hp *= 1.4;
+    npc->hp *= 1.5;
   }
 }
 

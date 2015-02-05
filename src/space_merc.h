@@ -82,8 +82,8 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MIN_LASER_BASE_WIDTH        8
 #define HP_RECOVERY_RATE            1 // HP per second.
 #define ENERGY_RECOVERY_RATE        1 // Energy (ammo) per second.
-#define MIN_DAMAGE                  2
-#define ENERGY_LOSS_PER_SHOT        2
+#define MIN_DAMAGE                  (HP_RECOVERY_RATE + 1)
+#define ENERGY_LOSS_PER_SHOT        (ENERGY_RECOVERY_RATE + 1)
 #define STORAGE_KEY                 417
 #define MAX_NPCS_AT_ONE_TIME        3
 #define ANIMATED                    true
@@ -244,7 +244,7 @@ static const char *const g_narration_strings[] = {
   "You fell in battle, but your body was found and resuscitated. Soldier on!",
   "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
   "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
-  "BTW, be sure to check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
+  "Be sure to also check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
   "Humankind is at war with a hostile alien race known as the Fim.",
   "As an elite interstellar mercenary, your skills are in high demand.",
   "Fame and fortune await as you risk life and limb for humanity's future!",
