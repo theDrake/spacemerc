@@ -277,6 +277,7 @@ void adjust_player_current_hp(const int16_t amount)
     show_window(g_main_menu_window);
     g_current_narration = DEATH_NARRATION;
     show_narration();
+    deinit_mission();
   }
 }
 
@@ -948,7 +949,6 @@ void show_narration(void)
              NARRATION_STR_LEN + 1,
              g_narration_strings[g_current_narration - NUM_MISSION_TYPES - 1]);
   }
-
   text_layer_set_text(g_narration_text_layer, narration_str);
   show_window(g_narration_window);
 }
