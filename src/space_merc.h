@@ -17,146 +17,163 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
   Constants
 ******************************************************************************/
 
-#define NARRATION_STR_LEN               110
-#define UPGRADE_MENU_HEADER_STR_LEN     17
-#define UPGRADE_TITLE_STR_LEN           13
-#define UPGRADE_SUBTITLE_STR_LEN        21
-#define SCREEN_WIDTH                    144
-#define SCREEN_HEIGHT                   168
-#define SCREEN_CENTER_POINT_X           (SCREEN_WIDTH / 2)
-#define SCREEN_CENTER_POINT_Y           (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
-#define SCREEN_CENTER_POINT             GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
-#define STATUS_BAR_HEIGHT               16 // Applies to top and bottom status bars.
-#define FULL_SCREEN_FRAME               GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
-#define STATUS_BAR_FRAME                GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
-#define COMPASS_RADIUS                  5
-#define STATUS_METER_PADDING            4
-#define STATUS_METER_WIDTH              (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
-#define STATUS_METER_HEIGHT             (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
-#define NO_CORNER_RADIUS                0
-#define SMALL_CORNER_RADIUS             3
-#define NINETY_DEGREES                  (TRIG_MAX_ANGLE / 4)
-#define DEFAULT_ROTATION_RATE           (TRIG_MAX_ANGLE / 30) // 12 degrees
-#define MULTI_CLICK_MIN                 2
-#define MULTI_CLICK_MAX                 2 // We only care about double-clicks.
-#define MULTI_CLICK_TIMEOUT             0
-#define LAST_CLICK_ONLY                 true
-#define MOVEMENT_REPEAT_INTERVAL        250 // milliseconds
-#define ATTACK_REPEAT_INTERVAL          250 // milliseconds
-#define PLAYER_TIMER_DURATION           20  // milliseconds
-#define FLASH_TIMER_DURATION            20  // milliseconds
-#define MAX_SMALL_INT_VALUE             9999
-#define MAX_SMALL_INT_DIGITS            4
-#define MAX_LARGE_INT_VALUE             999999999
-#define MAX_LARGE_INT_DIGITS            9
-#define FIRST_WALL_OFFSET               STATUS_BAR_HEIGHT
-#define MIN_WALL_HEIGHT                 STATUS_BAR_HEIGHT
-#define GRAPHICS_FRAME_WIDTH            SCREEN_WIDTH
-#define GRAPHICS_FRAME_HEIGHT           (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
-#define GRAPHICS_FRAME                  GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
-#define LOCATION_WIDTH                  15
-#define LOCATION_HEIGHT                 LOCATION_WIDTH
-#define MAX_VISIBILITY_DEPTH            6 // Helps determine no. of cells visible in a given line of sight.
-#define STRAIGHT_AHEAD                  (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
-#define TOP_LEFT                        0 // Index value for "g_back_wall_coords".
-#define BOTTOM_RIGHT                    1 // Index value for "g_back_wall_coords".
-#define RANDOM_POINT_NORTH              GPoint(rand() % LOCATION_WIDTH, 0)
-#define RANDOM_POINT_SOUTH              GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
-#define RANDOM_POINT_EAST               GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
-#define RANDOM_POINT_WEST               GPoint(0, rand() % LOCATION_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME      GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
-#define NARRATION_FONT                  fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
-#define MAIN_MENU_NUM_ROWS              5
-#define UPGRADE_MENU_NUM_ROWS           4
-#define DEFAULT_VIBES_SETTING           false
-#define DEFAULT_PLAYER_MONEY            0
-#define DEFAULT_PLAYER_POWER            10
-#define DEFAULT_PLAYER_DEFENSE          10
-#define DEFAULT_PLAYER_MAX_HP           30
-#define DEFAULT_PLAYER_MAX_AMMO         30
-#define DEFAULT_CELL_HP                 50
-#define STAT_BOOST_PER_UPGRADE          5
-#define UPGRADE_COST_MULTIPLIER         250
-#define NUM_PLAYER_ANIMATIONS           2 // No. of steps in the player's attack animation.
-#define MAX_LASER_BASE_WIDTH            12
-#define MIN_LASER_BASE_WIDTH            8
-#define HP_RECOVERY_RATE                1 // HP per second.
-#define ENERGY_RECOVERY_RATE            1 // Energy (ammo) per second.
-#define MIN_DAMAGE                      2
-#define ENERGY_LOSS_PER_SHOT            2
-#define STORAGE_KEY                     417
-#define MAX_NPCS_AT_ONE_TIME            3
-#define ANIMATED                        true
-#define NOT_ANIMATED                    false
+#define NARRATION_STR_LEN           110
+#define UPGRADE_MENU_HEADER_STR_LEN 17
+#define UPGRADE_TITLE_STR_LEN       13
+#define UPGRADE_SUBTITLE_STR_LEN    21
+#define SCREEN_WIDTH                144
+#define SCREEN_HEIGHT               168
+#define SCREEN_CENTER_POINT_X       (SCREEN_WIDTH / 2)
+#define SCREEN_CENTER_POINT_Y       (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
+#define SCREEN_CENTER_POINT         GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
+#define STATUS_BAR_HEIGHT           16 // Applies to top and bottom status bars.
+#define FULL_SCREEN_FRAME           GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
+#define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
+#define COMPASS_RADIUS              5
+#define STATUS_METER_PADDING        4
+#define STATUS_METER_WIDTH          (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
+#define STATUS_METER_HEIGHT         (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
+#define NO_CORNER_RADIUS            0
+#define SMALL_CORNER_RADIUS         3
+#define NINETY_DEGREES              (TRIG_MAX_ANGLE / 4)
+#define DEFAULT_ROTATION_RATE       (TRIG_MAX_ANGLE / 30) // 12 degrees
+#define MULTI_CLICK_MIN             2
+#define MULTI_CLICK_MAX             2 // We only care about double-clicks.
+#define MULTI_CLICK_TIMEOUT         0
+#define LAST_CLICK_ONLY             true
+#define MOVEMENT_REPEAT_INTERVAL    250 // milliseconds
+#define ATTACK_REPEAT_INTERVAL      250 // milliseconds
+#define PLAYER_TIMER_DURATION       20  // milliseconds
+#define FLASH_TIMER_DURATION        20  // milliseconds
+#define MAX_SMALL_INT_VALUE         9999
+#define MAX_SMALL_INT_DIGITS        4
+#define MAX_LARGE_INT_VALUE         999999999
+#define MAX_LARGE_INT_DIGITS        9
+#define FIRST_WALL_OFFSET           STATUS_BAR_HEIGHT
+#define MIN_WALL_HEIGHT             STATUS_BAR_HEIGHT
+#define GRAPHICS_FRAME_WIDTH        SCREEN_WIDTH
+#define GRAPHICS_FRAME_HEIGHT       (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME              GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
+#define LOCATION_WIDTH              15
+#define LOCATION_HEIGHT             LOCATION_WIDTH
+#define MAX_VISIBILITY_DEPTH        6 // Helps determine no. of cells visible in a given line of sight.
+#define STRAIGHT_AHEAD              (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
+#define TOP_LEFT                    0 // Index value for "g_back_wall_coords".
+#define BOTTOM_RIGHT                1 // Index value for "g_back_wall_coords".
+#define RANDOM_POINT_NORTH          GPoint(rand() % LOCATION_WIDTH, 0)
+#define RANDOM_POINT_SOUTH          GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
+#define RANDOM_POINT_EAST           GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
+#define RANDOM_POINT_WEST           GPoint(0, rand() % LOCATION_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME  GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#define NARRATION_FONT              fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
+#define MAIN_MENU_NUM_ROWS          5
+#define UPGRADE_MENU_NUM_ROWS       4
+#define DEFAULT_VIBES_SETTING       false
+#define DEFAULT_PLAYER_MONEY        0
+#define DEFAULT_PLAYER_POWER        10
+#define DEFAULT_PLAYER_DEFENSE      10
+#define DEFAULT_PLAYER_MAX_HP       30
+#define DEFAULT_PLAYER_MAX_AMMO     30
+#define DEFAULT_CELL_HP             50
+#define STAT_BOOST_PER_UPGRADE      5
+#define UPGRADE_COST_MULTIPLIER     250
+#define NUM_PLAYER_ANIMATIONS       2 // No. of steps in the player's attack animation.
+#define MAX_LASER_BASE_WIDTH        12
+#define MIN_LASER_BASE_WIDTH        8
+#define HP_RECOVERY_RATE            1 // HP per second.
+#define ENERGY_RECOVERY_RATE        1 // Energy (ammo) per second.
+#define MIN_DAMAGE                  2
+#define ENERGY_LOSS_PER_SHOT        2
+#define STORAGE_KEY                 417
+#define MAX_NPCS_AT_ONE_TIME        3
+#define ANIMATED                    true
+#define NOT_ANIMATED                false
 
 /******************************************************************************
-  Enumerations (replaced with #defines to save memory)
+  Enumerations
 ******************************************************************************/
 
 // Mission types:
-#define RETALIATE         0 // Goal: Kill all enemies.
-#define OBLITERATE        1 // Goal: Kill all enemies.
-#define EXPROPRIATE       2 // Goal: Steal an item.
-#define EXTRICATE         3 // Goal: Rescue a person.
-#define ASSASSINATE       4 // Goal: Kill a Fim officer.
-#define NUM_MISSION_TYPES 5
-
-// Narration types:
-#define DEATH_NARRATION              NUM_MISSION_TYPES
-#define MISSION_CONCLUSION_NARRATION 6
-#define GAME_INFO_NARRATION_1        7
-#define GAME_INFO_NARRATION_2        8
-#define GAME_INFO_NARRATION_3        9
-#define INTRO_NARRATION_1            10
-#define INTRO_NARRATION_2            11
-#define INTRO_NARRATION_3            12
-#define INSTRUCTIONS_NARRATION_1     13
-#define INSTRUCTIONS_NARRATION_2     14
-#define NUM_NARRATION_TYPES          15
+enum {
+  RETALIATE,   // Goal: Kill all enemies.
+  OBLITERATE,  // Goal: Kill all enemies.
+  EXPROPRIATE, // Goal: Steal an item.
+  EXTRICATE,   // Goal: Rescue a person.
+  ASSASSINATE, // Goal: Kill a Fim officer.
+  NUM_MISSION_TYPES
+};
 
 // Location types:
-#define COLONY             0
-#define CITY               1
-#define LABORATORY         2
-#define BASE               3
-#define MINE               4
-#define STARSHIP           5
-#define SPACEPORT          6
-#define SPACE_STATION      7
-#define NUM_LOCATION_TYPES 8
+enum {
+  COLONY,
+  CITY,
+  LABORATORY,
+  BASE,
+  MINE,
+  STARSHIP,
+  SPACEPORT,
+  SPACE_STATION,
+  NUM_LOCATION_TYPES
+};
 
 // Cell types:
-#define SOLID 1 // "Solid" runs from 1 to DEFAULT_CELL_HP.
-#define EMPTY 0
-#define ITEM  -1
-#define HUMAN -2
+enum {
+  HUMAN = -2,
+  ITEM,
+  EMPTY,
+  SOLID, // "Solid" runs from 1 to DEFAULT_CELL_HP.
+  NUM_CELL_TYPES
+};
 
 // NPC types:
-#define FLOATING_MONSTROSITY 0
-#define OOZE                 1
-#define BEAST                2
-#define ROBOT                3
-#define ALIEN_SOLDIER        4
-#define ALIEN_ELITE          5
-#define ALIEN_OFFICER        6
-#define NUM_NPC_TYPES        7
-#define RANDOM_NPC_TYPE      (rand() % 6) // Excludes ALIEN_OFFICER.
+enum {
+  FLOATING_MONSTROSITY,
+  OOZE,
+  BEAST,
+  ROBOT,
+  ALIEN_SOLDIER,
+  ALIEN_ELITE,
+  ALIEN_OFFICER,
+  NUM_NPC_TYPES
+};
+
+// Random NPCs may be of any type except ALIEN_OFFICER:
+#define RANDOM_NPC_TYPE (rand() % (NUM_NPC_TYPES - 1))
+
+// Narration types:
+enum {
+  DEATH_NARRATION = NUM_MISSION_TYPES,
+  MISSION_CONCLUSION_NARRATION,
+  GAME_INFO_NARRATION_1,
+  GAME_INFO_NARRATION_2,
+  GAME_INFO_NARRATION_3,
+  INTRO_NARRATION_1,
+  INTRO_NARRATION_2,
+  INTRO_NARRATION_3,
+  INSTRUCTIONS_NARRATION_1,
+  INSTRUCTIONS_NARRATION_2,
+  NUM_NARRATION_TYPES
+};
 
 // Player stats (the order here matters for the upgrade menu):
-#define ARMOR            0
-#define MAX_HP           1
-#define POWER            2
-#define MAX_ENERGY       3
-#define CURRENT_HP       4
-#define CURRENT_ENERGY   5
-#define NUM_PLAYER_STATS 6
+enum {
+  ARMOR,
+  MAX_HP,
+  POWER,
+  MAX_ENERGY,
+  CURRENT_HP,
+  CURRENT_ENERGY,
+  NUM_PLAYER_STATS
+};
 
 // Directions:
-#define NORTH          0
-#define SOUTH          1
-#define EAST           2
-#define WEST           3
-#define NUM_DIRECTIONS 4
+enum {
+  NORTH,
+  SOUTH,
+  EAST,
+  WEST,
+  NUM_DIRECTIONS
+};
 
 /******************************************************************************
   Structures
@@ -233,6 +250,17 @@ static const char *const g_narration_strings[] = {
   "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: \"Select\"",
   "    INSTRUCTIONS\nTo end a mission, walk out through the door where the mission began.",
 };
+
+static const char *const g_location_strings[] = {
+  "colony",
+  "city",
+  "laboratory",
+  "base",
+  "mine",
+  "starship",
+  "spaceport",
+  "space station"
+}
 
 /******************************************************************************
   Function Declarations
