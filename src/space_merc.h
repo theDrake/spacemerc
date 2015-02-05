@@ -260,7 +260,7 @@ static const char *const g_location_strings[] = {
   "starship",
   "spaceport",
   "space station"
-}
+};
 
 /******************************************************************************
   Function Declarations
