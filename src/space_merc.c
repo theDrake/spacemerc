@@ -888,31 +888,36 @@ void show_narration(void)
   switch (g_current_narration)
   {
     case RETALIATE: // Max. total chars: 78
-      strcat(narration_str, "Defend a human ");
-      strcat_location_name(narration_str);
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
-               " from %d invading Fim",
+               "Defend a human %s from %d invading Fim",
+               g_location_strings[rand() % NUM_LOCATION_TYPES],
                (int) g_mission->num_npcs);
       break;
     case OBLITERATE: // Max. total chars: 80
       snprintf(narration_str + strlen(narration_str),
                NARRATION_STR_LEN - strlen(narration_str) + 1,
                "Eliminate all %d hostiles in this Fim ",
-               (int) g_mission->num_npcs);
-      strcat_location_name(narration_str);
+               (int) g_mission->num_npcs,
+               g_location_strings[rand() % NUM_LOCATION_TYPES]);
       break;
     case EXPROPRIATE: // Max. total chars: 71
-      strcat(narration_str, "Steal a device from this Fim ");
-      strcat_location_name(narration_str);
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               "Steal a device from this Fim %s",
+               g_location_strings[rand() % NUM_LOCATION_TYPES]);
       break;
     case EXTRICATE: // Max. total chars: 80
-      strcat(narration_str, "Rescue a human prisoner from this Fim ");
-      strcat_location_name(narration_str);
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               "Rescue a human prisoner from this Fim %s",
+               g_location_strings[rand() % NUM_LOCATION_TYPES]);
       break;
     case ASSASSINATE: // Max. total chars: 78
-      strcat(narration_str, "Neutralize the leader of this Fim ");
-      strcat_location_name(narration_str);
+      snprintf(narration_str + strlen(narration_str),
+               NARRATION_STR_LEN - strlen(narration_str) + 1,
+               "Neutralize the leader of this Fim %s",
+               g_location_strings[rand() % NUM_LOCATION_TYPES]);
       break;
     case DEATH_NARRATION: // Total chars: 73
       strcpy(narration_str, "You fell in battle, but your body was found and"
@@ -2812,46 +2817,6 @@ void app_focus_handler(const bool in_focus)
     {
       g_game_paused = false;
     }
-  }
-}
-
-/******************************************************************************
-   Function: strcat_location_name
-
-Description: Concatenates a random location name to the end of a given string.
-
-     Inputs: dest_str - Pointer to the destination string.
-
-    Outputs: None.
-******************************************************************************/
-void strcat_location_name(char *dest_str)
-{
-  switch(rand() % NUM_LOCATION_TYPES)
-  {
-    case COLONY:
-      strcat(dest_str, "colony");
-      break;
-    case CITY:
-      strcat(dest_str, "city");
-      break;
-    case LABORATORY:
-      strcat(dest_str, "laboratory");
-      break;
-    case BASE:
-      strcat(dest_str, "base");
-      break;
-    case MINE:
-      strcat(dest_str, "mine");
-      break;
-    case STARSHIP:
-      strcat(dest_str, "starship");
-      break;
-    case SPACEPORT:
-      strcat(dest_str, "spaceport");
-      break;
-    case SPACE_STATION:
-      strcat(dest_str, "space station");
-      break;
   }
 }
 
