@@ -14,7 +14,90 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #include <pebble.h>
 
 /******************************************************************************
-  Constants
+  Enumerations
+******************************************************************************/
+
+// Mission types:
+enum {
+  RETALIATE,   // Goal: Kill all enemies.
+  OBLITERATE,  // Goal: Kill all enemies.
+  EXPROPRIATE, // Goal: Steal an item.
+  EXTRICATE,   // Goal: Rescue a person.
+  ASSASSINATE, // Goal: Kill a Fim officer.
+  NUM_MISSION_TYPES
+};
+
+// Location types:
+enum {
+  COLONY,
+  CITY,
+  LABORATORY,
+  BASE,
+  MINE,
+  STARSHIP,
+  SPACEPORT,
+  SPACE_STATION,
+  NUM_LOCATION_TYPES
+};
+
+// Cell types:
+enum {
+  HUMAN = -2,
+  ITEM,
+  EMPTY,
+  SOLID, // "Solid" runs from 1 to DEFAULT_CELL_HP.
+  NUM_CELL_TYPES
+};
+
+// NPC types:
+enum {
+  FLOATING_MONSTROSITY,
+  OOZE,
+  BEAST,
+  ROBOT,
+  ALIEN_SOLDIER,
+  ALIEN_ELITE,
+  ALIEN_OFFICER,
+  NUM_NPC_TYPES
+};
+
+// Narration types:
+enum {
+  MISSION_CONCLUSION_NARRATION = NUM_MISSION_TYPES,
+  DEATH_NARRATION,
+  GAME_INFO_NARRATION_1,
+  GAME_INFO_NARRATION_2,
+  GAME_INFO_NARRATION_3,
+  INTRO_NARRATION_1,
+  INTRO_NARRATION_2,
+  INTRO_NARRATION_3,
+  INSTRUCTIONS_NARRATION_1,
+  INSTRUCTIONS_NARRATION_2,
+  NUM_NARRATION_TYPES
+};
+
+// Player stats (the order here matters for the upgrade menu):
+enum {
+  ARMOR,
+  MAX_HP,
+  POWER,
+  MAX_ENERGY,
+  CURRENT_HP,
+  CURRENT_ENERGY,
+  NUM_PLAYER_STATS
+};
+
+// Directions:
+enum {
+  NORTH,
+  SOUTH,
+  EAST,
+  WEST,
+  NUM_DIRECTIONS
+};
+
+/******************************************************************************
+  Other Constants
 ******************************************************************************/
 
 #define NARRATION_STR_LEN           110
@@ -88,91 +171,37 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 #define MAX_NPCS_AT_ONE_TIME        3
 #define ANIMATED                    true
 #define NOT_ANIMATED                false
+#define RANDOM_NPC_TYPE             (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
 
-/******************************************************************************
-  Enumerations
-******************************************************************************/
-
-// Mission types:
-enum {
-  RETALIATE,   // Goal: Kill all enemies.
-  OBLITERATE,  // Goal: Kill all enemies.
-  EXPROPRIATE, // Goal: Steal an item.
-  EXTRICATE,   // Goal: Rescue a person.
-  ASSASSINATE, // Goal: Kill a Fim officer.
-  NUM_MISSION_TYPES
+static const GPathInfo COMPASS_PATH_INFO = {
+  .num_points = 4,
+  .points = (GPoint []) {{-3, -3},
+                         {3, -3},
+                         {0, 6},
+                         {-3, -3}}
 };
 
-// Location types:
-enum {
-  COLONY,
-  CITY,
-  LABORATORY,
-  BASE,
-  MINE,
-  STARSHIP,
-  SPACEPORT,
-  SPACE_STATION,
-  NUM_LOCATION_TYPES
+static const char *const g_narration_strings[] = {
+  "You fell in battle, but your body was found and resuscitated. Soldier on!",
+  "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
+  "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
+  "Be sure to also check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
+  "Humankind is at war with a hostile alien race known as the Fim.",
+  "As an elite interstellar mercenary, your skills are in high demand.",
+  "Fame and fortune await as you risk life and limb for humanity's future!",
+  "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: \"Select\"",
+  "    INSTRUCTIONS\nTo end a mission, walk out through the door where the mission began.",
 };
 
-// Cell types:
-enum {
-  HUMAN = -2,
-  ITEM,
-  EMPTY,
-  SOLID, // "Solid" runs from 1 to DEFAULT_CELL_HP.
-  NUM_CELL_TYPES
-};
-
-// NPC types:
-enum {
-  FLOATING_MONSTROSITY,
-  OOZE,
-  BEAST,
-  ROBOT,
-  ALIEN_SOLDIER,
-  ALIEN_ELITE,
-  ALIEN_OFFICER,
-  NUM_NPC_TYPES
-};
-
-// Random NPCs may be of any type except ALIEN_OFFICER:
-#define RANDOM_NPC_TYPE (rand() % (NUM_NPC_TYPES - 1))
-
-// Narration types:
-enum {
-  MISSION_CONCLUSION_NARRATION = NUM_MISSION_TYPES,
-  DEATH_NARRATION,
-  GAME_INFO_NARRATION_1,
-  GAME_INFO_NARRATION_2,
-  GAME_INFO_NARRATION_3,
-  INTRO_NARRATION_1,
-  INTRO_NARRATION_2,
-  INTRO_NARRATION_3,
-  INSTRUCTIONS_NARRATION_1,
-  INSTRUCTIONS_NARRATION_2,
-  NUM_NARRATION_TYPES
-};
-
-// Player stats (the order here matters for the upgrade menu):
-enum {
-  ARMOR,
-  MAX_HP,
-  POWER,
-  MAX_ENERGY,
-  CURRENT_HP,
-  CURRENT_ENERGY,
-  NUM_PLAYER_STATS
-};
-
-// Directions:
-enum {
-  NORTH,
-  SOUTH,
-  EAST,
-  WEST,
-  NUM_DIRECTIONS
+static const char *const g_location_strings[] = {
+  "colony",
+  "city",
+  "laboratory",
+  "base",
+  "mine",
+  "starship",
+  "spaceport",
+  "space station"
 };
 
 /******************************************************************************
@@ -231,37 +260,6 @@ int16_t g_current_narration,
 GPath *g_compass_path;
 mission_t *g_mission;
 player_t *g_player;
-
-static const GPathInfo COMPASS_PATH_INFO = {
-  .num_points = 4,
-  .points = (GPoint []) {{-3, -3},
-                         {3, -3},
-                         {0, 6},
-                         {-3, -3}}
-};
-
-static const char *const g_narration_strings[] = {
-  "You fell in battle, but your body was found and resuscitated. Soldier on!",
-  "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
-  "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
-  "Be sure to also check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
-  "Humankind is at war with a hostile alien race known as the Fim.",
-  "As an elite interstellar mercenary, your skills are in high demand.",
-  "Fame and fortune await as you risk life and limb for humanity's future!",
-  "    INSTRUCTIONS\nForward: \"Up\"\nBack: \"Down\"\nLeft: \"Up\" x 2\nRight: \"Down\" x 2\nShoot: \"Select\"",
-  "    INSTRUCTIONS\nTo end a mission, walk out through the door where the mission began.",
-};
-
-static const char *const g_location_strings[] = {
-  "colony",
-  "city",
-  "laboratory",
-  "base",
-  "mine",
-  "starship",
-  "spaceport",
-  "space station"
-};
 
 /******************************************************************************
   Function Declarations
