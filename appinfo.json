@@ -12,7 +12,7 @@
     "shortName": "SpaceMerc",
     "uuid": "4c991651-0cd3-4c91-9bb8-5d207222092e",
     "versionCode": 1,
-    "versionLabel": "1.4",
+    "versionLabel": "1.5",
     "watchapp": {
         "watchface": false
     }
