@@ -2744,7 +2744,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     // Determine whether a new NPC should be generated:
     if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                   &&
         g_mission->kills + current_num_npcs < g_mission->num_npcs &&
-        rand() % 8 == 0)
+        rand() % 5 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
@@ -2942,8 +2942,8 @@ void init_mission(const int16_t type)
 {
   g_mission->type      = type;
   g_mission->completed = false;
-  g_mission->num_npcs  = 5 * (rand() % 6 + 1);      // 5-30 enemies.
-  g_mission->reward    = 600 * g_mission->num_npcs; // $3,000-$18,000.
+  g_mission->num_npcs  = 5 * (rand() % 4 + 1);      // 5-20 enemies.
+  g_mission->reward    = 600 * g_mission->num_npcs; // $3,000-$12,000.
   g_mission->npcs      = NULL;
   g_mission->kills     = 0;
   init_mission_location();
