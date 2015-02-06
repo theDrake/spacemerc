@@ -2744,7 +2744,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     // Determine whether a new NPC should be generated:
     if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                   &&
         g_mission->kills + current_num_npcs < g_mission->num_npcs &&
-        rand() % 9 == 0)
+        rand() % 8 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
