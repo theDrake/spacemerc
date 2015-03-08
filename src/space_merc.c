@@ -2663,16 +2663,10 @@ Description: The narration window's single-click handler for all buttons.
 void narration_single_click(ClickRecognizerRef recognizer, void *context)
 {
   if (g_current_narration == GAME_INFO_NARRATION_1 ||
-      g_current_narration == GAME_INFO_NARRATION_2 ||
       (g_current_narration >= INTRO_NARRATION_1 &&
        g_current_narration < INSTRUCTIONS_NARRATION_2))
   {
     g_current_narration++;
-    show_narration();
-  }
-  else if (g_current_narration == INSTRUCTIONS_NARRATION_2)
-  {
-    g_current_narration = GAME_INFO_NARRATION_3;
     show_narration();
   }
   else

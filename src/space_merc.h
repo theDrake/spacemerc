@@ -67,7 +67,6 @@ enum {
   DEATH_NARRATION,
   GAME_INFO_NARRATION_1,
   GAME_INFO_NARRATION_2,
-  GAME_INFO_NARRATION_3,
   INTRO_NARRATION_1,
   INTRO_NARRATION_2,
   INTRO_NARRATION_3,
@@ -185,7 +184,6 @@ static const char *const g_narration_strings[] = {
   "You fell in battle, but your body was found and resuscitated. Soldier on!",
   "SpaceMerc was designed and programmed by David C. Drake:\n\ndavidcdrake.com",
   "Thanks for playing! And special thanks to Team Pebble for creating these wonderful, fun, and useful devices!",
-  "Be sure to also check out my PebbleQuest RPG:\n\ndavidcdrake.com/\n           pebblequest",
   "Humankind is at war with a hostile alien race known as the Fim.",
   "As an elite interstellar mercenary, your skills are in high demand.",
   "Fame and fortune await as you risk life and limb for humanity's future!",
@@ -201,7 +199,7 @@ static const char *const g_location_strings[] = {
   "mine",
   "starship",
   "spaceport",
-  "space station"
+  "space station",
 };
 
 /******************************************************************************
