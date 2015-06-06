@@ -4,7 +4,7 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Function definitions for SpaceMerc, a 3D first-person shooter
-             developed for the Pebble smartwatch (SDK 2). More information
+             developed for the Pebble smartwatch (SDK 3). More information
              available online: http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
@@ -2409,7 +2409,9 @@ Description: Briefly "flashes" the graphics frame by inverting all its pixels.
 ******************************************************************************/
 void flash_screen(void)
 {
+#ifdef PBL_BW
   layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), false);
+#endif
   g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
                                      flash_timer_callback,
                                      NULL);
@@ -2427,7 +2429,9 @@ Description: Called when the flash timer reaches zero. Hides the inverter
 ******************************************************************************/
 static void flash_timer_callback(void *data)
 {
+#ifdef PBL_BW
   layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
+#endif
 }
 
 /******************************************************************************
@@ -2468,7 +2472,9 @@ static void graphics_window_appear(Window *window)
 {
   g_game_paused           = false;
   g_player_animation_mode = 0;
+#ifdef PBL_BW
   layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
+#endif
 }
 
 /******************************************************************************
@@ -3140,9 +3146,11 @@ void init_graphics(void)
   layer_set_update_proc(window_get_root_layer(g_graphics_window), draw_scene);
 
   // Graphics frame inverter (for the "flash" effect):
+#ifdef PBL_BW
   g_inverter_layer = inverter_layer_create(GRAPHICS_FRAME);
   layer_add_child(window_get_root_layer(g_graphics_window),
                   inverter_layer_get_layer(g_inverter_layer));
+#endif
 
   // Tick timer subscription:
   tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
@@ -3160,7 +3168,9 @@ Description: Deinitializes the graphics window.
 void deinit_graphics(void)
 {
   tick_timer_service_unsubscribe();
+#ifdef PBL_BW
   inverter_layer_destroy(g_inverter_layer);
+#endif
   window_destroy(g_graphics_window);
 }
 

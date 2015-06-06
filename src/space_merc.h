@@ -4,7 +4,7 @@
      Author: David C. Drake (http://davidcdrake.com)
 
 Description: Header file for SpaceMerc, a 3D first-person shooter developed for
-             the Pebble smartwatch (SDK 2). More information available online:
+             the Pebble smartwatch (SDK 3). More information available online:
              http://davidcdrake.com/spacemerc
 ******************************************************************************/
 
@@ -242,7 +242,9 @@ Window *g_graphics_window,
        *g_narration_window,
        *g_main_menu_window,
        *g_upgrade_menu_window;
+#ifdef PBL_BW
 InverterLayer *g_inverter_layer;
+#endif
 MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
