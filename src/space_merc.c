@@ -2464,6 +2464,23 @@ static void player_timer_callback(void *data)
 }
 
 /******************************************************************************
+   Function: main_menu_window_appear
+
+Description: Called when the main menu window appears (SDK 3 only).
+
+     Inputs: window - Pointer to the main menu window.
+
+    Outputs: None.
+******************************************************************************/
+#ifdef PBL_COLOR
+static void main_menu_window_appear(Window *window)
+{
+  layer_add_child(window_get_root_layer(window),
+                  status_bar_layer_get_layer(g_status_bar))
+}
+#endif
+
+/******************************************************************************
    Function: graphics_window_appear
 
 Description: Called when the graphics window appears.
@@ -3232,7 +3249,13 @@ Description: Initializes the main menu.
 void init_main_menu(void)
 {
   g_main_menu_window = window_create();
-  g_main_menu        = menu_layer_create(FULL_SCREEN_FRAME);
+#ifdef PBL_COLOR
+  window_set_window_handlers(g_main_menu_window, (WindowHandlers)
+  {
+    .appear = main_menu_window_appear,
+  });
+#endif
+  g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
   {
     .get_num_rows = menu_get_num_rows_callback,

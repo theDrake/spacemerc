@@ -367,6 +367,9 @@ void draw_status_meter(GContext *ctx,
 void flash_screen(void);
 static void flash_timer_callback(void *data);
 static void player_timer_callback(void *data);
+#ifdef PBL_COLOR
+static void main_menu_window_appear(Window *window);
+#endif
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
