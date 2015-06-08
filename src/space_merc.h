@@ -261,6 +261,10 @@ GPath *g_compass_path;
 mission_t *g_mission;
 player_t *g_player;
 
+#ifdef PBL_COLOR
+StatusBarLayer *g_status_bar;
+#endif
+
 /******************************************************************************
   Function Declarations
 ******************************************************************************/

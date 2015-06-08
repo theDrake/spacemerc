@@ -976,6 +976,10 @@ void show_window(Window *window)
       window_stack_pop(NOT_ANIMATED);
     }
   }
+#ifdef PBL_COLOR
+  layer_add_child(window_get_root_layer(window),
+                  status_bar_layer_get_layer(g_status_bar));
+#endif
 }
 
 /******************************************************************************
@@ -3277,6 +3281,9 @@ void init(void)
   init_graphics();
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
+#ifdef PBL_COLOR
+  g_status_bar = status_bar_layer_create();
+#endif
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
                                          STATUS_BAR_HEIGHT / 2));
@@ -3309,6 +3316,9 @@ void deinit(void)
 {
   persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
   app_focus_service_unsubscribe();
+#ifdef PBL_COLOR
+  status_bar_layer_destroy(g_status_bar);
+#endif
   deinit_upgrade_menu();
   deinit_narration();
   deinit_graphics();
