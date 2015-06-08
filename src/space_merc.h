@@ -109,8 +109,19 @@ enum {
 #define SCREEN_CENTER_POINT_Y       (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
 #define SCREEN_CENTER_POINT         GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
 #define STATUS_BAR_HEIGHT           16 // Applies to top and bottom status bars.
+
+#ifdef PBL_COLOR
+#define FULL_SCREEN_FRAME           GRect(0, STATUS_BAR_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
+#define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME              GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME  GRect(2, STATUS_BAR_HEIGHT, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#else
 #define FULL_SCREEN_FRAME           GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME              GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME  GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#endif
+
 #define COMPASS_RADIUS              5
 #define STATUS_METER_PADDING        4
 #define STATUS_METER_WIDTH          (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
@@ -135,18 +146,16 @@ enum {
 #define MIN_WALL_HEIGHT             STATUS_BAR_HEIGHT
 #define GRAPHICS_FRAME_WIDTH        SCREEN_WIDTH
 #define GRAPHICS_FRAME_HEIGHT       (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
-#define GRAPHICS_FRAME              GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define LOCATION_WIDTH              15
 #define LOCATION_HEIGHT             LOCATION_WIDTH
 #define MAX_VISIBILITY_DEPTH        6 // Helps determine no. of cells visible in a given line of sight.
 #define STRAIGHT_AHEAD              (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
-#define TOP_LEFT                    0 // Index value for "g_back_wall_coords".
-#define BOTTOM_RIGHT                1 // Index value for "g_back_wall_coords".
+#define TOP_LEFT                    0                          // Index value for "g_back_wall_coords".
+#define BOTTOM_RIGHT                1                          // Index value for "g_back_wall_coords".
 #define RANDOM_POINT_NORTH          GPoint(rand() % LOCATION_WIDTH, 0)
 #define RANDOM_POINT_SOUTH          GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
 #define RANDOM_POINT_EAST           GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
 #define RANDOM_POINT_WEST           GPoint(0, rand() % LOCATION_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME  GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
 #define NARRATION_FONT              fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
 #define MAIN_MENU_NUM_ROWS          5
 #define UPGRADE_MENU_NUM_ROWS       4
@@ -242,9 +251,6 @@ Window *g_graphics_window,
        *g_narration_window,
        *g_main_menu_window,
        *g_upgrade_menu_window;
-#ifdef PBL_BW
-InverterLayer *g_inverter_layer;
-#endif
 MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
@@ -263,6 +269,8 @@ player_t *g_player;
 
 #ifdef PBL_COLOR
 StatusBarLayer *g_status_bar;
+#else
+InverterLayer *g_inverter_layer;
 #endif
 
 /******************************************************************************
