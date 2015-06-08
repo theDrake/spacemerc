@@ -2476,7 +2476,7 @@ Description: Called when the main menu window appears (SDK 3 only).
 static void main_menu_window_appear(Window *window)
 {
   layer_add_child(window_get_root_layer(window),
-                  status_bar_layer_get_layer(g_status_bar))
+                  status_bar_layer_get_layer(g_status_bar));
 }
 #endif
 
