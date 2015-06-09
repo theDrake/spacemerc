@@ -515,7 +515,11 @@ GPoint get_floor_center_point(const int16_t depth, const int16_t position)
   }
   x = 0.5 * (x_midpoint1 + x_midpoint2);
 
+#ifdef PBL_COLOR
+  return GPoint(x, y + STATUS_BAR_HEIGHT);
+#else
   return GPoint(x, y);
+#endif
 }
 
 /******************************************************************************
@@ -1734,7 +1738,7 @@ void draw_cell_contents(GContext *ctx,
 {
   int16_t drawing_unit, // Reference variable for drawing contents at depth.
           content_type = get_cell_type(cell);
-  GPoint floor_center_point;
+  GPoint floor_center_point, top_left_point;
 
   if (content_type == EMPTY)
   {
@@ -1754,6 +1758,7 @@ void draw_cell_contents(GContext *ctx,
     drawing_unit++;
   }
   floor_center_point = get_floor_center_point(depth, position);
+  top_left_point     = g_back_wall_coords[depth][position][TOP_LEFT];
 
   // Draw a shadow on the ground:
   graphics_context_set_fill_color(ctx, GColorBlack);
@@ -1780,10 +1785,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 3),
                      GPoint(floor_center_point.x - drawing_unit,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
-                              4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y +
-                              4));
+                     GPoint(top_left_point.x + 4, top_left_point.y + 4));
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x + drawing_unit,
                             floor_center_point.y - drawing_unit * 3),
@@ -1793,10 +1795,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 3),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
-                              4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y +
-                              4));
+                     GPoint(top_left_point.x + 4, top_left_point.y + 4));
 
     // Waist:
     draw_shaded_quad(ctx,
@@ -1808,10 +1807,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 4),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 3),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
-                              4,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y +
-                              4));
+                     GPoint(top_left_point.x + 4, top_left_point.y + 4));
 
     // Torso:
     if (content_type == ALIEN_OFFICER)
@@ -1825,10 +1821,7 @@ void draw_cell_contents(GContext *ctx,
                               floor_center_point.y - drawing_unit * 8),
                        GPoint(floor_center_point.x + drawing_unit * 2,
                               floor_center_point.y - drawing_unit * 4),
-                       GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
-                                10,
-                              g_back_wall_coords[depth][position][TOP_LEFT].y -
-                                10));
+                       GPoint(top_left_point.x - 10, top_left_point.y - 10));
     }
     else // content_type == ALIEN_SOLDIER || content_type == ALIEN_ELITE
     {
@@ -1950,10 +1943,7 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x +
                               (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 4),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
-                              20,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y -
-                              20));
+                     GPoint(top_left_point.x - 20, top_left_point.y - 20));
 
     // Arms:
     graphics_context_set_fill_color(ctx, GColorWhite);
@@ -1994,10 +1984,7 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x + drawing_unit / 2,
                             floor_center_point.y -
                               (drawing_unit * 9 + drawing_unit / 3)),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
-                              10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y -
-                              10));
+                     GPoint(top_left_point.x - 10, top_left_point.y - 10));
 
     // Eyes:
     graphics_context_set_fill_color(ctx, GColorBlack);
@@ -2022,10 +2009,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 2),
                      GPoint(floor_center_point.x - drawing_unit,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
-                              6,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y +
-                              6));
+                     GPoint(top_left_point.x + 6, top_left_point.y + 6));
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x + drawing_unit,
                             floor_center_point.y - drawing_unit * 2),
@@ -2035,10 +2019,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 2),
                      GPoint(floor_center_point.x + drawing_unit * 4,
                             floor_center_point.y),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x +
-                              6,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y +
-                              6));
+                     GPoint(top_left_point.x + 6, top_left_point.y + 6));
 
     // Arms:
     draw_shaded_quad(ctx,
@@ -2050,10 +2031,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 5),
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 4),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
-                              10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y -
-                              10));
+                     GPoint(top_left_point.x - 10, top_left_point.y - 10));
     graphics_context_set_fill_color(ctx, GColorWhite);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 4,
@@ -2091,10 +2069,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 7),
                      GPoint(floor_center_point.x + drawing_unit / 2,
                             floor_center_point.y - drawing_unit * 6),
-                     GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x -
-                              10,
-                            g_back_wall_coords[depth][position][TOP_LEFT].y -
-                              10));
+                     GPoint(top_left_point.x - 10, top_left_point.y - 10));
 
     // Head:
     graphics_fill_rect(ctx,
@@ -2244,6 +2219,16 @@ void draw_cell_contents(GContext *ctx,
   else // content_type == ITEM
   {
     graphics_context_set_fill_color(ctx, GColorWhite);
+#ifdef PBL_COLOR
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 2,
+                             floor_center_point.y - drawing_unit * 6 +
+                               STATUS_BAR_HEIGHT,
+                             drawing_unit * 4,
+                             drawing_unit * 6),
+                       drawing_unit / 2,
+                       GCornersTop);
+#else
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 6,
@@ -2251,6 +2236,7 @@ void draw_cell_contents(GContext *ctx,
                              drawing_unit * 6),
                        drawing_unit / 2,
                        GCornersTop);
+#endif
   }
 }
 
