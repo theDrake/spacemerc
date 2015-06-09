@@ -345,7 +345,7 @@ void draw_cell_contents(GContext *ctx,
                         const int16_t depth,
                         const int16_t position);
 void draw_floating_monstrosity(GContext *ctx,
-                               const GPoint center,
+                               GPoint center,
                                const int16_t radius,
                                int16_t shading_offset);
 void draw_shaded_quad(GContext *ctx,
@@ -362,7 +362,7 @@ void fill_quad(GContext *ctx,
                const GColor color);
 void draw_status_bar(GContext *ctx);
 void draw_status_meter(GContext *ctx,
-                       const GPoint origin,
+                       GPoint origin,
                        const float ratio);
 void flash_screen(void);
 static void flash_timer_callback(void *data);
