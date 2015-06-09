@@ -56,7 +56,8 @@ void move_player(const int16_t direction)
 
   // Check for movement into the exit, ending the current mission:
   if (gpoint_equal(&g_player->position, &g_mission->entrance) &&
-      g_player->direction == g_mission->entrance_direction)
+      g_player->direction == g_mission->entrance_direction    &&
+      direction == g_mission->entrance_direction)
   {
     end_mission();
   }
