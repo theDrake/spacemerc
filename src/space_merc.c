@@ -1029,7 +1029,7 @@ static void main_menu_draw_row_callback(GContext *ctx,
       menu_cell_basic_draw(ctx,
                            cell_layer,
                            "About",
-                           "Credits.",
+                           "Credits, etc.",
                            NULL);
       break;
     default:
