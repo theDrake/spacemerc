@@ -191,11 +191,11 @@ void damage_npc(npc_t *npc, const int16_t damage)
     g_mission->kills++;
     if ((g_mission->type == ASSASSINATE && npc->type == ALIEN_OFFICER) ||
         ((g_mission->type == OBLITERATE || g_mission->type == RETALIATE) &&
-         g_mission->kills >= g_mission->num_npcs))
+         g_mission->kills >= g_mission->total_num_npcs))
     {
       g_mission->completed = true;
     }
-    remove_npc(npc);
+    npc->type = NONE;
   }
 }
 
@@ -283,53 +283,6 @@ void adjust_player_current_hp(const int16_t amount)
 }
 
 /******************************************************************************
-   Function: remove_npc
-
-Description: Handles the removal of a given NPC from memory and from the
-             current mission's list of NPCs.
-
-     Inputs: npc - Pointer to the NPC to be killed.
-
-    Outputs: None.
-******************************************************************************/
-void remove_npc(npc_t *npc)
-{
-  npc_t *npc_pointer, *npc_pointer_2;
-
-  npc_pointer = npc_pointer_2 = g_mission->npcs;
-  while (npc_pointer != NULL)
-  {
-    if (npc_pointer == npc)
-    {
-      if (npc_pointer->next != NULL)
-      {
-        if (npc_pointer == g_mission->npcs)
-        {
-          g_mission->npcs = npc_pointer->next;
-        }
-        else
-        {
-          npc_pointer_2->next = npc_pointer->next;
-        }
-      }
-      else if (npc_pointer == g_mission->npcs)
-      {
-        g_mission->npcs = NULL;
-      }
-      else
-      {
-        npc_pointer_2->next = NULL;
-      }
-      free(npc_pointer);
-
-      return;
-    }
-    npc_pointer_2 = npc_pointer;
-    npc_pointer = npc_pointer->next;
-  }
-}
-
-/******************************************************************************
    Function: adjust_player_current_ammo
 
 Description: Adjusts the player's current ammo by a given amount, which may be
@@ -375,8 +328,8 @@ void end_mission(void)
    Function: add_new_npc
 
 Description: Creates an NPC of a given type at a given location and adds it to
-             the current mission's linked list of NPCs (unless the given
-             position isn't occupiable).
+             the current mission's array of NPCs (unless the given position
+             isn't occupiable or the array's already full).
 
      Inputs: npc_type - Desired type for the new NPC.
              position - Desired spawn point for the new NPC.
@@ -385,23 +338,16 @@ Description: Creates an NPC of a given type at a given location and adds it to
 ******************************************************************************/
 void add_new_npc(const int16_t npc_type, const GPoint position)
 {
-  npc_t *npc_pointer = g_mission->npcs;
+  int8_t i;
 
-  if (occupiable(position))
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
   {
-    if (npc_pointer == NULL)
+    if (g_mission->npcs[i].type != NONE && occupiable(position))
     {
-      g_mission->npcs = malloc(sizeof(npc_t));
-      init_npc(g_mission->npcs, npc_type, position);
+      init_npc(&g_mission->npcs[i], npc_type, position);
 
       return;
     }
-    while (npc_pointer->next != NULL)
-    {
-      npc_pointer = npc_pointer->next;
-    }
-    npc_pointer->next = malloc(sizeof(npc_t));
-    init_npc(npc_pointer->next, npc_type, position);
   }
 }
 
@@ -796,15 +742,15 @@ Description: Returns a pointer to the NPC occupying a given cell.
 ******************************************************************************/
 npc_t *get_npc_at(const GPoint cell)
 {
-  npc_t *npc = g_mission->npcs;
+  int8_t i;
 
-  while (npc != NULL)
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
   {
-    if (gpoint_equal(&npc->position, &cell))
+    if (g_mission->npcs[i].type != NONE &&
+        gpoint_equal(&g_mission->npcs[i].position, &cell))
     {
-      return npc;
+      return &g_mission->npcs[i];
     }
-    npc = npc->next;
   }
 
   return NULL;
@@ -892,13 +838,13 @@ void show_narration(void)
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Defend a human %s from %d invading Fim",
                  g_location_strings[location],
-                 (int) g_mission->num_npcs);
+                 (int) g_mission->total_num_npcs);
         break;
       case OBLITERATE: // Max. total chars: 80
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Eliminate all %d hostiles in this Fim %s",
-                 (int) g_mission->num_npcs,
+                 (int) g_mission->total_num_npcs,
                  g_location_strings[location]);
         break;
       case EXPROPRIATE: // Max. total chars: 71
@@ -940,7 +886,7 @@ void show_narration(void)
              NARRATION_STR_LEN - strlen(narration_str) + 1,
              "COMPLETE\n\nKills: %d\nRem. Enemies: %d\nReward: $%ld",
              g_mission->kills,
-             g_mission->num_npcs - g_mission->kills,
+             g_mission->total_num_npcs - g_mission->kills,
              g_mission->completed ? g_mission->reward : 0);
     deinit_mission();
   }
@@ -2876,27 +2822,27 @@ Description: Handles changes to the game world every second while in active
 ******************************************************************************/
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
 {
-  int16_t current_num_npcs = 0;
-  npc_t *npc_pointer;
+  int8_t i, current_num_npcs = 0;
 
   if (!g_game_paused)
   {
     // Handle NPC behavior:
-    npc_pointer = g_mission->npcs;
-    while (npc_pointer != NULL)
+    for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
     {
-      determine_npc_behavior(npc_pointer);
-      if (g_player->stats[CURRENT_HP] <= 0)
+      if (g_mission->npcs[i].type != NONE)
       {
-        return;
+        determine_npc_behavior(&g_mission->npcs[i]);
+        if (g_player->stats[CURRENT_HP] <= 0)
+        {
+          return;
+        }
+        current_num_npcs++;
       }
-      current_num_npcs++;
-      npc_pointer = npc_pointer->next;
     }
 
     // Determine whether a new NPC should be generated:
-    if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                   &&
-        g_mission->kills + current_num_npcs < g_mission->num_npcs &&
+    if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                         &&
+        g_mission->kills + current_num_npcs < g_mission->total_num_npcs &&
         rand() % 5 == 0)
     {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
@@ -2990,7 +2936,6 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
 {
   npc->type     = type;
   npc->position = position;
-  npc->next     = NULL;
 
   // NPC stats are based on the player's in an effort to maintain balance:
   npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 6;
@@ -3093,12 +3038,17 @@ Description: Initializes the global mission struct according to a given mission
 ******************************************************************************/
 void init_mission(const int16_t type)
 {
-  g_mission->type      = type;
-  g_mission->completed = false;
-  g_mission->num_npcs  = 5 * (rand() % 4 + 1);      // 5-20 enemies.
-  g_mission->reward    = 600 * g_mission->num_npcs; // $3,000-$12,000.
-  g_mission->npcs      = NULL;
-  g_mission->kills     = 0;
+  int8_t i;
+
+  g_mission->type            = type;
+  g_mission->completed       = false;
+  g_mission->total_num_npcs  = 5 * (rand() % 4 + 1);            // 5-20
+  g_mission->reward          = 600 * g_mission->total_num_npcs; // $3-12,000
+  g_mission->kills           = 0;
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
+  {
+    g_mission->npcs[i].type = NONE;
+  }
   init_mission_location();
 
   // Move and orient the player and restore his/her HP and ammo:
@@ -3226,10 +3176,6 @@ void deinit_mission(void)
 {
   if (g_mission != NULL)
   {
-    while (g_mission->npcs != NULL)
-    {
-      remove_npc(g_mission->npcs);
-    }
     free(g_mission);
     g_mission = NULL;
   }

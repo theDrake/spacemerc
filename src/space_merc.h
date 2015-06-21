@@ -176,7 +176,7 @@ enum {
 #define MIN_DAMAGE                  (HP_RECOVERY_RATE + 1)
 #define ENERGY_LOSS_PER_SHOT        (ENERGY_RECOVERY_RATE + 1)
 #define STORAGE_KEY                 417
-#define MAX_NPCS_AT_ONE_TIME        3
+#define MAX_NPCS_AT_ONE_TIME        2
 #define ANIMATED                    true
 #define NOT_ANIMATED                false
 #define RANDOM_NPC_TYPE             (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
@@ -225,21 +225,20 @@ typedef struct PlayerCharacter {
 
 typedef struct NonPlayerCharacter {
   GPoint position;
-  int16_t type,
-          power,
+  int8_t type;
+  int16_t power,
           hp;
-  struct NonPlayerCharacter *next;
 } __attribute__((__packed__)) npc_t;
 
 typedef struct Mission {
-  int16_t type,
-          cells[LOCATION_WIDTH][LOCATION_HEIGHT],
-          entrance_direction,
-          num_npcs,
-          kills;
+  int8_t type,
+         cells[LOCATION_WIDTH][LOCATION_HEIGHT],
+         entrance_direction,
+         total_num_npcs,
+         kills;
   int32_t reward;
   GPoint entrance;
-  npc_t *npcs;
+  npc_t npcs[MAX_NPCS_AT_ONE_TIME];
   bool completed;
 } __attribute__((__packed__)) mission_t;
 
@@ -286,7 +285,6 @@ void damage_npc(npc_t *npc, const int16_t damage);
 void damage_cell(GPoint cell, const int16_t damage);
 bool adjust_player_money(const int32_t amount);
 void adjust_player_current_hp(const int16_t amount);
-void remove_npc(npc_t *npc);
 void adjust_player_current_ammo(const int16_t amount);
 void end_mission(void);
 void add_new_npc(const int16_t npc_type, const GPoint position);
