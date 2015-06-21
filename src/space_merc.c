@@ -342,7 +342,7 @@ void add_new_npc(const int16_t npc_type, const GPoint position)
 
   for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
   {
-    if (g_mission->npcs[i].type != NONE && occupiable(position))
+    if (g_mission->npcs[i].type == NONE && occupiable(position))
     {
       init_npc(&g_mission->npcs[i], npc_type, position);
 
