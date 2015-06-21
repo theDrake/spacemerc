@@ -3057,8 +3057,8 @@ void init_mission(const int16_t type)
   int8_t i;
 
 #ifdef PBL_COLOR
-  g_maze->floor_color_scheme = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
-  g_maze->wall_color_scheme  = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
+  g_mission->floor_color_scheme = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
+  g_mission->wall_color_scheme  = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
 #endif
   g_mission->type            = type;
   g_mission->completed       = false;
