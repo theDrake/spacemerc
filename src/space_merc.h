@@ -51,6 +51,7 @@ enum {
 
 // NPC types:
 enum {
+  NONE = -1,
   FLOATING_MONSTROSITY,
   OOZE,
   BEAST,
