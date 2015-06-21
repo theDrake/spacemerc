@@ -1347,7 +1347,9 @@ void draw_floor_and_ceiling(GContext *ctx)
   int16_t x, y, max_y, shading_offset;
 
   max_y = g_back_wall_coords[MAX_VISIBILITY_DEPTH - 2][0][TOP_LEFT].y;
+#ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorWhite);
+#endif
   for (y = 0; y < max_y; ++y)
   {
     // Determine horizontal distance between points:
@@ -1357,6 +1359,13 @@ void draw_floor_and_ceiling(GContext *ctx)
     {
       shading_offset++;
     }
+#ifdef PBL_COLOR
+    graphics_context_set_stroke_color(ctx,
+      g_background_colors[g_mission->floor_color_scheme]
+                         [shading_offset > NUM_BACKGROUND_COLORS_PER_SCHEME ?
+                            NUM_BACKGROUND_COLORS_PER_SCHEME - 1            :
+                            shading_offset - 1]);
+#endif
     for (x = y % 2 ? 0 : (shading_offset / 2) + (shading_offset % 2);
          x < GRAPHICS_FRAME_WIDTH;
          x += shading_offset)
@@ -2307,6 +2316,7 @@ void draw_shaded_quad(GContext *ctx,
 {
   int16_t i, j, shading_offset, half_shading_offset;
   float shading_gradient = 0;
+  GColor primary_color = GColorWhite;
 
   shading_gradient = (float) (upper_right.y - upper_left.y) /
                              (upper_right.x - upper_left.x);
@@ -2327,6 +2337,12 @@ void draw_shaded_quad(GContext *ctx,
       shading_offset++;
     }
     half_shading_offset = (shading_offset / 2) + (shading_offset % 2);
+#ifdef PBL_COLOR
+    primary_color = g_background_colors[g_mission->wall_color_scheme]
+                      [shading_offset > NUM_BACKGROUND_COLORS_PER_SCHEME ?
+                         NUM_BACKGROUND_COLORS_PER_SCHEME - 1            :
+                         shading_offset - 1];
+#endif
 
     // Now, draw points from top to bottom:
     for (j = upper_left.y + (i - upper_left.x) * shading_gradient;
@@ -2336,7 +2352,7 @@ void draw_shaded_quad(GContext *ctx,
       if ((j + (int16_t) ((i - upper_left.x) * shading_gradient) +
           (i % 2 == 0 ? 0 : half_shading_offset)) % shading_offset == 0)
       {
-        graphics_context_set_stroke_color(ctx, GColorWhite);
+        graphics_context_set_stroke_color(ctx, primary_color);
       }
       else
       {
@@ -3040,6 +3056,10 @@ void init_mission(const int16_t type)
 {
   int8_t i;
 
+#ifdef PBL_COLOR
+  g_maze->floor_color_scheme = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
+  g_maze->wall_color_scheme  = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
+#endif
   g_mission->type            = type;
   g_mission->completed       = false;
   g_mission->total_num_npcs  = 5 * (rand() % 4 + 1);            // 5-20

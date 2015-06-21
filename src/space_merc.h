@@ -234,6 +234,10 @@ typedef struct NonPlayerCharacter {
 typedef struct Mission {
   int8_t type,
          cells[LOCATION_WIDTH][LOCATION_HEIGHT],
+#ifdef PBL_COLOR
+         floor_color_scheme,
+         wall_color_scheme,
+#endif
          entrance_direction,
          total_num_npcs,
          kills;
@@ -268,6 +272,10 @@ mission_t *g_mission;
 player_t *g_player;
 
 #ifdef PBL_COLOR
+#define NUM_BACKGROUND_COLOR_SCHEMES     8
+#define NUM_BACKGROUND_COLORS_PER_SCHEME 10
+GColor g_background_colors[NUM_BACKGROUND_COLOR_SCHEMES]
+                          [NUM_BACKGROUND_COLORS_PER_SCHEME];
 StatusBarLayer *g_status_bar;
 #else
 InverterLayer *g_inverter_layer;
