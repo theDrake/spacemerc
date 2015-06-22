@@ -166,10 +166,10 @@ enum {
 #define UPGRADE_MENU_NUM_ROWS       4
 #define DEFAULT_VIBES_SETTING       false
 #define DEFAULT_PLAYER_MONEY        0
-#define DEFAULT_PLAYER_POWER        10
-#define DEFAULT_PLAYER_DEFENSE      10
-#define DEFAULT_PLAYER_MAX_HP       30
-#define DEFAULT_PLAYER_MAX_AMMO     30
+#define DEFAULT_PLAYER_POWER        5
+#define DEFAULT_PLAYER_DEFENSE      5
+#define DEFAULT_PLAYER_MAX_HP       10
+#define DEFAULT_PLAYER_MAX_AMMO     10
 #define DEFAULT_CELL_HP             50
 #define STAT_BOOST_PER_UPGRADE      5
 #define UPGRADE_COST_MULTIPLIER     250
