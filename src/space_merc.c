@@ -1289,14 +1289,15 @@ void draw_player_laser_beam(GContext *ctx)
 {
   int16_t i;
 
-  graphics_context_set_stroke_color(ctx, GColorWhite);
 #ifdef PBL_COLOR
+  graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
   graphics_draw_line(ctx,
                      GPoint(SCREEN_CENTER_POINT_X,
                             GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
                      GPoint(SCREEN_CENTER_POINT.x,
                             SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
 #else
+  graphics_context_set_stroke_color(ctx, GColorWhite);
   graphics_draw_line(ctx,
                      GPoint(SCREEN_CENTER_POINT_X, GRAPHICS_FRAME_HEIGHT),
                      SCREEN_CENTER_POINT);
@@ -1308,6 +1309,10 @@ void draw_player_laser_beam(GContext *ctx)
       graphics_context_set_stroke_color(ctx, GColorBlack);
     }
 #ifdef PBL_COLOR
+    else
+    {
+      graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
+    }
     graphics_draw_line(ctx,
                        GPoint(SCREEN_CENTER_POINT_X - i,
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
@@ -2003,6 +2008,14 @@ void draw_cell_contents(GContext *ctx,
     // Torso:
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorBrass);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x -
+                               (drawing_unit + drawing_unit / 2),
+                             floor_center_point.y - drawing_unit * 8,
+                             drawing_unit * 3,
+                             drawing_unit * 4),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
 #endif
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x -
@@ -2281,7 +2294,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Mouth:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorFolly);
+    graphics_context_set_fill_color(ctx, GColorRed);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
@@ -2325,7 +2338,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Eyes:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorMintGreen);
+    graphics_context_set_fill_color(ctx, RANDOM_BRIGHT_COLOR);
 #else
     graphics_context_set_fill_color(ctx, GColorWhite);
 #endif
