@@ -1906,7 +1906,7 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit / 2,
                          GCornersRight);
 #ifdef PBL_COLOR
-      graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+      graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
 #else
       graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
@@ -1959,7 +1959,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Gun (placed here for efficiency reasons):
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+    graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
 #endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x -
@@ -2217,7 +2217,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Guns:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, RANDOM_BRIGHT_COLOR);
+    graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
 #endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit * 3,
@@ -2281,7 +2281,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Mouth:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorMelon);
+    graphics_context_set_fill_color(ctx, GColorFolly);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
@@ -2312,9 +2312,6 @@ void draw_cell_contents(GContext *ctx,
   else if (content_type == OOZE)
   {
     // Body:
-#ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorImperialPurple);
-#endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x,
                                 floor_center_point.y - drawing_unit * 2),
@@ -2409,11 +2406,13 @@ void draw_floating_monstrosity(GContext *ctx,
   int32_t theta;
   int16_t i, x_offset, y_offset;
 
-#ifdef PBL_BW
+#ifdef PBL_COLOR
+  graphics_context_set_fill_color(ctx, GColorBlack);
+#else
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_fill_circle(ctx, center, radius);
 #endif
+  graphics_fill_circle(ctx, center, radius);
   for (i = radius; i > radius / 3; --i)
   {
     if (i == 2 * (radius / 3))
