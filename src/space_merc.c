@@ -2288,24 +2288,24 @@ void draw_cell_contents(GContext *ctx,
                                (drawing_unit + drawing_unit / 2),
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
-                               ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(0) % 2 ?
+                               0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
-                               ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(0) % 2 ?
+                               0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit,
-                             drawing_unit + drawing_unit / 2 + (time(NULL) % 2
-                               ? 0 : drawing_unit / 2)),
+                             drawing_unit + drawing_unit / 2 + (time(0) % 2 ?
+                               0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
   }
@@ -2364,8 +2364,8 @@ void draw_cell_contents(GContext *ctx,
   {
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx,
-                                    time() % 2 ? GColorYellow :
-                                                 GColorPastelYellow);
+                                    time(0) % 2 ? GColorYellow :
+                                                  GColorPastelYellow);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 6 +
@@ -3644,7 +3644,7 @@ Description: Initializes the SpaceMerc app then displays the main menu (after
 ******************************************************************************/
 void init(void)
 {
-  srand(time(NULL));
+  srand(time(0));
   g_game_paused = true;
   g_mission     = NULL;
   app_focus_service_subscribe(app_focus_handler);
