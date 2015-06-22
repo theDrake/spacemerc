@@ -1775,6 +1775,23 @@ void draw_cell_contents(GContext *ctx,
       content_type == ALIEN_OFFICER)
   {
     // Legs:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorDarkGray);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 2,
+                             floor_center_point.y - drawing_unit * 3,
+                             drawing_unit,
+                             drawing_unit * 3),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x + drawing_unit,
+                             floor_center_point.y - drawing_unit * 3,
+                             drawing_unit,
+                             drawing_unit * 3),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+#else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 3),
@@ -1795,8 +1812,18 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y),
                      GPoint(top_left_point.x + 4, top_left_point.y + 4));
+#endif
 
     // Waist:
+#ifdef PBL_COLOR
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 2,
+                             floor_center_point.y - drawing_unit * 4,
+                             drawing_unit * 4,
+                             drawing_unit),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+#else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 4),
@@ -1807,8 +1834,30 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x + drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 3),
                      GPoint(top_left_point.x + 4, top_left_point.y + 4));
+#endif
 
     // Torso:
+#ifdef PBL_COLOR
+    if (content_type == ALIEN_OFFICER)
+    {
+      graphics_context_set_fill_color(ctx, GColorPurple);
+    }
+    else if (content_type == ALIEN_ELITE)
+    {
+      graphics_context_set_fill_color(ctx, GColorArmyGreen);
+    }
+    else // content_type == ALIEN_SOLDIER
+    {
+      graphics_context_set_fill_color(ctx, GColorWindsorTan);
+    }
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 2,
+                             floor_center_point.y - drawing_unit * 8,
+                             drawing_unit * 4,
+                             drawing_unit * 4),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+#else
     if (content_type == ALIEN_OFFICER)
     {
       draw_shaded_quad(ctx,
@@ -1832,9 +1881,14 @@ void draw_cell_contents(GContext *ctx,
                          NO_CORNER_RADIUS,
                          GCornerNone);
     }
+#endif
 
     // Arms:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorCeleste);
+#else
     graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
                              floor_center_point.y - drawing_unit * 8,
@@ -1851,14 +1905,22 @@ void draw_cell_contents(GContext *ctx,
                                drawing_unit * 3),
                          drawing_unit / 2,
                          GCornersRight);
+#ifdef PBL_COLOR
+      graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+#else
       graphics_context_set_fill_color(ctx, GColorBlack);
+#endif
       graphics_fill_circle(ctx,
                            GPoint(floor_center_point.x +
                                     (drawing_unit * 2 + drawing_unit / 2),
                                   floor_center_point.y -
                                     (drawing_unit * 5 + drawing_unit / 2)),
                            drawing_unit / 2 + drawing_unit / 4);
-      graphics_context_set_fill_color(ctx, GColorWhite); // For the head.
+#ifdef PBL_COLOR
+      graphics_context_set_fill_color(ctx, GColorCeleste); // For the head.
+#else
+      graphics_context_set_fill_color(ctx, GColorWhite);   // For the head.
+#endif
     }
     else
     {
@@ -1881,7 +1943,11 @@ void draw_cell_contents(GContext *ctx,
                        GCornersTop);
 
     // Eyes:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorDukeBlue);
+#else
     graphics_context_set_fill_color(ctx, GColorBlack);
+#endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit / 2,
                                 floor_center_point.y - drawing_unit * 9),
@@ -1892,6 +1958,9 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit / 4);
 
     // Gun (placed here for efficiency reasons):
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+#endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x -
                                   (drawing_unit * 2 + drawing_unit / 2),
@@ -1902,6 +1971,9 @@ void draw_cell_contents(GContext *ctx,
   else if (content_type == HUMAN)
   {
     // Legs:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorArmyGreen);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
                                (drawing_unit + drawing_unit / 2),
@@ -1929,6 +2001,9 @@ void draw_cell_contents(GContext *ctx,
                        GCornerNone);
 
     // Torso:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorBrass);
+#endif
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x -
                               (drawing_unit + drawing_unit / 2),
@@ -1945,7 +2020,11 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(top_left_point.x - 20, top_left_point.y - 20));
 
     // Arms:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorMelon);
+#else
     graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 8,
@@ -1972,6 +2051,16 @@ void draw_cell_contents(GContext *ctx,
                        GCornersAll);
 
     // Hair:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit / 2,
+                             floor_center_point.y - drawing_unit * 10,
+                             drawing_unit + 1,
+                             drawing_unit - drawing_unit / 3),
+                       drawing_unit / 2,
+                       GCornersTop);
+#else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit / 2,
                             floor_center_point.y - drawing_unit * 10),
@@ -1984,6 +2073,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y -
                               (drawing_unit * 9 + drawing_unit / 3)),
                      GPoint(top_left_point.x - 10, top_left_point.y - 10));
+#endif
 
     // Eyes:
     graphics_context_set_fill_color(ctx, GColorBlack);
@@ -1999,6 +2089,23 @@ void draw_cell_contents(GContext *ctx,
   else if (content_type == ROBOT)
   {
     // Tracks/wheels:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorDarkGray);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 4,
+                             floor_center_point.y - drawing_unit * 2,
+                             drawing_unit * 3,
+                             drawing_unit * 2),
+                       drawing_unit / 4,
+                       GCornersAll);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x + drawing_unit,
+                             floor_center_point.y - drawing_unit * 2,
+                             drawing_unit * 3,
+                             drawing_unit * 2),
+                       drawing_unit / 4,
+                       GCornersAll);
+#else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit * 4,
                             floor_center_point.y - drawing_unit * 2),
@@ -2019,8 +2126,37 @@ void draw_cell_contents(GContext *ctx,
                      GPoint(floor_center_point.x + drawing_unit * 4,
                             floor_center_point.y),
                      GPoint(top_left_point.x + 6, top_left_point.y + 6));
+#endif
 
-    // Arms:
+    // Neck and Arms:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorLightGray);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit / 2,
+                             floor_center_point.y - drawing_unit * 7,
+                             drawing_unit,
+                             drawing_unit),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+    graphics_fill_rect(ctx,
+                       GRect(floor_center_point.x - drawing_unit * 2,
+                             floor_center_point.y - drawing_unit * 5,
+                             drawing_unit * 4,
+                             drawing_unit),
+                       NO_CORNER_RADIUS,
+                       GCornerNone);
+    graphics_context_set_fill_color(ctx, GColorBabyBlueEyes);
+#else
+    draw_shaded_quad(ctx,
+                     GPoint(floor_center_point.x - drawing_unit / 2,
+                            floor_center_point.y - drawing_unit * 7),
+                     GPoint(floor_center_point.x - drawing_unit / 2,
+                            floor_center_point.y - drawing_unit * 6),
+                     GPoint(floor_center_point.x + drawing_unit / 2,
+                            floor_center_point.y - drawing_unit * 7),
+                     GPoint(floor_center_point.x + drawing_unit / 2,
+                            floor_center_point.y - drawing_unit * 6),
+                     GPoint(top_left_point.x - 10, top_left_point.y - 10));
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit * 2,
                             floor_center_point.y - drawing_unit * 5),
@@ -2032,6 +2168,7 @@ void draw_cell_contents(GContext *ctx,
                             floor_center_point.y - drawing_unit * 4),
                      GPoint(top_left_point.x - 10, top_left_point.y - 10));
     graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 4,
                              floor_center_point.y -
@@ -2058,18 +2195,6 @@ void draw_cell_contents(GContext *ctx,
                        drawing_unit / 2,
                        GCornersTop);
 
-    // Neck:
-    draw_shaded_quad(ctx,
-                     GPoint(floor_center_point.x - drawing_unit / 2,
-                            floor_center_point.y - drawing_unit * 7),
-                     GPoint(floor_center_point.x - drawing_unit / 2,
-                            floor_center_point.y - drawing_unit * 6),
-                     GPoint(floor_center_point.x + drawing_unit / 2,
-                            floor_center_point.y - drawing_unit * 7),
-                     GPoint(floor_center_point.x + drawing_unit / 2,
-                            floor_center_point.y - drawing_unit * 6),
-                     GPoint(top_left_point.x - 10, top_left_point.y - 10));
-
     // Head:
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
@@ -2091,6 +2216,9 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit / 2);
 
     // Guns:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, RANDOM_BRIGHT_COLOR);
+#endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit * 3,
                                 floor_center_point.y -
@@ -2105,6 +2233,9 @@ void draw_cell_contents(GContext *ctx,
   else if (content_type == BEAST)
   {
     // Legs:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorOxfordBlue);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
                              floor_center_point.y - drawing_unit * 4,
@@ -2127,7 +2258,11 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit * 3);
 
     // Eyes:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorIcterine);
+#else
     graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
                                (drawing_unit + drawing_unit / 2),
@@ -2145,6 +2280,9 @@ void draw_cell_contents(GContext *ctx,
                        GCornersAll);
 
     // Mouth:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorMelon);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
                                (drawing_unit + drawing_unit / 2),
@@ -2174,6 +2312,9 @@ void draw_cell_contents(GContext *ctx,
   else if (content_type == OOZE)
   {
     // Body:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorImperialPurple);
+#endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x,
                                 floor_center_point.y - drawing_unit * 2),
@@ -2186,7 +2327,11 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit * 4);
 
     // Eyes:
+#ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx, GColorMintGreen);
+#else
     graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
                              floor_center_point.y - drawing_unit * 7,
@@ -2217,8 +2362,10 @@ void draw_cell_contents(GContext *ctx,
   }
   else // content_type == ITEM
   {
-    graphics_context_set_fill_color(ctx, GColorWhite);
 #ifdef PBL_COLOR
+    graphics_context_set_fill_color(ctx,
+                                    time() % 2 ? GColorYellow :
+                                                 GColorPastelYellow);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 6 +
@@ -2228,6 +2375,7 @@ void draw_cell_contents(GContext *ctx,
                        drawing_unit / 2,
                        GCornersTop);
 #else
+    graphics_context_set_fill_color(ctx, GColorWhite);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 6,
@@ -2261,10 +2409,11 @@ void draw_floating_monstrosity(GContext *ctx,
   int32_t theta;
   int16_t i, x_offset, y_offset;
 
+#ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
-
   graphics_fill_circle(ctx, center, radius);
+#endif
   for (i = radius; i > radius / 3; --i)
   {
     if (i == 2 * (radius / 3))
@@ -2277,6 +2426,9 @@ void draw_floating_monstrosity(GContext *ctx,
     {
       x_offset = cos_lookup(theta) * i / TRIG_MAX_RATIO;
       y_offset = sin_lookup(theta) * i / TRIG_MAX_RATIO;
+#ifdef PBL_COLOR
+      graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
+#endif
       graphics_draw_pixel(ctx,
                           GPoint(center.x - x_offset, center.y - y_offset));
       graphics_draw_pixel(ctx,
@@ -2950,7 +3102,7 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
   // NPC stats are based on the player's in an effort to maintain balance:
   npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 6;
   npc->hp    = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
-  npc->hp   -= npc->hp / 3;
+  npc->hp    -= npc->hp / 3;
 
   // Some NPCs have extra power or HP (or both):
   if (type == ALIEN_OFFICER ||
@@ -2966,6 +3118,16 @@ void init_npc(npc_t *npc, const int16_t type, const GPoint position)
       type == FLOATING_MONSTROSITY)
   {
     npc->hp *= 1.5;
+  }
+
+  // Check for integer overflow:
+  if (npc->power < 0)
+  {
+    npc->power = MAX_INT8_VALUE;
+  }
+  if (npc->hp < 0)
+  {
+    npc->hp = MAX_INT8_VALUE;
   }
 }
 

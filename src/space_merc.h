@@ -116,6 +116,9 @@ enum {
 #define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME              GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define NARRATION_TEXT_LAYER_FRAME  GRect(2, STATUS_BAR_HEIGHT, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#define RANDOM_COLOR                GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
+#define RANDOM_DARK_COLOR           GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
+#define RANDOM_BRIGHT_COLOR         GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
 #else
 #define FULL_SCREEN_FRAME           GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
@@ -143,6 +146,7 @@ enum {
 #define MAX_SMALL_INT_DIGITS        4
 #define MAX_LARGE_INT_VALUE         999999999
 #define MAX_LARGE_INT_DIGITS        9
+#define MAX_INT8_VALUE              127
 #define FIRST_WALL_OFFSET           STATUS_BAR_HEIGHT
 #define MIN_WALL_HEIGHT             STATUS_BAR_HEIGHT
 #define GRAPHICS_FRAME_WIDTH        SCREEN_WIDTH
@@ -226,9 +230,9 @@ typedef struct PlayerCharacter {
 
 typedef struct NonPlayerCharacter {
   GPoint position;
-  int8_t type;
-  int16_t power,
-          hp;
+  int8_t type,
+         power,
+         hp;
 } __attribute__((__packed__)) npc_t;
 
 typedef struct Mission {
