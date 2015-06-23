@@ -1911,7 +1911,7 @@ void draw_cell_contents(GContext *ctx,
                          drawing_unit / 2,
                          GCornersRight);
 #ifdef PBL_COLOR
-      graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
+      graphics_context_set_fill_color(ctx, NPC_LASER_COLOR);
 #else
       graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
@@ -1964,7 +1964,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Gun (placed here for efficiency reasons):
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
+    graphics_context_set_fill_color(ctx, NPC_LASER_COLOR);
 #endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x -
@@ -2016,7 +2016,7 @@ void draw_cell_contents(GContext *ctx,
                              drawing_unit * 4),
                        NO_CORNER_RADIUS,
                        GCornerNone);
-#endif
+#else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x -
                               (drawing_unit + drawing_unit / 2),
@@ -2031,6 +2031,7 @@ void draw_cell_contents(GContext *ctx,
                               (drawing_unit + drawing_unit / 2),
                             floor_center_point.y - drawing_unit * 4),
                      GPoint(top_left_point.x - 20, top_left_point.y - 20));
+#endif
 
     // Arms:
 #ifdef PBL_COLOR
@@ -2230,7 +2231,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Guns:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, RANDOM_DARK_COLOR);
+    graphics_context_set_fill_color(ctx, NPC_LASER_COLOR);
 #endif
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x - drawing_unit * 3,
@@ -2247,7 +2248,7 @@ void draw_cell_contents(GContext *ctx,
   {
     // Legs:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorOxfordBlue);
+    graphics_context_set_fill_color(ctx, GColorImperialPurple);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
@@ -2272,7 +2273,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Eyes:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorIcterine);
+    graphics_context_set_fill_color(ctx, GColorPastelYellow);
 #else
     graphics_context_set_fill_color(ctx, GColorWhite);
 #endif
@@ -2294,7 +2295,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Mouth:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorRed);
+    graphics_context_set_fill_color(ctx, GColorJazzberryJam);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
@@ -2439,7 +2440,7 @@ void draw_floating_monstrosity(GContext *ctx,
       x_offset = cos_lookup(theta) * i / TRIG_MAX_RATIO;
       y_offset = sin_lookup(theta) * i / TRIG_MAX_RATIO;
 #ifdef PBL_COLOR
-      graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
+      graphics_context_set_stroke_color(ctx, RANDOM_COLOR);
 #endif
       graphics_draw_pixel(ctx,
                           GPoint(center.x - x_offset, center.y - y_offset));
