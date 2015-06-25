@@ -3680,11 +3680,17 @@ void init(void)
 #endif
   show_window(g_main_menu_window);
 
-  // Check for saved data and initialize the player struct:
+  // Check for saved data and initialize the player struct, etc.:
   g_player = malloc(sizeof(player_t));
   if (persist_exists(STORAGE_KEY))
   {
     persist_read_data(STORAGE_KEY, g_player, sizeof(player_t));
+    if (persist_exists(STORAGE_KEY + 1))
+    {
+      g_mission = malloc(sizeof(mission_t));
+      persist_read_data(STORAGE_KEY + 1, g_mission, sizeof(mission_t));
+      set_player_direction(g_player->direction); // To update compass.
+    }
   }
   else
   {
@@ -3706,6 +3712,10 @@ Description: Deinitializes the SpaceMerc app.
 void deinit(void)
 {
   persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
+  if (g_mission != NULL)
+  {
+    persist_write_data(STORAGE_KEY + 1, g_mission, sizeof(mission_t));
+  }
   app_focus_service_unsubscribe();
 #ifdef PBL_COLOR
   status_bar_layer_destroy(g_status_bar);
