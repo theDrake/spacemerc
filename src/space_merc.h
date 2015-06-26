@@ -372,7 +372,6 @@ void fill_quad(GContext *ctx,
                const GPoint upper_right,
                const GPoint lower_right,
                const GColor color);
-void draw_status_bar(GContext *ctx);
 void draw_status_meter(GContext *ctx,
                        GPoint origin,
                        const float ratio);

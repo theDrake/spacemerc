@@ -1269,8 +1269,37 @@ void draw_scene(Layer *layer, GContext *ctx)
     draw_player_laser_beam(ctx);
   }
 
-  // Draw the lower status bar:
-  draw_status_bar(ctx);
+  // Draw health meter:
+  draw_status_meter(ctx,
+                    GPoint (STATUS_METER_PADDING,
+                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
+                    (float) g_player->stats[CURRENT_HP] /
+                      g_player->stats[MAX_HP]);
+
+  // Draw ammo meter:
+  draw_status_meter(ctx,
+                    GPoint (SCREEN_CENTER_POINT_X + STATUS_METER_PADDING +
+                              COMPASS_RADIUS + 1,
+                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
+                    (float) g_player->stats[CURRENT_ENERGY] /
+                      g_player->stats[MAX_ENERGY]);
+
+  // Draw compass:
+#ifdef PBL_COLOR
+  graphics_fill_circle(ctx,
+                       GPoint(SCREEN_CENTER_POINT_X,
+                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
+                                STATUS_BAR_HEIGHT),
+                       COMPASS_RADIUS);
+#else
+  graphics_fill_circle(ctx,
+                       GPoint(SCREEN_CENTER_POINT_X,
+                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2),
+                       COMPASS_RADIUS);
+#endif
+  graphics_context_set_fill_color(ctx, GColorBlack);
+  gpath_draw_outline(ctx, g_compass_path);
+  gpath_draw_filled(ctx, g_compass_path);
 
   // Finally, ensure the backlight is on:
   light_enable_interaction();
@@ -1375,7 +1404,7 @@ void draw_floor_and_ceiling(GContext *ctx)
          x < GRAPHICS_FRAME_WIDTH;
          x += shading_offset)
     {
-      // Draw a point on the ceiling and another on the floor:
+      // Draw one point on the ceiling and another on the floor:
 #ifdef PBL_COLOR
       graphics_draw_pixel(ctx, GPoint(x, y + STATUS_BAR_HEIGHT));
       graphics_draw_pixel(ctx, GPoint(x, GRAPHICS_FRAME_HEIGHT - y +
@@ -2420,13 +2449,11 @@ void draw_floating_monstrosity(GContext *ctx,
   int32_t theta;
   int16_t i, x_offset, y_offset;
 
-#ifdef PBL_COLOR
-  graphics_context_set_fill_color(ctx, GColorBlack);
-#else
+#ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
-#endif
   graphics_fill_circle(ctx, center, radius);
+#endif
   for (i = radius; i > radius / 3; --i)
   {
     if (i == 2 * (radius / 3))
@@ -2559,50 +2586,6 @@ void fill_quad(GContext *ctx,
                        GPoint(i, lower_left.y - (i - upper_left.x) *
                                    dy_over_width));
   }
-}
-
-/******************************************************************************
-   Function: draw_status_bar
-
-Description: Draws the lower status bar.
-
-     Inputs: ctx - Pointer to the relevant graphics context.
-
-    Outputs: None.
-******************************************************************************/
-void draw_status_bar(GContext *ctx)
-{
-  // Health meter:
-  draw_status_meter(ctx,
-                    GPoint (STATUS_METER_PADDING,
-                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
-                    (float) g_player->stats[CURRENT_HP] /
-                      g_player->stats[MAX_HP]);
-
-  // Ammo meter:
-  draw_status_meter(ctx,
-                    GPoint (SCREEN_CENTER_POINT_X + STATUS_METER_PADDING +
-                              COMPASS_RADIUS + 1,
-                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
-                    (float) g_player->stats[CURRENT_ENERGY] /
-                      g_player->stats[MAX_ENERGY]);
-
-  // Compass:
-#ifdef PBL_COLOR
-  graphics_fill_circle(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X,
-                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
-                                STATUS_BAR_HEIGHT),
-                       COMPASS_RADIUS);
-#else
-  graphics_fill_circle(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X,
-                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2),
-                       COMPASS_RADIUS);
-#endif
-  graphics_context_set_fill_color(ctx, GColorBlack);
-  gpath_draw_outline(ctx, g_compass_path);
-  gpath_draw_filled(ctx, g_compass_path);
 }
 
 /******************************************************************************
@@ -3668,11 +3651,11 @@ void init(void)
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
 #ifdef PBL_COLOR
-  g_status_bar = status_bar_layer_create();
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
                                          STATUS_BAR_HEIGHT   +
                                          STATUS_BAR_HEIGHT / 2));
+  g_status_bar = status_bar_layer_create();
 #else
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
