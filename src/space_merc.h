@@ -100,92 +100,94 @@ enum {
   Other Constants
 ******************************************************************************/
 
-#define NARRATION_STR_LEN           110
-#define UPGRADE_MENU_HEADER_STR_LEN 17
-#define UPGRADE_TITLE_STR_LEN       13
-#define UPGRADE_SUBTITLE_STR_LEN    21
-#define SCREEN_WIDTH                144
-#define SCREEN_HEIGHT               168
-#define SCREEN_CENTER_POINT_X       (SCREEN_WIDTH / 2)
-#define SCREEN_CENTER_POINT_Y       (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
-#define SCREEN_CENTER_POINT         GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
-#define STATUS_BAR_HEIGHT           16 // Applies to top and bottom status bars.
+#define NARRATION_STR_LEN                110
+#define UPGRADE_MENU_HEADER_STR_LEN      17
+#define UPGRADE_TITLE_STR_LEN            13
+#define UPGRADE_SUBTITLE_STR_LEN         21
+#define SCREEN_WIDTH                     144
+#define SCREEN_HEIGHT                    168
+#define SCREEN_CENTER_POINT_X            (SCREEN_WIDTH / 2)
+#define SCREEN_CENTER_POINT_Y            (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
+#define SCREEN_CENTER_POINT              GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
+#define STATUS_BAR_HEIGHT                16 // Applies to top and bottom status bars.
 
 #ifdef PBL_COLOR
-#define FULL_SCREEN_FRAME           GRect(0, STATUS_BAR_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
-#define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
-#define GRAPHICS_FRAME              GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME  GRect(2, STATUS_BAR_HEIGHT, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
-#define RANDOM_COLOR                GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
-#define RANDOM_DARK_COLOR           GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
-#define RANDOM_BRIGHT_COLOR         GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
-#define NPC_LASER_COLOR             (rand() % 2 ? GColorFolly : GColorDarkCandyAppleRed)
+#define FULL_SCREEN_FRAME                GRect(0, STATUS_BAR_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
+#define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME                   GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME       GRect(2, STATUS_BAR_HEIGHT, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#define NUM_BACKGROUND_COLOR_SCHEMES     8
+#define NUM_BACKGROUND_COLORS_PER_SCHEME 10
+#define RANDOM_COLOR                     GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
+#define RANDOM_DARK_COLOR                GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
+#define RANDOM_BRIGHT_COLOR              GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
+#define NPC_LASER_COLOR                  (rand() % 2 ? GColorFolly : GColorDarkCandyAppleRed)
 #else
-#define FULL_SCREEN_FRAME           GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
-#define STATUS_BAR_FRAME            GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
-#define GRAPHICS_FRAME              GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME  GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#define FULL_SCREEN_FRAME                GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
+#define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
+#define GRAPHICS_FRAME                   GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
+#define NARRATION_TEXT_LAYER_FRAME       GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
 #endif
 
-#define COMPASS_RADIUS              5
-#define STATUS_METER_PADDING        4
-#define STATUS_METER_WIDTH          (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
-#define STATUS_METER_HEIGHT         (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
-#define NO_CORNER_RADIUS            0
-#define SMALL_CORNER_RADIUS         3
-#define NINETY_DEGREES              (TRIG_MAX_ANGLE / 4)
-#define DEFAULT_ROTATION_RATE       (TRIG_MAX_ANGLE / 30) // 12 degrees
-#define MULTI_CLICK_MIN             2
-#define MULTI_CLICK_MAX             2 // We only care about double-clicks.
-#define MULTI_CLICK_TIMEOUT         0
-#define LAST_CLICK_ONLY             true
-#define MOVEMENT_REPEAT_INTERVAL    250 // milliseconds
-#define ATTACK_REPEAT_INTERVAL      250 // milliseconds
-#define PLAYER_TIMER_DURATION       20  // milliseconds
-#define FLASH_TIMER_DURATION        20  // milliseconds
-#define MAX_SMALL_INT_VALUE         9999
-#define MAX_SMALL_INT_DIGITS        4
-#define MAX_LARGE_INT_VALUE         999999999
-#define MAX_LARGE_INT_DIGITS        9
-#define MAX_INT8_VALUE              127
-#define FIRST_WALL_OFFSET           STATUS_BAR_HEIGHT
-#define MIN_WALL_HEIGHT             STATUS_BAR_HEIGHT
-#define GRAPHICS_FRAME_WIDTH        SCREEN_WIDTH
-#define GRAPHICS_FRAME_HEIGHT       (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
-#define LOCATION_WIDTH              15
-#define LOCATION_HEIGHT             LOCATION_WIDTH
-#define MAX_VISIBILITY_DEPTH        6 // Helps determine no. of cells visible in a given line of sight.
-#define STRAIGHT_AHEAD              (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
-#define TOP_LEFT                    0                          // Index value for "g_back_wall_coords".
-#define BOTTOM_RIGHT                1                          // Index value for "g_back_wall_coords".
-#define RANDOM_POINT_NORTH          GPoint(rand() % LOCATION_WIDTH, 0)
-#define RANDOM_POINT_SOUTH          GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
-#define RANDOM_POINT_EAST           GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
-#define RANDOM_POINT_WEST           GPoint(0, rand() % LOCATION_HEIGHT)
-#define NARRATION_FONT              fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
-#define MAIN_MENU_NUM_ROWS          5
-#define UPGRADE_MENU_NUM_ROWS       4
-#define DEFAULT_VIBES_SETTING       false
-#define DEFAULT_PLAYER_MONEY        0
-#define DEFAULT_PLAYER_POWER        5
-#define DEFAULT_PLAYER_DEFENSE      5
-#define DEFAULT_PLAYER_MAX_HP       10
-#define DEFAULT_PLAYER_MAX_AMMO     10
-#define DEFAULT_CELL_HP             50
-#define STAT_BOOST_PER_UPGRADE      5
-#define UPGRADE_COST_MULTIPLIER     250
-#define NUM_PLAYER_ANIMATIONS       2 // No. of steps in the player's attack animation.
-#define MAX_LASER_BASE_WIDTH        12
-#define MIN_LASER_BASE_WIDTH        8
-#define HP_RECOVERY_RATE            1 // HP per second.
-#define ENERGY_RECOVERY_RATE        1 // Energy (ammo) per second.
-#define MIN_DAMAGE                  (HP_RECOVERY_RATE + 1)
-#define ENERGY_LOSS_PER_SHOT        (ENERGY_RECOVERY_RATE + 1)
-#define STORAGE_KEY                 417
-#define MAX_NPCS_AT_ONE_TIME        2
-#define ANIMATED                    true
-#define NOT_ANIMATED                false
-#define RANDOM_NPC_TYPE             (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
+#define COMPASS_RADIUS                   5
+#define STATUS_METER_PADDING             4
+#define STATUS_METER_WIDTH               (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
+#define STATUS_METER_HEIGHT              (STATUS_BAR_HEIGHT - STATUS_METER_PADDING * 2)
+#define NO_CORNER_RADIUS                 0
+#define SMALL_CORNER_RADIUS              3
+#define NINETY_DEGREES                   (TRIG_MAX_ANGLE / 4)
+#define DEFAULT_ROTATION_RATE            (TRIG_MAX_ANGLE / 30) // 12 degrees
+#define MULTI_CLICK_MIN                  2
+#define MULTI_CLICK_MAX                  2 // We only care about double-clicks.
+#define MULTI_CLICK_TIMEOUT              0
+#define LAST_CLICK_ONLY                  true
+#define MOVEMENT_REPEAT_INTERVAL         250 // milliseconds
+#define ATTACK_REPEAT_INTERVAL           250 // milliseconds
+#define PLAYER_TIMER_DURATION            20  // milliseconds
+#define FLASH_TIMER_DURATION             20  // milliseconds
+#define MAX_SMALL_INT_VALUE              9999
+#define MAX_SMALL_INT_DIGITS             4
+#define MAX_LARGE_INT_VALUE              999999999
+#define MAX_LARGE_INT_DIGITS             9
+#define MAX_INT8_VALUE                   127
+#define FIRST_WALL_OFFSET                STATUS_BAR_HEIGHT
+#define MIN_WALL_HEIGHT                  STATUS_BAR_HEIGHT
+#define GRAPHICS_FRAME_WIDTH             SCREEN_WIDTH
+#define GRAPHICS_FRAME_HEIGHT            (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
+#define LOCATION_WIDTH                   15
+#define LOCATION_HEIGHT                  LOCATION_WIDTH
+#define MAX_VISIBILITY_DEPTH             6 // Helps determine no. of cells visible in a given line of sight.
+#define STRAIGHT_AHEAD                   (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
+#define TOP_LEFT                         0                          // Index value for "g_back_wall_coords".
+#define BOTTOM_RIGHT                     1                          // Index value for "g_back_wall_coords".
+#define RANDOM_POINT_NORTH               GPoint(rand() % LOCATION_WIDTH, 0)
+#define RANDOM_POINT_SOUTH               GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
+#define RANDOM_POINT_EAST                GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
+#define RANDOM_POINT_WEST                GPoint(0, rand() % LOCATION_HEIGHT)
+#define NARRATION_FONT                   fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
+#define MAIN_MENU_NUM_ROWS               5
+#define UPGRADE_MENU_NUM_ROWS            4
+#define DEFAULT_VIBES_SETTING            false
+#define DEFAULT_PLAYER_MONEY             0
+#define DEFAULT_PLAYER_POWER             5
+#define DEFAULT_PLAYER_DEFENSE           5
+#define DEFAULT_PLAYER_MAX_HP            10
+#define DEFAULT_PLAYER_MAX_AMMO          10
+#define DEFAULT_CELL_HP                  50
+#define STAT_BOOST_PER_UPGRADE           5
+#define UPGRADE_COST_MULTIPLIER          250
+#define NUM_PLAYER_ANIMATIONS            2 // No. of steps in the player's attack animation.
+#define MAX_LASER_BASE_WIDTH             12
+#define MIN_LASER_BASE_WIDTH             8
+#define HP_RECOVERY_RATE                 1 // HP per second.
+#define ENERGY_RECOVERY_RATE             1 // Energy (ammo) per second.
+#define MIN_DAMAGE                       (HP_RECOVERY_RATE + 1)
+#define ENERGY_LOSS_PER_SHOT             (ENERGY_RECOVERY_RATE + 1)
+#define STORAGE_KEY                      417
+#define MAX_NPCS_AT_ONE_TIME             2
+#define ANIMATED                         true
+#define NOT_ANIMATED                     false
+#define RANDOM_NPC_TYPE                  (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
 
 static const GPathInfo COMPASS_PATH_INFO = {
   .num_points = 4,
@@ -277,8 +279,6 @@ mission_t *g_mission;
 player_t *g_player;
 
 #ifdef PBL_COLOR
-#define NUM_BACKGROUND_COLOR_SCHEMES     8
-#define NUM_BACKGROUND_COLORS_PER_SCHEME 10
 GColor g_background_colors[NUM_BACKGROUND_COLOR_SCHEMES]
                           [NUM_BACKGROUND_COLORS_PER_SCHEME];
 StatusBarLayer *g_status_bar;
