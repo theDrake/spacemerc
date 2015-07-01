@@ -2522,10 +2522,20 @@ void draw_shaded_quad(GContext *ctx,
     }
     half_shading_offset = (shading_offset / 2) + (shading_offset % 2);
 #ifdef PBL_COLOR
-    primary_color = g_background_colors[g_mission->wall_color_scheme]
-                      [shading_offset > NUM_BACKGROUND_COLORS_PER_SCHEME ?
-                         NUM_BACKGROUND_COLORS_PER_SCHEME - 1            :
-                         shading_offset - 1];
+    if (shading_offset + 1 > NUM_BACKGROUND_COLORS_PER_SCHEME)
+    {
+      primary_color = g_background_colors[g_mission->wall_color_scheme]
+                                        [NUM_BACKGROUND_COLORS_PER_SCHEME - 1];
+    }
+    else if (shading_offset > 2)
+    {
+      primary_color = g_background_colors[g_mission->wall_color_scheme]
+                                         [shading_offset - 2];
+    }
+    else
+    {
+      primary_color = g_background_colors[g_mission->wall_color_scheme][0];
+    }
 #endif
 
     // Now, draw points from top to bottom:
