@@ -1807,7 +1807,7 @@ void draw_cell_contents(GContext *ctx,
   {
     // Legs:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorDarkGray);
+    graphics_context_set_fill_color(ctx, GColorOxfordBlue);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
                              floor_center_point.y - drawing_unit * 3,
@@ -1875,11 +1875,11 @@ void draw_cell_contents(GContext *ctx,
     }
     else if (content_type == ALIEN_ELITE)
     {
-      graphics_context_set_fill_color(ctx, GColorArmyGreen);
+      graphics_context_set_fill_color(ctx, GColorVividCerulean);
     }
     else // content_type == ALIEN_SOLDIER
     {
-      graphics_context_set_fill_color(ctx, GColorWindsorTan);
+      graphics_context_set_fill_color(ctx, GColorCadetBlue);
     }
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
@@ -1916,7 +1916,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Arms:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorCeleste);
+    graphics_context_set_fill_color(ctx, GColorMintGreen);
 #else
     graphics_context_set_fill_color(ctx, GColorWhite);
 #endif
@@ -1948,9 +1948,9 @@ void draw_cell_contents(GContext *ctx,
                                     (drawing_unit * 5 + drawing_unit / 2)),
                            drawing_unit / 2 + drawing_unit / 4);
 #ifdef PBL_COLOR
-      graphics_context_set_fill_color(ctx, GColorCeleste); // For the head.
+      graphics_context_set_fill_color(ctx, GColorMintGreen); // For the head.
 #else
-      graphics_context_set_fill_color(ctx, GColorWhite);   // For the head.
+      graphics_context_set_fill_color(ctx, GColorWhite);     // For the head.
 #endif
     }
     else
@@ -1975,7 +1975,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Eyes:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorDukeBlue);
+    graphics_context_set_fill_color(ctx, GColorMidnightGreen);
 #else
     graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
@@ -2033,7 +2033,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Torso:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorBrass);
+    graphics_context_set_fill_color(ctx, GColorLimerick);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x -
                                (drawing_unit + drawing_unit / 2),
