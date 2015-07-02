@@ -2447,8 +2447,10 @@ void draw_floating_monstrosity(GContext *ctx,
 #ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_fill_circle(ctx, center, radius);
+#else
+  graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
+  graphics_fill_circle(ctx, center, radius);
   for (i = radius; i > radius / 3; --i)
   {
     if (i == 2 * (radius / 3))
