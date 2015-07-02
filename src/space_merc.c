@@ -2519,15 +2519,15 @@ void draw_shaded_quad(GContext *ctx,
     }
     half_shading_offset = (shading_offset / 2) + (shading_offset % 2);
 #ifdef PBL_COLOR
-    if (shading_offset + 1 > NUM_BACKGROUND_COLORS_PER_SCHEME)
+    if (shading_offset - 3 > NUM_BACKGROUND_COLORS_PER_SCHEME)
     {
       primary_color = g_background_colors[g_mission->wall_color_scheme]
                                         [NUM_BACKGROUND_COLORS_PER_SCHEME - 1];
     }
-    else if (shading_offset > 2)
+    else if (shading_offset > 4)
     {
       primary_color = g_background_colors[g_mission->wall_color_scheme]
-                                         [shading_offset - 2];
+                                         [shading_offset - 4];
     }
     else
     {
