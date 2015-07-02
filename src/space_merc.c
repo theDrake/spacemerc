@@ -1333,15 +1333,8 @@ void draw_player_laser_beam(GContext *ctx)
 #endif
   for (i = 0; i <= g_laser_base_width / 2; ++i)
   {
-    if (i == g_laser_base_width / 2)
-    {
-      graphics_context_set_stroke_color(ctx, GColorBlack);
-    }
 #ifdef PBL_COLOR
-    else
-    {
-      graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
-    }
+    graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
     graphics_draw_line(ctx,
                        GPoint(SCREEN_CENTER_POINT_X - i,
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
@@ -1353,6 +1346,10 @@ void draw_player_laser_beam(GContext *ctx)
                        GPoint(SCREEN_CENTER_POINT_X + i / 3,
                               SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
 #else
+    if (i == g_laser_base_width / 2)
+    {
+      graphics_context_set_stroke_color(ctx, GColorBlack);
+    }
     graphics_draw_line(ctx,
                        GPoint(SCREEN_CENTER_POINT_X - i,
                               GRAPHICS_FRAME_HEIGHT),
