@@ -2644,15 +2644,18 @@ void draw_status_meter(GContext *ctx,
 
   // Now draw the "empty" portion:
 #ifdef PBL_COLOR
-  graphics_context_set_fill_color(ctx, GColorDarkCandyAppleRed);
-  graphics_fill_rect(ctx,
-                     GRect(origin.x + filled_meter_width,
-                           origin.y,
-                           STATUS_METER_WIDTH - filled_meter_width + 1,
-                           STATUS_METER_HEIGHT),
-                     SMALL_CORNER_RADIUS,
-                     filled_meter_width < SMALL_CORNER_RADIUS ? GCornersAll :
+  if (ratio < 1)
+  {
+    graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+    graphics_fill_rect(ctx,
+                       GRect(origin.x + filled_meter_width,
+                             origin.y,
+                             STATUS_METER_WIDTH - filled_meter_width + 1,
+                             STATUS_METER_HEIGHT),
+                       SMALL_CORNER_RADIUS,
+                       filled_meter_width < SMALL_CORNER_RADIUS ? GCornersAll :
                                                                 GCornersRight);
+  }
 #else
   for (i = origin.x + STATUS_METER_WIDTH;
        i >= origin.x + (ratio * STATUS_METER_WIDTH);
