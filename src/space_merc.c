@@ -1276,7 +1276,7 @@ void draw_scene(Layer *layer, GContext *ctx)
                     (float) g_player->stats[CURRENT_HP] /
                       g_player->stats[MAX_HP]);
 
-  // Draw ammo meter:
+  // Draw energy (ammo) meter:
   draw_status_meter(ctx,
                     GPoint (SCREEN_CENTER_POINT_X + STATUS_METER_PADDING +
                               COMPASS_RADIUS + 1,
@@ -2615,8 +2615,19 @@ void draw_status_meter(GContext *ctx,
 {
   int16_t i, j;
 
+#ifdef PBL_COLOR
+  if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
+  {
+    graphics_context_set_fill_color(ctx, GColorGreen);
+  }
+  else                                  // Energy (ammo) meter:
+  {
+    graphics_context_set_fill_color(ctx, GColorYellow);
+  }
+#else
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
+#endif
 
 #ifdef PBL_COLOR
   origin.y += STATUS_BAR_HEIGHT;
@@ -2631,7 +2642,17 @@ void draw_status_meter(GContext *ctx,
                      SMALL_CORNER_RADIUS,
                      GCornersAll);
 
-  // Now shade the "empty" portion:
+  // Now draw the "empty" portion:
+#ifdef PBL_COLOR
+  graphics_context_set_fill_color(ctx, GColorDarkCandyAppleRed);
+  graphics_fill_rect(ctx,
+                     GRect(origin.x + (ratio * STATUS_METER_WIDTH),
+                           origin.y,
+                           STATUS_METER_WIDTH - (ratio * STATUS_METER_WIDTH),
+                           STATUS_METER_HEIGHT),
+                     SMALL_CORNER_RADIUS,
+                     GCornersRight);
+#else
   for (i = origin.x + STATUS_METER_WIDTH;
        i >= origin.x + (ratio * STATUS_METER_WIDTH);
        --i)
@@ -2643,6 +2664,7 @@ void draw_status_meter(GContext *ctx,
       graphics_draw_pixel(ctx, GPoint(i, j));
     }
   }
+#endif
 }
 
 /******************************************************************************
