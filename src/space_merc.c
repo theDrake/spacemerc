@@ -2613,9 +2613,15 @@ void draw_status_meter(GContext *ctx,
                        GPoint origin,
                        const float ratio)
 {
+#ifdef PBL_BW
   int16_t i, j;
 
-#ifdef PBL_COLOR
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_fill_color(ctx, GColorWhite);
+#else
+  int16_t filled_meter_width = ratio * STATUS_METER_WIDTH;
+
+  origin.y += STATUS_BAR_HEIGHT;
   if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
   {
     graphics_context_set_fill_color(ctx, GColorGreen);
@@ -2624,13 +2630,6 @@ void draw_status_meter(GContext *ctx,
   {
     graphics_context_set_fill_color(ctx, GColorYellow);
   }
-#else
-  graphics_context_set_stroke_color(ctx, GColorBlack);
-  graphics_context_set_fill_color(ctx, GColorWhite);
-#endif
-
-#ifdef PBL_COLOR
-  origin.y += STATUS_BAR_HEIGHT;
 #endif
 
   // First, draw a "full" meter:
@@ -2646,12 +2645,13 @@ void draw_status_meter(GContext *ctx,
 #ifdef PBL_COLOR
   graphics_context_set_fill_color(ctx, GColorDarkCandyAppleRed);
   graphics_fill_rect(ctx,
-                     GRect(origin.x + (ratio * STATUS_METER_WIDTH),
+                     GRect(origin.x + filled_meter_width,
                            origin.y,
-                           STATUS_METER_WIDTH - (ratio * STATUS_METER_WIDTH),
+                           STATUS_METER_WIDTH - filled_meter_width + 1,
                            STATUS_METER_HEIGHT),
                      SMALL_CORNER_RADIUS,
-                     GCornersRight);
+                     filled_meter_width < SMALL_CORNER_RADIUS ? GCornersAll :
+                                                                GCornersRight);
 #else
   for (i = origin.x + STATUS_METER_WIDTH;
        i >= origin.x + (ratio * STATUS_METER_WIDTH);
