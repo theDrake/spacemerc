@@ -1286,6 +1286,7 @@ void draw_scene(Layer *layer, GContext *ctx)
 
   // Draw compass:
 #ifdef PBL_COLOR
+  graphics_context_set_fill_color(ctx, GColorCyan);
   graphics_fill_circle(ctx,
                        GPoint(SCREEN_CENTER_POINT_X,
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
