@@ -1286,7 +1286,7 @@ void draw_scene(Layer *layer, GContext *ctx)
 
   // Draw compass:
 #ifdef PBL_COLOR
-  graphics_context_set_fill_color(ctx, GColorCyan);
+  graphics_context_set_fill_color(ctx, GColorLightGray);
   graphics_fill_circle(ctx,
                        GPoint(SCREEN_CENTER_POINT_X,
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
@@ -2506,7 +2506,7 @@ void draw_shaded_quad(GContext *ctx,
 {
   int16_t i, j, shading_offset, half_shading_offset;
   float shading_gradient = (float) (upper_right.y - upper_left.y) /
-                             (upper_right.x - upper_left.x);
+                                   (upper_right.x - upper_left.x);
   GColor primary_color = GColorWhite;
 
   for (i = upper_left.x; i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH; ++i)
@@ -2615,21 +2615,21 @@ void draw_status_meter(GContext *ctx,
                        const float ratio)
 {
 #ifdef PBL_BW
-  int16_t i, j;
+  uint8_t i, j;
 
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_fill_color(ctx, GColorWhite);
 #else
-  int16_t filled_meter_width = ratio * STATUS_METER_WIDTH;
+  uint8_t filled_meter_width = ratio * STATUS_METER_WIDTH;
 
   origin.y += STATUS_BAR_HEIGHT;
   if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
   {
-    graphics_context_set_fill_color(ctx, GColorGreen);
+    graphics_context_set_fill_color(ctx, GColorRed);
   }
   else                                  // Energy (ammo) meter:
   {
-    graphics_context_set_fill_color(ctx, GColorYellow);
+    graphics_context_set_fill_color(ctx, GColorBlue);
   }
 #endif
 
@@ -2646,7 +2646,14 @@ void draw_status_meter(GContext *ctx,
 #ifdef PBL_COLOR
   if (ratio < 1)
   {
-    graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+    if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
+    {
+      graphics_context_set_fill_color(ctx, GColorBulgarianRose);
+    }
+    else                                  // Energy (ammo) meter:
+    {
+      graphics_context_set_fill_color(ctx, GColorOxfordBlue);
+    }
     graphics_fill_rect(ctx,
                        GRect(origin.x + filled_meter_width,
                              origin.y,
