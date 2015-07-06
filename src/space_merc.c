@@ -2276,7 +2276,7 @@ void draw_cell_contents(GContext *ctx,
   {
     // Legs:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorMidnightGreen);
+    graphics_context_set_fill_color(ctx, GColorImperialPurple);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
