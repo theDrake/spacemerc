@@ -2413,7 +2413,7 @@ void draw_cell_contents(GContext *ctx,
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit,
+                       GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit / 2,
                              drawing_unit),
@@ -2422,7 +2422,7 @@ void draw_cell_contents(GContext *ctx,
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit,
+                       GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 4 + 1,
                              drawing_unit / 2,
                              drawing_unit),
@@ -2431,8 +2431,7 @@ void draw_cell_contents(GContext *ctx,
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit +
-                               drawing_unit / 2 + 1,
+                       GRect(floor_center_point.x + drawing_unit + 1,
                              floor_center_point.y - drawing_unit * 5,
                              drawing_unit / 2,
                              drawing_unit),
@@ -2441,8 +2440,7 @@ void draw_cell_contents(GContext *ctx,
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit +
-                               drawing_unit / 2 + 1,
+                       GRect(floor_center_point.x + drawing_unit + 1,
                              floor_center_point.y - drawing_unit * 4 + 1,
                              drawing_unit / 2,
                              drawing_unit),
