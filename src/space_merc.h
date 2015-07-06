@@ -121,7 +121,7 @@ enum {
 #define RANDOM_COLOR                     GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
 #define RANDOM_DARK_COLOR                GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
 #define RANDOM_BRIGHT_COLOR              GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
-#define NPC_LASER_COLOR                  (rand() % 2 ? GColorFolly : GColorDarkCandyAppleRed)
+#define NPC_LASER_COLOR                  (rand() % 2 ? GColorSunsetOrange : GColorDarkCandyAppleRed)
 #else
 #define FULL_SCREEN_FRAME                GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)

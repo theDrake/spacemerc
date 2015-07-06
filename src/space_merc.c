@@ -1873,15 +1873,15 @@ void draw_cell_contents(GContext *ctx,
 #ifdef PBL_COLOR
     if (content_type == ALIEN_OFFICER)
     {
-      graphics_context_set_fill_color(ctx, GColorImperialPurple);
+      graphics_context_set_fill_color(ctx, GColorRed);
     }
     else if (content_type == ALIEN_ELITE)
     {
-      graphics_context_set_fill_color(ctx, GColorPurple);
+      graphics_context_set_fill_color(ctx, GColorMidnightGreen);
     }
     else // content_type == ALIEN_SOLDIER
     {
-      graphics_context_set_fill_color(ctx, GColorPurpureus);
+      graphics_context_set_fill_color(ctx, GColorCadetBlue);
     }
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
@@ -1977,7 +1977,7 @@ void draw_cell_contents(GContext *ctx,
 
     // Eyes:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorMidnightGreen);
+    graphics_context_set_fill_color(ctx, GColorDarkGreen);
 #else
     graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
@@ -2280,16 +2280,16 @@ void draw_cell_contents(GContext *ctx,
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
-                             floor_center_point.y - drawing_unit * 4,
+                             floor_center_point.y - drawing_unit * 4 - 1,
                              drawing_unit * 2,
-                             drawing_unit * 4),
+                             drawing_unit * 4 + 1),
                        NO_CORNER_RADIUS,
                        GCornerNone);
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit,
-                             floor_center_point.y - drawing_unit * 4,
-                             drawing_unit * 2,
-                             drawing_unit * 4),
+                             floor_center_point.y - drawing_unit * 4 - 1,
+                             drawing_unit * 2 + 1,
+                             drawing_unit * 4 + 1),
                        NO_CORNER_RADIUS,
                        GCornerNone);
 
