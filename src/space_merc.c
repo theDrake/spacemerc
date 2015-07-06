@@ -1873,15 +1873,15 @@ void draw_cell_contents(GContext *ctx,
 #ifdef PBL_COLOR
     if (content_type == ALIEN_OFFICER)
     {
-      graphics_context_set_fill_color(ctx, GColorPurple);
+      graphics_context_set_fill_color(ctx, GColorImperialPurple);
     }
     else if (content_type == ALIEN_ELITE)
     {
-      graphics_context_set_fill_color(ctx, GColorVividCerulean);
+      graphics_context_set_fill_color(ctx, GColorPurple);
     }
     else // content_type == ALIEN_SOLDIER
     {
-      graphics_context_set_fill_color(ctx, GColorCadetBlue);
+      graphics_context_set_fill_color(ctx, GColorPurpureus);
     }
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 2,
@@ -2187,7 +2187,7 @@ void draw_cell_contents(GContext *ctx,
                              drawing_unit),
                        NO_CORNER_RADIUS,
                        GCornerNone);
-    graphics_context_set_fill_color(ctx, GColorPictonBlue);
+    graphics_context_set_fill_color(ctx, GColorBrass);
 #else
     draw_shaded_quad(ctx,
                      GPoint(floor_center_point.x - drawing_unit / 2,
@@ -2276,7 +2276,7 @@ void draw_cell_contents(GContext *ctx,
   {
     // Legs:
 #ifdef PBL_COLOR
-    graphics_context_set_fill_color(ctx, GColorImperialPurple);
+    graphics_context_set_fill_color(ctx, GColorMidnightGreen);
 #endif
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x - drawing_unit * 3,
@@ -2415,7 +2415,7 @@ void draw_cell_contents(GContext *ctx,
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 5,
-                             drawing_unit / 2,
+                             drawing_unit / 4,
                              drawing_unit),
                        NO_CORNER_RADIUS,
                        GCornerNone);
@@ -2424,25 +2424,25 @@ void draw_cell_contents(GContext *ctx,
     graphics_fill_rect(ctx,
                        GRect(floor_center_point.x + drawing_unit / 2,
                              floor_center_point.y - drawing_unit * 4 + 1,
-                             drawing_unit / 2,
+                             drawing_unit / 4,
                              drawing_unit),
                        NO_CORNER_RADIUS,
                        GCornerNone);
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit + 1,
+                       GRect(floor_center_point.x + drawing_unit,
                              floor_center_point.y - drawing_unit * 5,
-                             drawing_unit / 2,
+                             drawing_unit / 4,
                              drawing_unit),
                        NO_CORNER_RADIUS,
                        GCornerNone);
     graphics_context_set_fill_color(ctx, rand() % 2 ? GColorDarkCandyAppleRed :
                                                       GColorRed);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit + 1,
+                       GRect(floor_center_point.x + drawing_unit,
                              floor_center_point.y - drawing_unit * 4 + 1,
-                             drawing_unit / 2,
+                             drawing_unit / 4,
                              drawing_unit),
                        NO_CORNER_RADIUS,
                        GCornerNone);
