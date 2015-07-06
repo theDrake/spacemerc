@@ -2286,9 +2286,9 @@ void draw_cell_contents(GContext *ctx,
                        NO_CORNER_RADIUS,
                        GCornerNone);
     graphics_fill_rect(ctx,
-                       GRect(floor_center_point.x + drawing_unit,
+                       GRect(floor_center_point.x + drawing_unit + 1,
                              floor_center_point.y - drawing_unit * 4 - 1,
-                             drawing_unit * 2 + 1,
+                             drawing_unit * 2,
                              drawing_unit * 4 + 1),
                        NO_CORNER_RADIUS,
                        GCornerNone);
