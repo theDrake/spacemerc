@@ -127,6 +127,7 @@ enum {
 #define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME                   GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define NARRATION_TEXT_LAYER_FRAME       GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
+#define FLASH_TIMER_DURATION             20 // milliseconds
 #endif
 
 #define COMPASS_RADIUS                   5
@@ -144,7 +145,6 @@ enum {
 #define MOVEMENT_REPEAT_INTERVAL         250 // milliseconds
 #define ATTACK_REPEAT_INTERVAL           250 // milliseconds
 #define PLAYER_TIMER_DURATION            20  // milliseconds
-#define FLASH_TIMER_DURATION             20  // milliseconds
 #define MAX_SMALL_INT_VALUE              9999
 #define MAX_SMALL_INT_DIGITS             4
 #define MAX_LARGE_INT_VALUE              999999999
@@ -177,8 +177,8 @@ enum {
 #define STAT_BOOST_PER_UPGRADE           5
 #define UPGRADE_COST_MULTIPLIER          250
 #define NUM_PLAYER_ANIMATIONS            2 // No. of steps in the player's attack animation.
-#define MAX_LASER_BASE_WIDTH             12
 #define MIN_LASER_BASE_WIDTH             8
+#define MAX_LASER_BASE_WIDTH             12
 #define HP_RECOVERY_RATE                 1 // HP per second.
 #define ENERGY_RECOVERY_RATE             1 // Energy (ammo) per second.
 #define MIN_DAMAGE                       (HP_RECOVERY_RATE + 1)
@@ -265,15 +265,14 @@ Window *g_graphics_window,
 MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
-AppTimer *g_player_timer,
-         *g_flash_timer;
+AppTimer *g_player_timer;
 GPoint g_back_wall_coords[MAX_VISIBILITY_DEPTH - 1]
                          [(STRAIGHT_AHEAD * 2) + 1]
                          [2];
 bool g_game_paused;
-int16_t g_current_narration,
-        g_player_animation_mode,
-        g_laser_base_width;
+int8_t g_current_narration,
+       g_player_animation_mode,
+       g_laser_base_width;
 GPath *g_compass_path;
 mission_t *g_mission;
 player_t *g_player;
@@ -283,6 +282,7 @@ GColor g_background_colors[NUM_BACKGROUND_COLOR_SCHEMES]
                           [NUM_BACKGROUND_COLORS_PER_SCHEME];
 StatusBarLayer *g_status_bar;
 #else
+AppTimer *g_flash_timer;
 InverterLayer *g_inverter_layer;
 #endif
 
@@ -375,8 +375,9 @@ void fill_quad(GContext *ctx,
 void draw_status_meter(GContext *ctx,
                        GPoint origin,
                        const float ratio);
-void flash_screen(void);
+#ifdef PBL_BW
 static void flash_timer_callback(void *data);
+#endif
 static void player_timer_callback(void *data);
 #ifdef PBL_COLOR
 static void main_menu_window_appear(Window *window);
