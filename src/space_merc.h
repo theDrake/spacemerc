@@ -167,7 +167,7 @@ enum {
 #define NARRATION_FONT                   fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD)
 #define MAIN_MENU_NUM_ROWS               5
 #define UPGRADE_MENU_NUM_ROWS            4
-#define DEFAULT_VIBES_SETTING            false
+#define DEFAULT_VIBES_SETTING            true
 #define DEFAULT_PLAYER_MONEY             0
 #define DEFAULT_PLAYER_POWER             5
 #define DEFAULT_PLAYER_DEFENSE           5
