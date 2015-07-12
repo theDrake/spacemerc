@@ -2747,11 +2747,7 @@ Description: Called when the player timer reaches zero.
 ******************************************************************************/
 static void player_timer_callback(void *data)
 {
-  if (g_graphics_window == NULL)
-  {
-    return;
-  }
-  else if (--g_player_animation_mode > 0)
+  if (--g_player_animation_mode > 0)
   {
     g_player_timer = app_timer_register(PLAYER_TIMER_DURATION,
                                         player_timer_callback,
