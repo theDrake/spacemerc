@@ -1297,7 +1297,7 @@ void draw_scene(Layer *layer, GContext *ctx)
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
                                 STATUS_BAR_HEIGHT),
                        COMPASS_RADIUS);
-  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_stroke_color(ctx, GColorDarkGreen);
 #else
   graphics_fill_circle(ctx,
                        GPoint(SCREEN_CENTER_POINT_X,
@@ -1808,9 +1808,7 @@ void draw_cell_contents(GContext *ctx,
                      GCornersAll);
 
   // Now draw the body, etc.:
-  if (content_type == ALIEN_SOLDIER ||
-      content_type == ALIEN_ELITE   ||
-      content_type == ALIEN_OFFICER)
+  if (content_type >= ALIEN_SOLDIER)
   {
     // Legs:
 #ifdef PBL_COLOR
@@ -1878,7 +1876,7 @@ void draw_cell_contents(GContext *ctx,
 #ifdef PBL_COLOR
     if (content_type == ALIEN_OFFICER)
     {
-      graphics_context_set_fill_color(ctx, GColorRed);
+      graphics_context_set_fill_color(ctx, GColorOrange);
     }
     else if (content_type == ALIEN_ELITE)
     {
