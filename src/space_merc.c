@@ -1382,7 +1382,7 @@ Description: Draws the floor and ceiling.
 ******************************************************************************/
 void draw_floor_and_ceiling(GContext *ctx)
 {
-  int16_t x, y, max_y, shading_offset;
+  uint8_t x, y, max_y, shading_offset;
 
   max_y = g_back_wall_coords[MAX_VISIBILITY_DEPTH - 2][0][TOP_LEFT].y;
 #ifdef PBL_BW
@@ -2544,18 +2544,18 @@ void draw_shaded_quad(GContext *ctx,
                       const GPoint shading_ref)
 {
   int16_t i, j, shading_offset, half_shading_offset;
-  float shading_gradient = (float) (upper_right.y - upper_left.y) /
-                                   (upper_right.x - upper_left.x);
+  float dy_over_dx     = (float) (upper_right.y - upper_left.y) /
+                                 (upper_right.x - upper_left.x);
   GColor primary_color = GColorWhite;
 
   for (i = upper_left.x; i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH; ++i)
   {
-    // Calculate a new shading offset for each "x" value:
-    shading_offset = 1 + ((shading_ref.y + (i - upper_left.x) *
-                           shading_gradient) / MAX_VISIBILITY_DEPTH);
-    if ((int16_t) (shading_ref.y + (i - upper_left.x) *
-        shading_gradient) % MAX_VISIBILITY_DEPTH >= MAX_VISIBILITY_DEPTH /
-        2 + MAX_VISIBILITY_DEPTH % 2)
+    // Determine vertical distance between points:
+    shading_offset = 1 + ((shading_ref.y + (i - upper_left.x) * dy_over_dx) /
+                          MAX_VISIBILITY_DEPTH);
+    if ((int16_t) (shading_ref.y + (i - upper_left.x) * dy_over_dx) %
+        MAX_VISIBILITY_DEPTH >= MAX_VISIBILITY_DEPTH / 2 +
+                                MAX_VISIBILITY_DEPTH % 2)
     {
       shading_offset++;
     }
@@ -2578,11 +2578,11 @@ void draw_shaded_quad(GContext *ctx,
 #endif
 
     // Now, draw points from top to bottom:
-    for (j = upper_left.y + (i - upper_left.x) * shading_gradient;
-         j < lower_left.y - (i - upper_left.x) * shading_gradient;
+    for (j = upper_left.y + (i - upper_left.x) * dy_over_dx;
+         j < lower_left.y - (i - upper_left.x) * dy_over_dx;
          ++j)
     {
-      if ((j + (int16_t) ((i - upper_left.x) * shading_gradient) +
+      if ((j + (int16_t) ((i - upper_left.x) * dy_over_dx) +
           (i % 2 == 0 ? 0 : half_shading_offset)) % shading_offset == 0)
       {
         graphics_context_set_stroke_color(ctx, primary_color);
@@ -3198,7 +3198,7 @@ Description: Initializes the global "back_wall_coords" array so that it
 ******************************************************************************/
 void init_wall_coords(void)
 {
-  int16_t i, j, wall_width;
+  uint8_t i, j, wall_width;
   const float perspective_modifier = 2.0; // Helps determine FOV, etc.
 
   for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i)
