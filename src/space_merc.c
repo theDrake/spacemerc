@@ -20,7 +20,7 @@ Description: Sets the player's orientation to a given direction and updates the
 
     Outputs: None.
 ******************************************************************************/
-void set_player_direction(const int16_t new_direction)
+void set_player_direction(const int8_t new_direction)
 {
   g_player->direction = new_direction;
   switch(new_direction)
@@ -50,7 +50,7 @@ Description: Attempts to move the player one cell forward in a given direction.
 
     Outputs: None.
 ******************************************************************************/
-void move_player(const int16_t direction)
+void move_player(const int8_t direction)
 {
   GPoint destination = get_cell_farther_away(g_player->position, direction, 1);
 
@@ -88,7 +88,7 @@ Description: Attempts to move a given NPC one cell forward in a given
 
     Outputs: None.
 ******************************************************************************/
-void move_npc(npc_t *npc, const int16_t direction)
+void move_npc(npc_t *npc, const int8_t direction)
 {
   GPoint destination = get_cell_farther_away(npc->position, direction, 1);
 
@@ -341,7 +341,7 @@ Description: Creates an NPC of a given type at a given location and adds it to
 
     Outputs: None.
 ******************************************************************************/
-void add_new_npc(const int16_t npc_type, const GPoint position)
+void add_new_npc(const int8_t npc_type, const GPoint position)
 {
   int8_t i;
 
@@ -370,7 +370,7 @@ Description: Returns a suitable spawn point for a new NPC, outside the player's
 ******************************************************************************/
 GPoint get_npc_spawn_point(void)
 {
-  int16_t i, j, direction;
+  int8_t i, j, direction;
   bool checked_left, checked_right;
   GPoint spawn_point, spawn_point2;
 
@@ -434,7 +434,7 @@ Description: Returns the central point, with respect to the graphics layer, of
     Outputs: GPoint coordinates of the floor's central point within the
              designated cell.
 ******************************************************************************/
-GPoint get_floor_center_point(const int16_t depth, const int16_t position)
+GPoint get_floor_center_point(const int8_t depth, const int8_t position)
 {
   int16_t x_midpoint1, x_midpoint2, x, y;
 
@@ -484,8 +484,8 @@ Description: Given a set of cell coordinates, returns new cell coordinates a
              in. (These may lie out-of-bounds.)
 ******************************************************************************/
 GPoint get_cell_farther_away(const GPoint reference_point,
-                             const int16_t direction,
-                             const int16_t distance)
+                             const int8_t direction,
+                             const int8_t distance)
 {
   switch (direction)
   {
@@ -512,14 +512,14 @@ Description: Determines in which direction a character at a given position
 
     Outputs: Integer representing the direction in which the NPC ought to move.
 ******************************************************************************/
-int16_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee)
+int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee)
 {
-  int16_t diff_x                     = pursuer.x - pursuee.x,
-          diff_y                     = pursuer.y - pursuee.y;
-  const int16_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
-                vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
-  bool checked_horizontal_direction  = false,
-       checked_vertical_direction    = false;
+  int8_t diff_x                     = pursuer.x - pursuee.x,
+         diff_y                     = pursuer.y - pursuee.y;
+  const int8_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
+               vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
+  bool checked_horizontal_direction = false,
+       checked_vertical_direction   = false;
 
   // Check for alignment along the x-axis:
   if (diff_x == 0)
@@ -588,7 +588,7 @@ Description: Given a north/south/east/west reference direction, returns the
     Outputs: Integer representing the direction to the left of the reference
              direction.
 ******************************************************************************/
-int16_t get_direction_to_the_left(const int16_t reference_direction)
+int8_t get_direction_to_the_left(const int8_t reference_direction)
 {
   switch (reference_direction)
   {
@@ -614,7 +614,7 @@ Description: Given a north/south/east/west reference direction, returns the
     Outputs: Integer representing the direction to the right of the reference
              direction.
 ******************************************************************************/
-int16_t get_direction_to_the_right(const int16_t reference_direction)
+int8_t get_direction_to_the_right(const int8_t reference_direction)
 {
   switch (reference_direction)
   {
@@ -639,7 +639,7 @@ Description: Returns the opposite of a given direction value (i.e., given the
 
     Outputs: Integer representing the opposite of the given direction.
 ******************************************************************************/
-int16_t get_opposite_direction(const int16_t direction)
+int8_t get_opposite_direction(const int8_t direction)
 {
   switch (direction)
   {
@@ -664,7 +664,7 @@ Description: Determines what value a given stat will be raised to if the player
 
     Outputs: The new value the stat will have if it is upgraded.
 ******************************************************************************/
-int16_t get_upgraded_stat_value(const int16_t stat_index)
+int16_t get_upgraded_stat_value(const int8_t stat_index)
 {
   int16_t upgraded_stat_value = g_player->stats[stat_index] +
                                 STAT_BOOST_PER_UPGRADE;
@@ -709,7 +709,7 @@ Description: Returns the type of cell at a given set of coordinates.
 
     Outputs: The indicated cell's type.
 ******************************************************************************/
-int16_t get_cell_type(const GPoint cell)
+int8_t get_cell_type(const GPoint cell)
 {
   if (out_of_bounds(cell))
   {
@@ -730,7 +730,7 @@ Description: Sets the cell at a given set of coordinates to a given type.
 
     Outputs: None.
 ******************************************************************************/
-void set_cell_type(GPoint cell, const int16_t type)
+void set_cell_type(GPoint cell, const int8_t type)
 {
   g_mission->cells[cell.x][cell.y] = type;
 }
@@ -811,8 +811,8 @@ Description: Determines whether two cells are "touching," meaning they are next
 ******************************************************************************/
 bool touching(const GPoint cell, const GPoint cell_2)
 {
-  const int16_t diff_x = cell.x - cell_2.x,
-                diff_y = cell.y - cell_2.y;
+  const int8_t diff_x = cell.x - cell_2.x,
+               diff_y = cell.y - cell_2.y;
 
   return ((diff_x == 0 && abs(diff_y) == 1) ||
           (diff_y == 0 && abs(diff_x) == 1));
@@ -1218,7 +1218,7 @@ Description: Draws a (simplistic) 3D scene based on the player's current
 ******************************************************************************/
 void draw_scene(Layer *layer, GContext *ctx)
 {
-  int16_t i, depth;
+  int8_t i, depth;
   GPoint cell, cell_2;
 
   // First, draw the background, floor, and ceiling:
@@ -1323,7 +1323,7 @@ Description: Draws the player's laser beam onto the screen.
 ******************************************************************************/
 void draw_player_laser_beam(GContext *ctx)
 {
-  int16_t i;
+  int8_t i;
 
 #ifdef PBL_COLOR
   graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
@@ -1438,8 +1438,8 @@ Description: Draws any walls that exist along the back and sides of a given
 ******************************************************************************/
 void draw_cell_walls(GContext *ctx,
                      const GPoint cell,
-                     const int16_t depth,
-                     const int16_t position)
+                     const int8_t depth,
+                     const int8_t position)
 {
   int16_t left, right, top, bottom, y_offset, exit_offset_x, exit_offset_y;
   bool back_wall_drawn, left_wall_drawn, right_wall_drawn, exit_present;
@@ -1765,11 +1765,11 @@ Description: Draws an NPC or any other contents present in a given cell.
 ******************************************************************************/
 void draw_cell_contents(GContext *ctx,
                         const GPoint cell,
-                        const int16_t depth,
-                        const int16_t position)
+                        const int8_t depth,
+                        const int8_t position)
 {
-  int16_t drawing_unit, // Reference variable for drawing contents at depth.
-          content_type = get_cell_type(cell);
+  int8_t drawing_unit, // Reference variable for drawing contents at depth.
+         content_type = get_cell_type(cell);
   GPoint floor_center_point, top_left_point;
 
   if (content_type == EMPTY)
@@ -2478,11 +2478,11 @@ Description: Draws a "floating monstrosity" with a spherical body according to
 ******************************************************************************/
 void draw_floating_monstrosity(GContext *ctx,
                                GPoint center,
-                               const int16_t radius,
-                               int16_t shading_offset)
+                               const int8_t radius,
+                               int8_t shading_offset)
 {
-  int32_t theta;
-  int16_t i, x_offset, y_offset;
+  int16_t theta;
+  uint8_t i, x_offset, y_offset;
 
 #ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorBlack);
@@ -3146,7 +3146,7 @@ Description: Initializes a non-player character (NPC) struct according to a
 
     Outputs: None.
 ******************************************************************************/
-void init_npc(npc_t *npc, const int16_t type, const GPoint position)
+void init_npc(npc_t *npc, const int8_t type, const GPoint position)
 {
   npc->type     = type;
   npc->position = position;
@@ -3260,7 +3260,7 @@ Description: Initializes the global mission struct according to a given mission
 
     Outputs: None.
 ******************************************************************************/
-void init_mission(const int16_t type)
+void init_mission(const int8_t type)
 {
   int8_t i;
 
@@ -3302,7 +3302,7 @@ Description: Initializes the current mission's location (i.e., its 2D "cells"
 ******************************************************************************/
 void init_mission_location(void)
 {
-  int16_t i, j, builder_direction;
+  int8_t i, j, builder_direction;
   GPoint builder_position, end_point;
 
   // First, set each cell to full HP (i.e., "fully solid"):

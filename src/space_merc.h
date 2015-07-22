@@ -290,9 +290,9 @@ InverterLayer *g_inverter_layer;
   Function Declarations
 ******************************************************************************/
 
-void set_player_direction(const int16_t new_direction);
-void move_player(const int16_t direction);
-void move_npc(npc_t *npc, const int16_t direction);
+void set_player_direction(const int8_t new_direction);
+void move_player(const int8_t direction);
+void move_npc(npc_t *npc, const int8_t direction);
 void determine_npc_behavior(npc_t *npc);
 void damage_player(int16_t damage);
 void damage_npc(npc_t *npc, const int16_t damage);
@@ -301,20 +301,20 @@ bool adjust_player_money(const int32_t amount);
 void adjust_player_current_hp(const int16_t amount);
 void adjust_player_current_ammo(const int16_t amount);
 void end_mission(void);
-void add_new_npc(const int16_t npc_type, const GPoint position);
+void add_new_npc(const int8_t npc_type, const GPoint position);
 GPoint get_npc_spawn_point(void);
-GPoint get_floor_center_point(const int16_t depth, const int16_t position);
+GPoint get_floor_center_point(const int8_t depth, const int8_t position);
 GPoint get_cell_farther_away(const GPoint reference_point,
-                             const int16_t direction,
-                             const int16_t distance);
-int16_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee);
-int16_t get_direction_to_the_left(const int16_t reference_direction);
-int16_t get_direction_to_the_right(const int16_t reference_direction);
-int16_t get_opposite_direction(const int16_t direction);
-int16_t get_upgraded_stat_value(const int16_t stat_index);
+                             const int8_t direction,
+                             const int8_t distance);
+int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee);
+int8_t get_direction_to_the_left(const int8_t reference_direction);
+int8_t get_direction_to_the_right(const int8_t reference_direction);
+int8_t get_opposite_direction(const int8_t direction);
+int16_t get_upgraded_stat_value(const int8_t stat_index);
 int32_t get_upgrade_cost(const int16_t upgraded_stat_value);
-int16_t get_cell_type(const GPoint cell);
-void set_cell_type(GPoint cell, const int16_t type);
+int8_t get_cell_type(const GPoint cell);
+void set_cell_type(GPoint cell, const int8_t type);
 npc_t *get_npc_at(const GPoint cell);
 bool out_of_bounds(const GPoint cell);
 bool occupiable(const GPoint cell);
@@ -350,16 +350,16 @@ void draw_player_laser_beam(GContext *ctx);
 void draw_floor_and_ceiling(GContext *ctx);
 void draw_cell_walls(GContext *ctx,
                      const GPoint cell,
-                     const int16_t depth,
-                     const int16_t position);
+                     const int8_t depth,
+                     const int8_t position);
 void draw_cell_contents(GContext *ctx,
                         const GPoint cell,
-                        const int16_t depth,
-                        const int16_t position);
+                        const int8_t depth,
+                        const int8_t position);
 void draw_floating_monstrosity(GContext *ctx,
                                GPoint center,
-                               const int16_t radius,
-                               int16_t shading_offset);
+                               const int8_t radius,
+                               int8_t shading_offset);
 void draw_shaded_quad(GContext *ctx,
                       const GPoint upper_left,
                       const GPoint lower_left,
@@ -399,9 +399,9 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed);
 void app_focus_handler(const bool in_focus);
 void init_player(void);
 void deinit_player(void);
-void init_npc(npc_t *npc, const int16_t type, const GPoint position);
+void init_npc(npc_t *npc, const int8_t type, const GPoint position);
 void init_wall_coords(void);
-void init_mission(const int16_t type);
+void init_mission(const int8_t type);
 void init_mission_location(void);
 void deinit_mission(void);
 void init_narration(void);
