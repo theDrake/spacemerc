@@ -183,7 +183,8 @@ enum {
 #define ENERGY_RECOVERY_RATE             1 // Energy (ammo) per second.
 #define MIN_DAMAGE                       (HP_RECOVERY_RATE + 1)
 #define ENERGY_LOSS_PER_SHOT             (ENERGY_RECOVERY_RATE + 1)
-#define STORAGE_KEY                      417
+#define PLAYER_STORAGE_KEY               417
+#define MISSION_STORAGE_KEY              (PLAYER_STORAGE_KEY + 1)
 #define MAX_NPCS_AT_ONE_TIME             2
 #define ANIMATED                         true
 #define NOT_ANIMATED                     false

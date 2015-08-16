@@ -3394,7 +3394,8 @@ void init_mission_location(void)
    Function: deinit_mission
 
 Description: Deinitializes the global mission struct, freeing associated
-             memory.
+             memory. Also deletes mission data (if any) from persistent
+             storage.
 
      Inputs: None.
 
@@ -3406,6 +3407,7 @@ void deinit_mission(void)
   {
     free(g_mission);
     g_mission = NULL;
+    persist_delete(MISSION_STORAGE_KEY);
   }
 }
 
@@ -3721,13 +3723,13 @@ void init(void)
 
   // Check for saved data and initialize the player struct, etc.:
   g_player = malloc(sizeof(player_t));
-  if (persist_exists(STORAGE_KEY))
+  if (persist_exists(PLAYER_STORAGE_KEY))
   {
-    persist_read_data(STORAGE_KEY, g_player, sizeof(player_t));
-    if (persist_exists(STORAGE_KEY + 1))
+    persist_read_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
+    if (persist_exists(MISSION_STORAGE_KEY))
     {
       g_mission = malloc(sizeof(mission_t));
-      persist_read_data(STORAGE_KEY + 1, g_mission, sizeof(mission_t));
+      persist_read_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
       set_player_direction(g_player->direction); // To update compass.
     }
   }
@@ -3750,10 +3752,10 @@ Description: Deinitializes the SpaceMerc app.
 ******************************************************************************/
 void deinit(void)
 {
-  persist_write_data(STORAGE_KEY, g_player, sizeof(player_t));
+  persist_write_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
   if (g_mission != NULL)
   {
-    persist_write_data(STORAGE_KEY + 1, g_mission, sizeof(mission_t));
+    persist_write_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
   }
   app_focus_service_unsubscribe();
 #ifdef PBL_COLOR
