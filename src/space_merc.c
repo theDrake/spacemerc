@@ -1876,7 +1876,7 @@ void draw_cell_contents(GContext *ctx,
 #ifdef PBL_COLOR
     if (content_type == ALIEN_OFFICER)
     {
-      graphics_context_set_fill_color(ctx, GColorOrange);
+      graphics_context_set_fill_color(ctx, GColorRed);
     }
     else if (content_type == ALIEN_ELITE)
     {
