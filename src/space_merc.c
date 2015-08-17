@@ -311,7 +311,8 @@ void adjust_player_current_ammo(const int16_t amount)
    Function: end_mission
 
 Description: Called when the player walks into the exit, ending the current
-             mission. Determines how much reward money to bestow, etc.
+             mission. Determines how much reward money to bestow, ensures no
+             mission data remains in persistent storage, etc.
 
      Inputs: None.
 
@@ -327,6 +328,7 @@ void end_mission(void)
   }
   g_current_narration = MISSION_CONCLUSION_NARRATION;
   show_narration();
+  persist_delete(MISSION_STORAGE_KEY);
 }
 
 /******************************************************************************
@@ -3394,8 +3396,7 @@ void init_mission_location(void)
    Function: deinit_mission
 
 Description: Deinitializes the global mission struct, freeing associated
-             memory. Also deletes mission data (if any) from persistent
-             storage.
+             memory.
 
      Inputs: None.
 
@@ -3407,7 +3408,6 @@ void deinit_mission(void)
   {
     free(g_mission);
     g_mission = NULL;
-    persist_delete(MISSION_STORAGE_KEY);
   }
 }
 
