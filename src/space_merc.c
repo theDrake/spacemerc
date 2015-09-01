@@ -3370,7 +3370,7 @@ void init_mission_location(void)
         }
         break;
     }
-    if (rand() % NUM_DIRECTIONS == 0) // 25% chance of turning.
+    if (rand() % 2) // 50% chance of turning.
     {
       builder_direction = rand() % NUM_DIRECTIONS;
     }
