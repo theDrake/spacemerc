@@ -301,7 +301,6 @@ void damage_cell(GPoint cell, const int16_t damage);
 bool adjust_player_money(const int32_t amount);
 void adjust_player_current_hp(const int16_t amount);
 void adjust_player_current_ammo(const int16_t amount);
-void end_mission(void);
 void add_new_npc(const int8_t npc_type, const GPoint position);
 GPoint get_npc_spawn_point(void);
 GPoint get_floor_center_point(const int8_t depth, const int8_t position);

@@ -59,7 +59,16 @@ void move_player(const int8_t direction)
       g_player->direction == g_mission->entrance_direction    &&
       direction == g_mission->entrance_direction)
   {
-    end_mission();
+    g_game_paused = true;
+    show_window(g_main_menu_window);
+    if (g_mission->completed)
+    {
+      adjust_player_money(g_mission->reward);
+    }
+    g_current_narration = MISSION_CONCLUSION_NARRATION;
+    show_narration();
+    persist_delete(MISSION_STORAGE_KEY);
+    persist_write_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
   }
   else if (occupiable(destination))
   {
@@ -284,6 +293,8 @@ void adjust_player_current_hp(const int16_t amount)
     g_current_narration = DEATH_NARRATION;
     show_narration();
     deinit_mission();
+    persist_delete(MISSION_STORAGE_KEY);
+    persist_write_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
   }
 }
 
@@ -305,30 +316,6 @@ void adjust_player_current_ammo(const int16_t amount)
   {
     g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
   }
-}
-
-/******************************************************************************
-   Function: end_mission
-
-Description: Called when the player walks into the exit, ending the current
-             mission. Determines how much reward money to bestow, ensures no
-             mission data remains in persistent storage, etc.
-
-     Inputs: None.
-
-    Outputs: None.
-******************************************************************************/
-void end_mission(void)
-{
-  g_game_paused = true;
-  show_window(g_main_menu_window);
-  if (g_mission->completed)
-  {
-    adjust_player_money(g_mission->reward);
-  }
-  g_current_narration = MISSION_CONCLUSION_NARRATION;
-  show_narration();
-  persist_delete(MISSION_STORAGE_KEY);
 }
 
 /******************************************************************************
