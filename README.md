@@ -9,6 +9,5 @@ Screenshots:
 
 ![](http://davidcdrake.com/wp-content/uploads/2014/01/SpaceMerc-Fim-Officer.png)
 ![](http://davidcdrake.com/wp-content/uploads/2014/01/SpaceMerc-Robot.png)
-![](http://davidcdrake.com/wp-content/uploads/2014/01/SpaceMerc-Beast.png)
 ![](http://davidcdrake.com/wp-content/uploads/2014/01/SpaceMerc-Ooze.png)
 ![](http://davidcdrake.com/wp-content/uploads/2014/01/SpaceMerc-Monstrosity.png)
