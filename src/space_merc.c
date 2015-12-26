@@ -2358,14 +2358,10 @@ void draw_shaded_quad(GContext *ctx,
     if (shading_offset - 3 > NUM_BACKGROUND_COLORS_PER_SCHEME) {
       primary_color = g_background_colors[g_mission->wall_color_scheme]
                                         [NUM_BACKGROUND_COLORS_PER_SCHEME - 1];
-    }
-    else if (shading_offset > 4)
-    {
+    } else if (shading_offset > 4) {
       primary_color = g_background_colors[g_mission->wall_color_scheme]
                                          [shading_offset - 4];
-    }
-    else
-    {
+    } else {
       primary_color = g_background_colors[g_mission->wall_color_scheme][0];
     }
 #endif
@@ -2373,15 +2369,11 @@ void draw_shaded_quad(GContext *ctx,
     // Now, draw points from top to bottom:
     for (j = upper_left.y + (i - upper_left.x) * dy_over_dx;
          j < lower_left.y - (i - upper_left.x) * dy_over_dx;
-         ++j)
-    {
+         ++j) {
       if ((j + (int16_t) ((i - upper_left.x) * dy_over_dx) +
-          (i % 2 == 0 ? 0 : half_shading_offset)) % shading_offset == 0)
-      {
+          (i % 2 == 0 ? 0 : half_shading_offset)) % shading_offset == 0) {
         graphics_context_set_stroke_color(ctx, primary_color);
-      }
-      else
-      {
+      } else {
         graphics_context_set_stroke_color(ctx, GColorBlack);
       }
       graphics_draw_pixel(ctx, GPoint(i, j));
@@ -2409,8 +2401,7 @@ void fill_quad(GContext *ctx,
                const GPoint lower_left,
                const GPoint upper_right,
                const GPoint lower_right,
-               const GColor color)
-{
+               const GColor color) {
   int16_t i;
   float dy_over_width = (float) (upper_right.y - upper_left.y) /
                                 (upper_right.x - upper_left.x);
@@ -2418,8 +2409,7 @@ void fill_quad(GContext *ctx,
   graphics_context_set_stroke_color(ctx, color);
   for (i = upper_left.x;
        i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH;
-       ++i)
-  {
+       ++i) {
     graphics_draw_line(ctx,
                        GPoint(i, upper_left.y + (i - upper_left.x) *
                                    dy_over_width),
@@ -2444,8 +2434,7 @@ Description: Draws a "status meter" (such as a "health meter") at a given point
 ******************************************************************************/
 void draw_status_meter(GContext *ctx,
                        GPoint origin,
-                       const float ratio)
-{
+                       const float ratio) {
 #ifdef PBL_BW
   uint8_t i, j;
 
@@ -2455,12 +2444,9 @@ void draw_status_meter(GContext *ctx,
   uint8_t filled_meter_width = ratio * STATUS_METER_WIDTH;
 
   origin.y += STATUS_BAR_HEIGHT;
-  if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
-  {
+  if (origin.x < SCREEN_CENTER_POINT_X) {  // Health meter:
     graphics_context_set_fill_color(ctx, GColorRed);
-  }
-  else                                  // Energy (ammo) meter:
-  {
+  } else {                                 // Energy (ammo) meter:
     graphics_context_set_fill_color(ctx, GColorBlue);
   }
 #endif
@@ -2476,14 +2462,10 @@ void draw_status_meter(GContext *ctx,
 
   // Now draw the "empty" portion:
 #ifdef PBL_COLOR
-  if (ratio < 1)
-  {
-    if (origin.x < SCREEN_CENTER_POINT_X) // Health meter:
-    {
+  if (ratio < 1) {
+    if (origin.x < SCREEN_CENTER_POINT_X) {  // Health meter:
       graphics_context_set_fill_color(ctx, GColorBulgarianRose);
-    }
-    else                                  // Energy (ammo) meter:
-    {
+    } else {                                 // Energy (ammo) meter:
       graphics_context_set_fill_color(ctx, GColorOxfordBlue);
     }
     graphics_fill_rect(ctx,
@@ -2498,12 +2480,10 @@ void draw_status_meter(GContext *ctx,
 #else
   for (i = origin.x + STATUS_METER_WIDTH;
        i >= origin.x + (ratio * STATUS_METER_WIDTH);
-       --i)
-  {
+       --i) {
     for (j = origin.y + (i % 2);
          j <= origin.y + STATUS_METER_HEIGHT;
-         j += 2)
-    {
+         j += 2) {
       graphics_draw_pixel(ctx, GPoint(i, j));
     }
   }
@@ -2521,8 +2501,7 @@ Description: Called when the flash timer reaches zero. Hides the inverter
     Outputs: None.
 ******************************************************************************/
 #ifdef PBL_BW
-static void flash_timer_callback(void *data)
-{
+static void flash_timer_callback(void *data) {
   layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
 }
 #endif
@@ -2536,10 +2515,8 @@ Description: Called when the player timer reaches zero.
 
     Outputs: None.
 ******************************************************************************/
-static void player_timer_callback(void *data)
-{
-  if (--g_player_animation_mode > 0)
-  {
+static void player_timer_callback(void *data) {
+  if (--g_player_animation_mode > 0) {
     g_player_timer = app_timer_register(PLAYER_TIMER_DURATION,
                                         player_timer_callback,
                                         NULL);
@@ -2558,8 +2535,7 @@ Description: Called when the main menu window appears (SDK 3 only).
     Outputs: None.
 ******************************************************************************/
 #ifdef PBL_COLOR
-static void main_menu_window_appear(Window *window)
-{
+static void main_menu_window_appear(Window *window) {
   layer_add_child(window_get_root_layer(window),
                   status_bar_layer_get_layer(g_status_bar));
 }
@@ -2574,8 +2550,7 @@ Description: Called when the graphics window appears.
 
     Outputs: None.
 ******************************************************************************/
-static void graphics_window_appear(Window *window)
-{
+static void graphics_window_appear(Window *window) {
   g_game_paused           = false;
   g_player_animation_mode = 0;
 #ifdef PBL_BW
@@ -2592,8 +2567,7 @@ Description: Called when the graphics window disappears.
 
     Outputs: None.
 ******************************************************************************/
-static void graphics_window_disappear(Window *window)
-{
+static void graphics_window_disappear(Window *window) {
   g_game_paused = true;
 }
 
@@ -2609,10 +2583,8 @@ Description: The graphics window's single repeating click handler for the "up"
     Outputs: None.
 ******************************************************************************/
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
-                                        void *context)
-{
-  if (!g_game_paused)
-  {
+                                        void *context) {
+  if (!g_game_paused) {
     move_player(g_player->direction);
   }
 }
@@ -2628,10 +2600,8 @@ Description: The graphics window's multi-click handler for the "up" button.
 
     Outputs: None.
 ******************************************************************************/
-void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context)
-{
-  if (!g_game_paused)
-  {
+void graphics_up_multi_click(ClickRecognizerRef recognizer, void *context) {
+  if (!g_game_paused) {
     set_player_direction(get_direction_to_the_left(g_player->direction));
   }
 }
@@ -2648,10 +2618,8 @@ Description: The graphics window's single repeating click handler for the
     Outputs: None.
 ******************************************************************************/
 void graphics_down_single_repeating_click(ClickRecognizerRef recognizer,
-                                          void *context)
-{
-  if (!g_game_paused)
-  {
+                                          void *context) {
+  if (!g_game_paused) {
     move_player(get_opposite_direction(g_player->direction));
   }
 }
@@ -2667,10 +2635,8 @@ Description: The graphics window's multi-click handler for the "down" button.
 
     Outputs: None.
 ******************************************************************************/
-void graphics_down_multi_click(ClickRecognizerRef recognizer, void *context)
-{
-  if (!g_game_paused)
-  {
+void graphics_down_multi_click(ClickRecognizerRef recognizer, void *context) {
+  if (!g_game_paused) {
     set_player_direction(get_direction_to_the_right(g_player->direction));
   }
 }
@@ -2687,14 +2653,12 @@ Description: The graphics window's single repeating click handler for the
     Outputs: None.
 ******************************************************************************/
 void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
-                                            void *context)
-{
+                                            void *context) {
   GPoint cell;
   npc_t *npc;
 
   if (!g_game_paused &&
-      g_player->stats[CURRENT_ENERGY] >= ENERGY_LOSS_PER_SHOT)
-  {
+      g_player->stats[CURRENT_ENERGY] >= ENERGY_LOSS_PER_SHOT) {
     // Deplete the player's ammo and set up the player's laser animation:
     adjust_player_current_ammo(ENERGY_LOSS_PER_SHOT * -1);
     g_player_animation_mode = NUM_PLAYER_ANIMATIONS;
@@ -2705,11 +2669,9 @@ void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
 
     // Check for a damaged NPC or cell:
     cell = get_cell_farther_away(g_player->position, g_player->direction, 1);
-    while (get_cell_type(cell) < SOLID)
-    {
+    while (get_cell_type(cell) < SOLID) {
       npc = get_npc_at(cell);
-      if (npc != NULL)
-      {
+      if (npc != NULL) {
         damage_npc(npc, g_player->stats[POWER]);
         return;
       }
@@ -2730,8 +2692,7 @@ Description: Button-click configuration provider for the graphics window.
 
     Outputs: None.
 ******************************************************************************/
-void graphics_click_config_provider(void *context)
-{
+void graphics_click_config_provider(void *context) {
   // "Up" button:
   window_single_repeating_click_subscribe(BUTTON_ID_UP,
                                           MOVEMENT_REPEAT_INTERVAL,
@@ -2772,28 +2733,21 @@ Description: The narration window's single-click handler for all buttons.
 
     Outputs: None.
 ******************************************************************************/
-void narration_single_click(ClickRecognizerRef recognizer, void *context)
-{
+void narration_single_click(ClickRecognizerRef recognizer, void *context) {
   if (g_current_narration == GAME_INFO_NARRATION_1 ||
       (g_current_narration >= INTRO_NARRATION_1 &&
-       g_current_narration < INSTRUCTIONS_NARRATION_2))
-  {
+       g_current_narration < INSTRUCTIONS_NARRATION_2)) {
     g_current_narration++;
     show_narration();
-  }
-  else
-  {
+  } else {
     window_stack_pop(NOT_ANIMATED);
 
     // If it was a new mission description, go to the graphics window:
-    if (g_current_narration < NUM_MISSION_TYPES)
-    {
+    if (g_current_narration < NUM_MISSION_TYPES) {
       show_window(g_graphics_window);
-    }
 
     // Otherwise, go to the main menu:
-    else
-    {
+    } else {
       show_window(g_main_menu_window);
     }
   }
@@ -2808,8 +2762,7 @@ Description: Button-click configurations for the narration window.
 
     Outputs: None.
 ******************************************************************************/
-void narration_click_config_provider(void *context)
-{
+void narration_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, narration_single_click);
   window_single_click_subscribe(BUTTON_ID_UP, narration_single_click);
   window_single_click_subscribe(BUTTON_ID_DOWN, narration_single_click);
@@ -2827,20 +2780,15 @@ Description: Handles changes to the game world every second while in active
 
     Outputs: None.
 ******************************************************************************/
-static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
-{
+static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   int8_t i, current_num_npcs = 0;
 
-  if (!g_game_paused)
-  {
+  if (!g_game_paused) {
     // Handle NPC behavior:
-    for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
-    {
-      if (g_mission->npcs[i].type != NONE)
-      {
+    for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i) {
+      if (g_mission->npcs[i].type != NONE) {
         determine_npc_behavior(&g_mission->npcs[i]);
-        if (g_player->stats[CURRENT_HP] <= 0)
-        {
+        if (g_player->stats[CURRENT_HP] <= 0) {
           return;
         }
         current_num_npcs++;
@@ -2850,8 +2798,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed)
     // Determine whether a new NPC should be generated:
     if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                         &&
         g_mission->kills + current_num_npcs < g_mission->total_num_npcs &&
-        rand() % 5 == 0)
-    {
+        rand() % 5 == 0) {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
     }
 
@@ -2873,16 +2820,11 @@ Description: Handles SpaceMerc going out of, or coming back into, focus (e.g.,
 
     Outputs: None.
 ******************************************************************************/
-void app_focus_handler(const bool in_focus)
-{
-  if (!in_focus)
-  {
+void app_focus_handler(const bool in_focus) {
+  if (!in_focus) {
     g_game_paused = true;
-  }
-  else
-  {
-    if (window_stack_get_top_window() == g_graphics_window)
-    {
+  } else {
+    if (window_stack_get_top_window() == g_graphics_window) {
       g_game_paused = false;
     }
   }
@@ -2898,8 +2840,7 @@ Description: Initializes the global player character struct according to
 
     Outputs: None.
 ******************************************************************************/
-void init_player(void)
-{
+void init_player(void) {
   g_player->stats[POWER]      = DEFAULT_PLAYER_POWER;
   g_player->stats[ARMOR]      = DEFAULT_PLAYER_DEFENSE;
   g_player->stats[MAX_HP]     = DEFAULT_PLAYER_MAX_HP;
@@ -2918,10 +2859,8 @@ Description: Deinitializes the global player character struct, freeing
 
     Outputs: None.
 ******************************************************************************/
-void deinit_player(void)
-{
-  if (g_player != NULL)
-  {
+void deinit_player(void) {
+  if (g_player != NULL) {
     free(g_player);
     g_player = NULL;
   }
@@ -2939,8 +2878,7 @@ Description: Initializes a non-player character (NPC) struct according to a
 
     Outputs: None.
 ******************************************************************************/
-void init_npc(npc_t *npc, const int8_t type, const GPoint position)
-{
+void init_npc(npc_t *npc, const int8_t type, const GPoint position) {
   npc->type     = type;
   npc->position = position;
 
@@ -2953,25 +2891,21 @@ void init_npc(npc_t *npc, const int8_t type, const GPoint position)
   if (type == ALIEN_OFFICER ||
       type == ALIEN_ELITE   ||
       type == BEAST         ||
-      type == FLOATING_MONSTROSITY)
-  {
+      type == FLOATING_MONSTROSITY) {
     npc->power *= 1.5;
   }
   if (type == ALIEN_OFFICER ||
       type == ROBOT         ||
       type == OOZE          ||
-      type == FLOATING_MONSTROSITY)
-  {
+      type == FLOATING_MONSTROSITY) {
     npc->hp *= 1.5;
   }
 
   // Check for integer overflow:
-  if (npc->power < 0)
-  {
+  if (npc->power < 0) {
     npc->power = MAX_INT8_VALUE;
   }
-  if (npc->hp < 0)
-  {
+  if (npc->hp < 0) {
     npc->hp = MAX_INT8_VALUE;
   }
 }
@@ -2989,26 +2923,21 @@ Description: Initializes the global "back_wall_coords" array so that it
 
     Outputs: None.
 ******************************************************************************/
-void init_wall_coords(void)
-{
+void init_wall_coords(void) {
   uint8_t i, j, wall_width;
   const float perspective_modifier = 2.0; // Helps determine FOV, etc.
 
-  for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i)
-  {
-    for (j = 0; j < (STRAIGHT_AHEAD * 2) + 1; ++j)
-    {
+  for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i) {
+    for (j = 0; j < (STRAIGHT_AHEAD * 2) + 1; ++j) {
       g_back_wall_coords[i][j][TOP_LEFT]     = GPoint(0, 0);
       g_back_wall_coords[i][j][BOTTOM_RIGHT] = GPoint(0, 0);
     }
   }
-  for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i)
-  {
+  for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i) {
     g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT] =
       GPoint(FIRST_WALL_OFFSET - i * perspective_modifier,
              FIRST_WALL_OFFSET - i * perspective_modifier);
-    if (i > 0)
-    {
+    if (i > 0) {
       g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x +=
         g_back_wall_coords[i - 1][STRAIGHT_AHEAD][TOP_LEFT].x;
       g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].y +=
@@ -3021,8 +2950,7 @@ void init_wall_coords(void)
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].y;
     wall_width = g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT].x -
                    g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x;
-    for (j = 1; j <= STRAIGHT_AHEAD; ++j)
-    {
+    for (j = 1; j <= STRAIGHT_AHEAD; ++j) {
       g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT]       =
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT];
       g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT].x     -= wall_width *
@@ -3053,8 +2981,7 @@ Description: Initializes the global mission struct according to a given mission
 
     Outputs: None.
 ******************************************************************************/
-void init_mission(const int8_t type)
-{
+void init_mission(const int8_t type) {
   int8_t i;
 
 #ifdef PBL_COLOR
@@ -3066,8 +2993,7 @@ void init_mission(const int8_t type)
   g_mission->total_num_npcs  = 5 * (rand() % 4 + 1);            // 5-20
   g_mission->reward          = 600 * g_mission->total_num_npcs; // $3-12,000
   g_mission->kills           = 0;
-  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
-  {
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i) {
     g_mission->npcs[i].type = NONE;
   }
   init_mission_location();
@@ -3093,23 +3019,19 @@ Description: Initializes the current mission's location (i.e., its 2D "cells"
 
     Outputs: None.
 ******************************************************************************/
-void init_mission_location(void)
-{
+void init_mission_location(void) {
   int8_t i, j, builder_direction;
   GPoint builder_position, end_point;
 
   // First, set each cell to full HP (i.e., "fully solid"):
-  for (i = 0; i < LOCATION_WIDTH; ++i)
-  {
-    for (j = 0; j < LOCATION_HEIGHT; ++j)
-    {
+  for (i = 0; i < LOCATION_WIDTH; ++i) {
+    for (j = 0; j < LOCATION_HEIGHT; ++j) {
       g_mission->cells[i][j] = DEFAULT_CELL_HP;
     }
   }
 
   // Next, set starting and exit points:
-  switch (g_mission->entrance_direction = rand() % NUM_DIRECTIONS)
-  {
+  switch (g_mission->entrance_direction = rand() % NUM_DIRECTIONS) {
     case NORTH:
       g_mission->entrance = RANDOM_POINT_NORTH;
       end_point           = RANDOM_POINT_SOUTH;
@@ -3131,54 +3053,42 @@ void init_mission_location(void)
   // Now, carve a path between the starting and end points:
   builder_position  = g_mission->entrance;
   builder_direction = get_opposite_direction(g_mission->entrance_direction);
-  while (!gpoint_equal(&builder_position, &end_point))
-  {
+  while (!gpoint_equal(&builder_position, &end_point)) {
     set_cell_type(builder_position, EMPTY);
-    switch (builder_direction)
-    {
+    switch (builder_direction) {
       case NORTH:
-        if (builder_position.y > 0)
-        {
+        if (builder_position.y > 0) {
           builder_position.y--;
         }
         break;
       case SOUTH:
-        if (builder_position.y < LOCATION_HEIGHT - 1)
-        {
+        if (builder_position.y < LOCATION_HEIGHT - 1) {
           builder_position.y++;
         }
         break;
       case EAST:
-        if (builder_position.x < LOCATION_WIDTH - 1)
-        {
+        if (builder_position.x < LOCATION_WIDTH - 1) {
           builder_position.x++;
         }
         break;
       default: // case WEST:
-        if (builder_position.x > 0)
-        {
+        if (builder_position.x > 0) {
           builder_position.x--;
         }
         break;
     }
-    if (rand() % 2) // 50% chance of turning.
-    {
+    if (rand() % 2) {  // 50% chance of turning.
       builder_direction = rand() % NUM_DIRECTIONS;
     }
   }
   set_cell_type(builder_position, EMPTY);
 
   // Finally, add special NPCs, etc., if applicable:
-  if (g_mission->type == ASSASSINATE)
-  {
+  if (g_mission->type == ASSASSINATE) {
     add_new_npc(ALIEN_OFFICER, end_point);
-  }
-  else if (g_mission->type == EXPROPRIATE)
-  {
+  } else if (g_mission->type == EXPROPRIATE) {
     set_cell_type(end_point, ITEM);
-  }
-  else if (g_mission->type == EXTRICATE)
-  {
+  } else if (g_mission->type == EXTRICATE) {
     set_cell_type(end_point, HUMAN);
   }
 }
@@ -3193,10 +3103,8 @@ Description: Deinitializes the global mission struct, freeing associated
 
     Outputs: None.
 ******************************************************************************/
-void deinit_mission(void)
-{
-  if (g_mission != NULL)
-  {
+void deinit_mission(void) {
+  if (g_mission != NULL) {
     free(g_mission);
     g_mission = NULL;
   }
@@ -3211,8 +3119,7 @@ Description: Initializes the narration window.
 
     Outputs: None.
 ******************************************************************************/
-void init_narration(void)
-{
+void init_narration(void) {
   g_narration_window = window_create();
   window_set_background_color(g_narration_window, GColorBlack);
   window_set_click_config_provider(g_narration_window,
@@ -3235,8 +3142,7 @@ Description: Deinitializes the narration window.
 
     Outputs: None.
 ******************************************************************************/
-void deinit_narration(void)
-{
+void deinit_narration(void) {
   text_layer_destroy(g_narration_text_layer);
   window_destroy(g_narration_window);
 }
@@ -3250,13 +3156,11 @@ Description: Initializes the graphics window.
 
     Outputs: None.
 ******************************************************************************/
-void init_graphics(void)
-{
+void init_graphics(void) {
   // Graphics window:
   g_graphics_window = window_create();
   window_set_background_color(g_graphics_window, GColorBlack);
-  window_set_window_handlers(g_graphics_window, (WindowHandlers)
-  {
+  window_set_window_handlers(g_graphics_window, (WindowHandlers) {
     .appear    = graphics_window_appear,
     .disappear = graphics_window_disappear,
   });
@@ -3381,8 +3285,7 @@ Description: Deinitializes the graphics window.
 
     Outputs: None.
 ******************************************************************************/
-void deinit_graphics(void)
-{
+void deinit_graphics(void) {
   tick_timer_service_unsubscribe();
 #ifdef PBL_BW
   inverter_layer_destroy(g_inverter_layer);
@@ -3399,12 +3302,10 @@ Description: Initializes the upgrade menu.
 
     Outputs: None.
 ******************************************************************************/
-void init_upgrade_menu(void)
-{
+void init_upgrade_menu(void) {
   g_upgrade_menu_window = window_create();
   g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
-  menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks)
-  {
+  menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks) {
     .get_header_height = menu_get_header_height_callback,
     .draw_header       = upgrade_menu_draw_header_callback,
     .get_num_rows      = menu_get_num_rows_callback,
@@ -3426,8 +3327,7 @@ Description: Deinitializes the upgrade menu.
 
     Outputs: None.
 ******************************************************************************/
-void deinit_upgrade_menu(void)
-{
+void deinit_upgrade_menu(void) {
   menu_layer_destroy(g_upgrade_menu);
   window_destroy(g_upgrade_menu_window);
 }
@@ -3441,18 +3341,15 @@ Description: Initializes the main menu.
 
     Outputs: None.
 ******************************************************************************/
-void init_main_menu(void)
-{
+void init_main_menu(void) {
   g_main_menu_window = window_create();
 #ifdef PBL_COLOR
-  window_set_window_handlers(g_main_menu_window, (WindowHandlers)
-  {
+  window_set_window_handlers(g_main_menu_window, (WindowHandlers) {
     .appear = main_menu_window_appear,
   });
 #endif
   g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
-  menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks)
-  {
+  menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks) {
     .get_num_rows = menu_get_num_rows_callback,
     .draw_row     = main_menu_draw_row_callback,
     .select_click = main_menu_select_callback,
@@ -3471,8 +3368,7 @@ Description: Deinitializes the main menu.
 
     Outputs: None.
 ******************************************************************************/
-void deinit_main_menu(void)
-{
+void deinit_main_menu(void) {
   menu_layer_destroy(g_main_menu);
   window_destroy(g_main_menu_window);
 }
@@ -3487,8 +3383,7 @@ Description: Initializes the SpaceMerc app then displays the main menu (after
 
     Outputs: None.
 ******************************************************************************/
-void init(void)
-{
+void init(void) {
   srand(time(0));
   g_game_paused = true;
   g_mission     = NULL;
@@ -3514,18 +3409,14 @@ void init(void)
 
   // Check for saved data and initialize the player struct, etc.:
   g_player = malloc(sizeof(player_t));
-  if (persist_exists(PLAYER_STORAGE_KEY))
-  {
+  if (persist_exists(PLAYER_STORAGE_KEY)) {
     persist_read_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
-    if (persist_exists(MISSION_STORAGE_KEY))
-    {
+    if (persist_exists(MISSION_STORAGE_KEY)) {
       g_mission = malloc(sizeof(mission_t));
       persist_read_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
       set_player_direction(g_player->direction); // To update compass.
     }
-  }
-  else
-  {
+  } else {
     init_player();
     g_current_narration = INTRO_NARRATION_1;
     show_narration();
@@ -3541,11 +3432,9 @@ Description: Deinitializes the SpaceMerc app.
 
     Outputs: None.
 ******************************************************************************/
-void deinit(void)
-{
+void deinit(void) {
   persist_write_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
-  if (g_mission != NULL)
-  {
+  if (g_mission != NULL) {
     persist_write_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
   }
   app_focus_service_unsubscribe();
@@ -3569,8 +3458,7 @@ Description: Main function for the SpaceMerc app.
 
     Outputs: Number of errors encountered.
 ******************************************************************************/
-int main(void)
-{
+int main(void) {
   init();
   app_event_loop();
   deinit();
