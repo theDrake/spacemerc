@@ -20,11 +20,9 @@ Description: Sets the player's orientation to a given direction and updates the
 
     Outputs: None.
 ******************************************************************************/
-void set_player_direction(const int8_t new_direction)
-{
+void set_player_direction(const int8_t new_direction) {
   g_player->direction = new_direction;
-  switch(new_direction)
-  {
+  switch(new_direction) {
     case NORTH:
       gpath_rotate_to(g_compass_path, TRIG_MAX_ANGLE / 2);
       break;
@@ -50,35 +48,29 @@ Description: Attempts to move the player one cell forward in a given direction.
 
     Outputs: None.
 ******************************************************************************/
-void move_player(const int8_t direction)
-{
+void move_player(const int8_t direction) {
   GPoint destination = get_cell_farther_away(g_player->position, direction, 1);
 
   // Check for movement into the exit, ending the current mission:
   if (gpoint_equal(&g_player->position, &g_mission->entrance) &&
       g_player->direction == g_mission->entrance_direction    &&
-      direction == g_mission->entrance_direction)
-  {
+      direction == g_mission->entrance_direction) {
     g_game_paused = true;
     show_window(g_main_menu_window);
-    if (g_mission->completed)
-    {
+    if (g_mission->completed) {
       adjust_player_money(g_mission->reward);
     }
     g_current_narration = MISSION_CONCLUSION_NARRATION;
     show_narration();
     persist_delete(MISSION_STORAGE_KEY);
     persist_write_data(PLAYER_STORAGE_KEY, g_player, sizeof(player_t));
-  }
-  else if (occupiable(destination))
-  {
+  } else if (occupiable(destination)) {
     // Shift the player's position:
     g_player->position = destination;
 
     // Check for completion of extricate/expropriate missions:
     if (get_cell_type(destination) == HUMAN ||
-        get_cell_type(destination) == ITEM)
-    {
+        get_cell_type(destination) == ITEM) {
       set_cell_type(destination, EMPTY);
       g_mission->completed = true;
     }
@@ -97,12 +89,10 @@ Description: Attempts to move a given NPC one cell forward in a given
 
     Outputs: None.
 ******************************************************************************/
-void move_npc(npc_t *npc, const int8_t direction)
-{
+void move_npc(npc_t *npc, const int8_t direction) {
   GPoint destination = get_cell_farther_away(npc->position, direction, 1);
 
-  if (occupiable(destination))
-  {
+  if (occupiable(destination)) {
     npc->position = destination;
   }
 }
@@ -116,8 +106,7 @@ Description: Determines what a given NPC should do.
 
     Outputs: None.
 ******************************************************************************/
-void determine_npc_behavior(npc_t *npc)
-{
+void determine_npc_behavior(npc_t *npc) {
   bool ranged_attack_possible = false;
   int8_t i,
          diff_x = npc->position.x - g_player->position.x,
@@ -126,31 +115,25 @@ void determine_npc_behavior(npc_t *npc)
          vertical_direction;
   GPoint cell;
 
-  if (npc->type >= ROBOT && (diff_x == 0 || diff_y == 0))
-  {
+  if (npc->type >= ROBOT && (diff_x == 0 || diff_y == 0)) {
     i                    = 0;
     cell                 = npc->position;
     horizontal_direction = diff_x > 0 ? WEST  : EAST;
     vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
-    do
-    {
+    do {
       cell = get_cell_farther_away(cell,
                                    diff_x == 0 ? vertical_direction :
                                                  horizontal_direction,
                                    1);
-      if (gpoint_equal(&g_player->position, &cell))
-      {
+      if (gpoint_equal(&g_player->position, &cell)) {
         ranged_attack_possible = true;
         break;
       }
     }while (occupiable(cell) && ++i < (MAX_VISIBILITY_DEPTH - 2));
   }
-  if (ranged_attack_possible || touching(npc->position, g_player->position))
-  {
+  if (ranged_attack_possible || touching(npc->position, g_player->position)) {
     damage_player(npc->power);
-  }
-  else
-  {
+  } else {
     move_npc(npc, get_pursuit_direction(npc->position,
                                         g_player->position));
   }
@@ -166,15 +149,12 @@ Description: Damages the player according to his/her defense vs. a given damage
 
     Outputs: None.
 ******************************************************************************/
-void damage_player(int16_t damage)
-{
+void damage_player(int16_t damage) {
   damage -= g_player->stats[ARMOR] / 2;
-  if (damage < MIN_DAMAGE)
-  {
+  if (damage < MIN_DAMAGE) {
     damage = MIN_DAMAGE;
   }
-  if (g_player->damage_vibes_on)
-  {
+  if (g_player->damage_vibes_on) {
     vibes_short_pulse();
   }
 #ifdef PBL_BW
@@ -197,16 +177,13 @@ Description: Damages a given NPC according to a given damage value. If this
 
     Outputs: None.
 ******************************************************************************/
-void damage_npc(npc_t *npc, const int16_t damage)
-{
+void damage_npc(npc_t *npc, const int16_t damage) {
   npc->hp -= damage;
-  if (npc->hp <= 0)
-  {
+  if (npc->hp <= 0) {
     g_mission->kills++;
     if ((g_mission->type == ASSASSINATE && npc->type == ALIEN_OFFICER) ||
         ((g_mission->type == OBLITERATE || g_mission->type == RETALIATE) &&
-         g_mission->kills >= g_mission->total_num_npcs))
-    {
+         g_mission->kills >= g_mission->total_num_npcs)) {
       g_mission->completed = true;
     }
     npc->type = NONE;
@@ -225,13 +202,10 @@ Description: Damages a given "solid" cell according to a given damage value. If
 
     Outputs: None.
 ******************************************************************************/
-void damage_cell(GPoint cell, const int16_t damage)
-{
-  if (!out_of_bounds(cell) && get_cell_type(cell) > EMPTY)
-  {
+void damage_cell(GPoint cell, const int16_t damage) {
+  if (!out_of_bounds(cell) && get_cell_type(cell) > EMPTY) {
     g_mission->cells[cell.x][cell.y] -= damage;
-    if (get_cell_type(cell) < SOLID)
-    {
+    if (get_cell_type(cell) < SOLID) {
       set_cell_type(cell, EMPTY);
     }
   }
@@ -251,14 +225,10 @@ Description: Adjusts the player's money by a given amount, which may be
 
     Outputs: "True" if the adjustment succeeds.
 ******************************************************************************/
-bool adjust_player_money(const int32_t amount)
-{
-  if (g_player->money + amount < 0)
-  {
+bool adjust_player_money(const int32_t amount) {
+  if (g_player->money + amount < 0) {
     return false;
-  }
-  else if (g_player->money + amount > MAX_LARGE_INT_VALUE)
-  {
+  } else if (g_player->money + amount > MAX_LARGE_INT_VALUE) {
     g_player->money = MAX_LARGE_INT_VALUE;
 
     return false;
@@ -280,15 +250,11 @@ Description: Adjusts the player's current hit points by a given amount, which
 
     Outputs: None.
 ******************************************************************************/
-void adjust_player_current_hp(const int16_t amount)
-{
+void adjust_player_current_hp(const int16_t amount) {
   g_player->stats[CURRENT_HP] += amount;
-  if (g_player->stats[CURRENT_HP] > g_player->stats[MAX_HP])
-  {
+  if (g_player->stats[CURRENT_HP] > g_player->stats[MAX_HP]) {
     g_player->stats[CURRENT_HP] = g_player->stats[MAX_HP];
-  }
-  else if (g_player->stats[CURRENT_HP] <= 0)
-  {
+  } else if (g_player->stats[CURRENT_HP] <= 0) {
     show_window(g_main_menu_window);
     g_current_narration = DEATH_NARRATION;
     show_narration();
@@ -309,11 +275,9 @@ Description: Adjusts the player's current ammo by a given amount, which may be
 
     Outputs: None.
 ******************************************************************************/
-void adjust_player_current_ammo(const int16_t amount)
-{
+void adjust_player_current_ammo(const int16_t amount) {
   g_player->stats[CURRENT_ENERGY] += amount;
-  if (g_player->stats[CURRENT_ENERGY] > g_player->stats[MAX_ENERGY])
-  {
+  if (g_player->stats[CURRENT_ENERGY] > g_player->stats[MAX_ENERGY]) {
     g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
   }
 }
@@ -330,14 +294,11 @@ Description: Creates an NPC of a given type at a given location and adds it to
 
     Outputs: None.
 ******************************************************************************/
-void add_new_npc(const int8_t npc_type, const GPoint position)
-{
+void add_new_npc(const int8_t npc_type, const GPoint position) {
   int8_t i;
 
-  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
-  {
-    if (g_mission->npcs[i].type == NONE && occupiable(position))
-    {
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i) {
+    if (g_mission->npcs[i].type == NONE && occupiable(position)) {
       init_npc(&g_mission->npcs[i], npc_type, position);
 
       return;
@@ -357,8 +318,7 @@ Description: Returns a suitable spawn point for a new NPC, outside the player's
     Outputs: The coordinates of a suitable NPC spawn point, or (-1, -1) if the
              algorithm fails to find one.
 ******************************************************************************/
-GPoint get_npc_spawn_point(void)
-{
+GPoint get_npc_spawn_point(void) {
   int8_t i, j, direction;
   bool checked_left, checked_right;
   GPoint spawn_point, spawn_point2;
@@ -366,42 +326,33 @@ GPoint get_npc_spawn_point(void)
   for (i = 0, direction = rand() % NUM_DIRECTIONS;
        i < NUM_DIRECTIONS;
        ++i, direction = (direction + 1 == NUM_DIRECTIONS ? NORTH :
-                                                           direction + 1))
-  {
+                                                           direction + 1)) {
     spawn_point = get_cell_farther_away(g_player->position,
                                         direction,
                                         MAX_VISIBILITY_DEPTH);
-    if (out_of_bounds(spawn_point))
-    {
+    if (out_of_bounds(spawn_point)) {
       continue;
     }
-    if (occupiable(spawn_point))
-    {
+    if (occupiable(spawn_point)) {
       return spawn_point;
     }
-    for (j = 1; j < MAX_VISIBILITY_DEPTH - 1; ++j)
-    {
+    for (j = 1; j < MAX_VISIBILITY_DEPTH - 1; ++j) {
       checked_left = checked_right = false;
-      do
-      {
+      do {
         // Check to the left:
-        if (checked_right || rand() % 2)
-        {
+        if (checked_right || rand() % 2) {
           spawn_point2 = get_cell_farther_away(spawn_point,
                                           get_direction_to_the_left(direction),
                                           j);
           checked_left = true;
-        }
         // Check to the right:
-        else if (!checked_right)
-        {
+        } else if (!checked_right) {
           spawn_point2 = get_cell_farther_away(spawn_point,
                                          get_direction_to_the_right(direction),
                                          j);
           checked_right = true;
         }
-        if (occupiable(spawn_point2))
-        {
+        if (occupiable(spawn_point2)) {
           return spawn_point2;
         }
       } while (!checked_left || !checked_right);
@@ -423,30 +374,21 @@ Description: Returns the central point, with respect to the graphics layer, of
     Outputs: GPoint coordinates of the floor's central point within the
              designated cell.
 ******************************************************************************/
-GPoint get_floor_center_point(const int8_t depth, const int8_t position)
-{
+GPoint get_floor_center_point(const int8_t depth, const int8_t position) {
   int16_t x_midpoint1, x_midpoint2, x, y;
 
   x_midpoint1 = 0.5 * (g_back_wall_coords[depth][position][TOP_LEFT].x +
                        g_back_wall_coords[depth][position][BOTTOM_RIGHT].x);
-  if (depth == 0)
-  {
-    if (position < STRAIGHT_AHEAD)      // Just to the left of the player.
-    {
+  if (depth == 0) {
+    if (position < STRAIGHT_AHEAD) {         // To the left of the player.
       x_midpoint2 = -0.5 * GRAPHICS_FRAME_WIDTH;
-    }
-    else if (position > STRAIGHT_AHEAD) // Just to the right of the player.
-    {
+    } else if (position > STRAIGHT_AHEAD) {  // To the right of the player.
       x_midpoint2 = 1.5 * GRAPHICS_FRAME_WIDTH;
-    }
-    else                                // Directly under the player.
-    {
+    } else {                                 // Directly under the player.
       x_midpoint2 = x_midpoint1;
     }
     y = GRAPHICS_FRAME_HEIGHT;
-  }
-  else
-  {
+  } else {
     x_midpoint2 = 0.5 *
       (g_back_wall_coords[depth - 1][position][TOP_LEFT].x +
        g_back_wall_coords[depth - 1][position][BOTTOM_RIGHT].x);
@@ -474,10 +416,8 @@ Description: Given a set of cell coordinates, returns new cell coordinates a
 ******************************************************************************/
 GPoint get_cell_farther_away(const GPoint reference_point,
                              const int8_t direction,
-                             const int8_t distance)
-{
-  switch (direction)
-  {
+                             const int8_t distance) {
+  switch (direction) {
     case NORTH:
       return GPoint(reference_point.x, reference_point.y - distance);
     case SOUTH:
@@ -501,8 +441,7 @@ Description: Determines in which direction a character at a given position
 
     Outputs: Integer representing the direction in which the NPC ought to move.
 ******************************************************************************/
-int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee)
-{
+int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee) {
   int8_t diff_x                     = pursuer.x - pursuee.x,
          diff_y                     = pursuer.y - pursuee.y;
   const int8_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
@@ -511,51 +450,42 @@ int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee)
        checked_vertical_direction   = false;
 
   // Check for alignment along the x-axis:
-  if (diff_x == 0)
-  {
+  if (diff_x == 0) {
     if (diff_y == 1 /* The two are already touching. */ ||
         occupiable(get_cell_farther_away(pursuer,
                                          vertical_direction,
-                                         1)))
-    {
+                                         1))) {
       return vertical_direction;
     }
     checked_vertical_direction = true;
   }
 
   // Check for alignment along the y-axis:
-  if (diff_y == 0)
-  {
+  if (diff_y == 0) {
     if (diff_x == 1 /* The two are already touching. */ ||
         occupiable(get_cell_farther_away(pursuer,
                                          horizontal_direction,
-                                         1)))
-    {
+                                         1))) {
       return horizontal_direction;
     }
     checked_horizontal_direction = true;
   }
 
   // If not aligned along either axis, a direction in either axis will do:
-  while (!checked_horizontal_direction || !checked_vertical_direction)
-  {
+  while (!checked_horizontal_direction || !checked_vertical_direction) {
     if (checked_vertical_direction ||
-        (!checked_horizontal_direction && rand() % 2))
-    {
+        (!checked_horizontal_direction && rand() % 2)) {
       if (occupiable(get_cell_farther_away(pursuer,
                                            horizontal_direction,
-                                           1)))
-      {
+                                           1))) {
         return horizontal_direction;
       }
       checked_horizontal_direction = true;
     }
-    if (!checked_vertical_direction)
-    {
+    if (!checked_vertical_direction) {
       if (occupiable(get_cell_farther_away(pursuer,
                                            vertical_direction,
-                                           1)))
-      {
+                                           1))) {
         return vertical_direction;
       }
       checked_vertical_direction = true;
@@ -577,10 +507,8 @@ Description: Given a north/south/east/west reference direction, returns the
     Outputs: Integer representing the direction to the left of the reference
              direction.
 ******************************************************************************/
-int8_t get_direction_to_the_left(const int8_t reference_direction)
-{
-  switch (reference_direction)
-  {
+int8_t get_direction_to_the_left(const int8_t reference_direction) {
+  switch (reference_direction) {
     case NORTH:
       return WEST;
     case WEST:
@@ -603,10 +531,8 @@ Description: Given a north/south/east/west reference direction, returns the
     Outputs: Integer representing the direction to the right of the reference
              direction.
 ******************************************************************************/
-int8_t get_direction_to_the_right(const int8_t reference_direction)
-{
-  switch (reference_direction)
-  {
+int8_t get_direction_to_the_right(const int8_t reference_direction) {
+  switch (reference_direction) {
     case NORTH:
       return EAST;
     case EAST:
@@ -628,10 +554,8 @@ Description: Returns the opposite of a given direction value (i.e., given the
 
     Outputs: Integer representing the opposite of the given direction.
 ******************************************************************************/
-int8_t get_opposite_direction(const int8_t direction)
-{
-  switch (direction)
-  {
+int8_t get_opposite_direction(const int8_t direction) {
+  switch (direction) {
     case NORTH:
       return SOUTH;
     case SOUTH:
@@ -653,13 +577,11 @@ Description: Determines what value a given stat will be raised to if the player
 
     Outputs: The new value the stat will have if it is upgraded.
 ******************************************************************************/
-int16_t get_upgraded_stat_value(const int8_t stat_index)
-{
+int16_t get_upgraded_stat_value(const int8_t stat_index) {
   int16_t upgraded_stat_value = g_player->stats[stat_index] +
                                 STAT_BOOST_PER_UPGRADE;
 
-  if (upgraded_stat_value >= MAX_SMALL_INT_VALUE)
-  {
+  if (upgraded_stat_value >= MAX_SMALL_INT_VALUE) {
     return MAX_SMALL_INT_VALUE;
   }
 
@@ -677,12 +599,10 @@ Description: Determines the cost for upgrading one of the player's stats to a
 
     Outputs: The cost for upgrading a stat to the given value.
 ******************************************************************************/
-int32_t get_upgrade_cost(const int16_t upgraded_stat_value)
-{
+int32_t get_upgrade_cost(const int16_t upgraded_stat_value) {
   int32_t cost = upgraded_stat_value * UPGRADE_COST_MULTIPLIER;
 
-  if (cost >= MAX_LARGE_INT_VALUE || cost < upgraded_stat_value)
-  {
+  if (cost >= MAX_LARGE_INT_VALUE || cost < upgraded_stat_value) {
     return MAX_LARGE_INT_VALUE;
   }
 
@@ -698,10 +618,8 @@ Description: Returns the type of cell at a given set of coordinates.
 
     Outputs: The indicated cell's type.
 ******************************************************************************/
-int8_t get_cell_type(const GPoint cell)
-{
-  if (out_of_bounds(cell))
-  {
+int8_t get_cell_type(const GPoint cell) {
+  if (out_of_bounds(cell)) {
     return SOLID;
   }
 
@@ -719,8 +637,7 @@ Description: Sets the cell at a given set of coordinates to a given type.
 
     Outputs: None.
 ******************************************************************************/
-void set_cell_type(GPoint cell, const int8_t type)
-{
+void set_cell_type(GPoint cell, const int8_t type) {
   g_mission->cells[cell.x][cell.y] = type;
 }
 
@@ -734,15 +651,12 @@ Description: Returns a pointer to the NPC occupying a given cell.
     Outputs: Pointer to the NPC occupying the indicated cell, or NULL if there
              is none.
 ******************************************************************************/
-npc_t *get_npc_at(const GPoint cell)
-{
+npc_t *get_npc_at(const GPoint cell) {
   int8_t i;
 
-  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i)
-  {
+  for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i) {
     if (g_mission->npcs[i].type != NONE &&
-        gpoint_equal(&g_mission->npcs[i].position, &cell))
-    {
+        gpoint_equal(&g_mission->npcs[i].position, &cell)) {
       return &g_mission->npcs[i];
     }
   }
@@ -760,8 +674,7 @@ Description: Determines whether a given set of cell coordinates lies outside
 
     Outputs: "True" if the cell is out of bounds.
 ******************************************************************************/
-bool out_of_bounds(const GPoint cell)
-{
+bool out_of_bounds(const GPoint cell) {
   return cell.x < 0               ||
          cell.x >= LOCATION_WIDTH ||
          cell.y < 0               ||
@@ -780,8 +693,7 @@ Description: Determines whether the cell at a given set of coordinates may be
 
     Outputs: "True" if the cell is occupiable.
 ******************************************************************************/
-bool occupiable(const GPoint cell)
-{
+bool occupiable(const GPoint cell) {
   return get_cell_type(cell) <= EMPTY              &&
          !gpoint_equal(&g_player->position, &cell) &&
          get_npc_at(cell) == NULL;
@@ -798,8 +710,7 @@ Description: Determines whether two cells are "touching," meaning they are next
 
     Outputs: "True" if the two cells are touching.
 ******************************************************************************/
-bool touching(const GPoint cell, const GPoint cell_2)
-{
+bool touching(const GPoint cell, const GPoint cell_2) {
   const int8_t diff_x = cell.x - cell_2.x,
                diff_y = cell.y - cell_2.y;
 
@@ -817,16 +728,13 @@ Description: Displays narration text via the narration window according to
 
     Outputs: None.
 ******************************************************************************/
-void show_narration(void)
-{
+void show_narration(void) {
   static char narration_str[NARRATION_STR_LEN + 1];
   int8_t location = rand() % NUM_LOCATION_TYPES;
 
-  if (g_current_narration < NUM_MISSION_TYPES)
-  {
+  if (g_current_narration < NUM_MISSION_TYPES) {
     strcpy(narration_str, "       OBJECTIVE\n");
-    switch (g_current_narration)
-    {
+    switch (g_current_narration) {
       case RETALIATE: // Max. total chars: 78
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
@@ -864,16 +772,11 @@ void show_narration(void)
              NARRATION_STR_LEN - strlen(narration_str) + 1,
              " for $%ld.",
              g_mission->reward);
-  }
-  else if (g_current_narration == MISSION_CONCLUSION_NARRATION) // ~77 chars
-  {
+  } else if (g_current_narration == MISSION_CONCLUSION_NARRATION) {  // ~77 c.
     strcpy(narration_str, "          MISSION\n      ");
-    if (g_mission->completed)
-    {
+    if (g_mission->completed) {
       strcat(narration_str, "  ");
-    }
-    else
-    {
+    } else {
       strcat(narration_str, "IN");
     }
     snprintf(narration_str + strlen(narration_str),
@@ -883,9 +786,7 @@ void show_narration(void)
              g_mission->total_num_npcs - g_mission->kills,
              g_mission->completed ? g_mission->reward : 0);
     deinit_mission();
-  }
-  else
-  {
+  } else {
     snprintf(narration_str,
              NARRATION_STR_LEN + 1,
              g_narration_strings[g_current_narration - NUM_MISSION_TYPES - 1]);
@@ -904,16 +805,11 @@ Description: Displays a given window. (Assumes that window has already been
 
     Outputs: None.
 ******************************************************************************/
-void show_window(Window *window)
-{
-  if (!window_stack_contains_window(window))
-  {
+void show_window(Window *window) {
+  if (!window_stack_contains_window(window)) {
     window_stack_push(window, NOT_ANIMATED);
-  }
-  else
-  {
-    while (window_stack_get_top_window() != window)
-    {
+  } else {
+    while (window_stack_get_top_window() != window) {
       window_stack_pop(NOT_ANIMATED);
     }
   }
@@ -938,10 +834,8 @@ Description: Instructions for drawing each row of the main menu.
 static void main_menu_draw_row_callback(GContext *ctx,
                                         const Layer *cell_layer,
                                         MenuIndex *cell_index,
-                                        void *data)
-{
-  switch (cell_index->row)
-  {
+                                        void *data) {
+  switch (cell_index->row) {
     case 0:
       menu_cell_basic_draw(ctx,
                            cell_layer,
@@ -996,24 +890,18 @@ Description: Called when a given cell of the main menu is selected.
 ******************************************************************************/
 void main_menu_select_callback(MenuLayer *menu_layer,
                                MenuIndex *cell_index,
-                               void *data)
-{
-  switch (cell_index->row)
-  {
+                               void *data) {
+  switch (cell_index->row) {
     case 0: // New Mission / Continue
-      if (g_mission == NULL)
-      {
+      if (g_mission == NULL) {
         g_mission = malloc(sizeof(mission_t));
         init_mission(rand() % NUM_MISSION_TYPES);
-      }
-      else
-      {
+      } else {
         show_window(g_graphics_window);
       }
       break;
     case 1: // Buy an Upgrade
-      if (g_mission == NULL)
-      {
+      if (g_mission == NULL) {
         menu_layer_set_selected_index(g_upgrade_menu,
                                       (MenuIndex) {0, 0},
                                       MenuRowAlignCenter,
@@ -1051,8 +939,7 @@ Description: Instructions for drawing the upgrade menu's header.
 static void upgrade_menu_draw_header_callback(GContext *ctx,
                                               const Layer *cell_layer,
                                               uint16_t section_index,
-                                              void *data)
-{
+                                              void *data) {
   char header_str[UPGRADE_MENU_HEADER_STR_LEN + 1] = "";
 
   snprintf(header_str,
@@ -1077,15 +964,13 @@ Description: Instructions for drawing a given row of the upgrade menu.
 static void upgrade_menu_draw_row_callback(GContext *ctx,
                                            const Layer *cell_layer,
                                            MenuIndex *cell_index,
-                                           void *data)
-{
+                                           void *data) {
   int16_t new_stat_value;
   char title_str[UPGRADE_TITLE_STR_LEN + 1]       = "",
        subtitle_str[UPGRADE_SUBTITLE_STR_LEN + 1] = "";
 
   // Determine the upgrade's title:
-  switch (cell_index->row)
-  {
+  switch (cell_index->row) {
     case ARMOR:
       strcpy(title_str, "Armor");
       break;
@@ -1101,12 +986,9 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
   }
 
   // Determine the upgrade's subtitle:
-  if (g_player->stats[cell_index->row] >= MAX_SMALL_INT_VALUE)
-  {
+  if (g_player->stats[cell_index->row] >= MAX_SMALL_INT_VALUE) {
     strcpy(subtitle_str, "9999 (Maxed Out)");
-  }
-  else
-  {
+  } else {
     new_stat_value = get_upgraded_stat_value(cell_index->row);
     snprintf(subtitle_str,
              UPGRADE_SUBTITLE_STR_LEN + 1,
@@ -1133,18 +1015,15 @@ Description: Called when a given cell of the upgrade menu is selected.
 ******************************************************************************/
 void upgrade_menu_select_callback(MenuLayer *menu_layer,
                                   MenuIndex *cell_index,
-                                  void *data)
-{
+                                  void *data) {
   int16_t new_stat_value;
 
-  if (g_player->stats[cell_index->row] >= MAX_SMALL_INT_VALUE)
-  {
+  if (g_player->stats[cell_index->row] >= MAX_SMALL_INT_VALUE) {
     return;
   }
 
   new_stat_value = get_upgraded_stat_value(cell_index->row);
-  if (adjust_player_money(get_upgrade_cost(new_stat_value) * -1))
-  {
+  if (adjust_player_money(get_upgrade_cost(new_stat_value) * -1)) {
     g_player->stats[cell_index->row] = new_stat_value;
     menu_layer_reload_data(g_upgrade_menu);
   }
@@ -1163,8 +1042,7 @@ Description: Returns the section height for a given section of a given menu.
 ******************************************************************************/
 static int16_t menu_get_header_height_callback(MenuLayer *menu_layer,
                                                uint16_t section_index,
-                                               void *data)
-{
+                                               void *data) {
   return MENU_CELL_BASIC_HEADER_HEIGHT;
 }
 
@@ -1182,14 +1060,10 @@ Description: Returns the number of rows in a given menu (or in a given section
 ******************************************************************************/
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer,
                                            uint16_t section_index,
-                                           void *data)
-{
-  if (menu_layer == g_main_menu)
-  {
+                                           void *data) {
+  if (menu_layer == g_main_menu) {
     return MAIN_MENU_NUM_ROWS;
-  }
-  else // menu_layer == g_upgrade_menu
-  {
+  } else {  // menu_layer == g_upgrade_menu
     return UPGRADE_MENU_NUM_ROWS;
   }
 }
@@ -1205,8 +1079,7 @@ Description: Draws a (simplistic) 3D scene based on the player's current
 
     Outputs: None.
 ******************************************************************************/
-void draw_scene(Layer *layer, GContext *ctx)
-{
+void draw_scene(Layer *layer, GContext *ctx) {
   int8_t i, depth;
   GPoint cell, cell_2;
 
@@ -1219,38 +1092,32 @@ void draw_scene(Layer *layer, GContext *ctx)
   draw_floor_and_ceiling(ctx);
 
   // Now draw walls and cell contents:
-  for (depth = MAX_VISIBILITY_DEPTH - 2; depth >= 0; --depth)
-  {
+  for (depth = MAX_VISIBILITY_DEPTH - 2; depth >= 0; --depth) {
     // Straight ahead at the current depth:
     cell = get_cell_farther_away(g_player->position,
                                  g_player->direction,
                                  depth);
-    if (out_of_bounds(cell))
-    {
+    if (out_of_bounds(cell)) {
       continue;
     }
-    if (get_cell_type(cell) < SOLID)
-    {
+    if (get_cell_type(cell) < SOLID) {
       draw_cell_walls(ctx, cell, depth, STRAIGHT_AHEAD);
       draw_cell_contents(ctx, cell, depth, STRAIGHT_AHEAD);
     }
 
     // To the left and right at the same depth:
-    for (i = depth + 1; i > 0; --i)
-    {
+    for (i = depth + 1; i > 0; --i) {
       cell_2 = get_cell_farther_away(cell,
                                 get_direction_to_the_left(g_player->direction),
                                 i);
-      if (get_cell_type(cell_2) < SOLID)
-      {
+      if (get_cell_type(cell_2) < SOLID) {
         draw_cell_walls(ctx, cell_2, depth, STRAIGHT_AHEAD - i);
         draw_cell_contents(ctx, cell_2, depth, STRAIGHT_AHEAD - i);
       }
       cell_2 = get_cell_farther_away(cell,
                                get_direction_to_the_right(g_player->direction),
                                i);
-      if (get_cell_type(cell_2) < SOLID)
-      {
+      if (get_cell_type(cell_2) < SOLID) {
         draw_cell_walls(ctx, cell_2, depth, STRAIGHT_AHEAD + i);
         draw_cell_contents(ctx, cell_2, depth, STRAIGHT_AHEAD + i);
       }
@@ -1258,8 +1125,7 @@ void draw_scene(Layer *layer, GContext *ctx)
   }
 
   // Draw applicable weapon fire:
-  if (g_player_animation_mode > 0)
-  {
+  if (g_player_animation_mode > 0) {
     draw_player_laser_beam(ctx);
   }
 
@@ -1310,8 +1176,7 @@ Description: Draws the player's laser beam onto the screen.
 
     Outputs: None.
 ******************************************************************************/
-void draw_player_laser_beam(GContext *ctx)
-{
+void draw_player_laser_beam(GContext *ctx) {
   int8_t i;
 
 #ifdef PBL_COLOR
@@ -1327,8 +1192,7 @@ void draw_player_laser_beam(GContext *ctx)
                      GPoint(SCREEN_CENTER_POINT_X, GRAPHICS_FRAME_HEIGHT),
                      SCREEN_CENTER_POINT);
 #endif
-  for (i = 0; i <= g_laser_base_width / 2; ++i)
-  {
+  for (i = 0; i <= g_laser_base_width / 2; ++i) {
 #ifdef PBL_COLOR
     graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
     graphics_draw_line(ctx,
@@ -1342,8 +1206,7 @@ void draw_player_laser_beam(GContext *ctx)
                        GPoint(SCREEN_CENTER_POINT_X + i / 3,
                               SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
 #else
-    if (i == g_laser_base_width / 2)
-    {
+    if (i == g_laser_base_width / 2) {
       graphics_context_set_stroke_color(ctx, GColorBlack);
     }
     graphics_draw_line(ctx,
@@ -1369,21 +1232,18 @@ Description: Draws the floor and ceiling.
 
     Outputs: None.
 ******************************************************************************/
-void draw_floor_and_ceiling(GContext *ctx)
-{
+void draw_floor_and_ceiling(GContext *ctx) {
   uint8_t x, y, max_y, shading_offset;
 
   max_y = g_back_wall_coords[MAX_VISIBILITY_DEPTH - 2][0][TOP_LEFT].y;
 #ifdef PBL_BW
   graphics_context_set_stroke_color(ctx, GColorWhite);
 #endif
-  for (y = 0; y < max_y; ++y)
-  {
+  for (y = 0; y < max_y; ++y) {
     // Determine horizontal distance between points:
     shading_offset = 1 + y / MAX_VISIBILITY_DEPTH;
     if (y % MAX_VISIBILITY_DEPTH >= MAX_VISIBILITY_DEPTH / 2 +
-                                    MAX_VISIBILITY_DEPTH % 2)
-    {
+                                    MAX_VISIBILITY_DEPTH % 2) {
       shading_offset++;
     }
 #ifdef PBL_COLOR
@@ -1395,8 +1255,7 @@ void draw_floor_and_ceiling(GContext *ctx)
 #endif
     for (x = y % 2 ? 0 : (shading_offset / 2) + (shading_offset % 2);
          x < GRAPHICS_FRAME_WIDTH;
-         x += shading_offset)
-    {
+         x += shading_offset) {
       // Draw one point on the ceiling and another on the floor:
 #ifdef PBL_COLOR
       graphics_draw_pixel(ctx, GPoint(x, y + STATUS_BAR_HEIGHT));
@@ -1428,8 +1287,7 @@ Description: Draws any walls that exist along the back and sides of a given
 void draw_cell_walls(GContext *ctx,
                      const GPoint cell,
                      const int8_t depth,
-                     const int8_t position)
-{
+                     const int8_t position) {
   int16_t left, right, top, bottom, y_offset, exit_offset_x, exit_offset_y;
   bool back_wall_drawn, left_wall_drawn, right_wall_drawn, exit_present;
   GPoint cell_2;
@@ -1441,14 +1299,12 @@ void draw_cell_walls(GContext *ctx,
   bottom        = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
   exit_present  = gpoint_equal(&cell, &g_mission->entrance);
   exit_offset_y = (right - left) / 4;
-  if (bottom - top < MIN_WALL_HEIGHT)
-  {
+  if (bottom - top < MIN_WALL_HEIGHT) {
     return;
   }
   back_wall_drawn = left_wall_drawn = right_wall_drawn = false;
   cell_2          = get_cell_farther_away(cell, g_player->direction, 1);
-  if (get_cell_type(cell_2) >= SOLID)
-  {
+  if (get_cell_type(cell_2) >= SOLID) {
 #ifdef PBL_COLOR
     draw_shaded_quad(ctx,
                      GPoint(left, top + STATUS_BAR_HEIGHT),
@@ -1476,8 +1332,7 @@ void draw_cell_walls(GContext *ctx,
 #endif
 
     // Ad hoc solution to a minor visual issue (remove if no longer relevant):
-    if (top == g_back_wall_coords[1][0][TOP_LEFT].y)
-    {
+    if (top == g_back_wall_coords[1][0][TOP_LEFT].y) {
 #ifdef PBL_COLOR
       graphics_draw_line(ctx,
                          GPoint(left, bottom + 1 + STATUS_BAR_HEIGHT),
@@ -1490,8 +1345,7 @@ void draw_cell_walls(GContext *ctx,
     }
 
     // Entrance/exit:
-    if (exit_present && g_player->direction == g_mission->entrance_direction)
-    {
+    if (exit_present && g_player->direction == g_mission->entrance_direction) {
       graphics_context_set_fill_color(ctx, GColorBlack);
       exit_offset_x = (right - left) / 3;
 #ifdef PBL_COLOR
@@ -1518,23 +1372,18 @@ void draw_cell_walls(GContext *ctx,
 
   // Left wall:
   right = left;
-  if (depth == 0)
-  {
+  if (depth == 0) {
     left     = 0;
     y_offset = top;
-  }
-  else
-  {
+  } else {
     left     = g_back_wall_coords[depth - 1][position][TOP_LEFT].x;
     y_offset = top - g_back_wall_coords[depth - 1][position][TOP_LEFT].y;
   }
-  if (position <= STRAIGHT_AHEAD)
-  {
+  if (position <= STRAIGHT_AHEAD) {
     cell_2 = get_cell_farther_away(cell,
                                 get_direction_to_the_left(g_player->direction),
                                 1);
-    if (get_cell_type(cell_2) >= SOLID)
-    {
+    if (get_cell_type(cell_2) >= SOLID) {
 #ifdef PBL_COLOR
       draw_shaded_quad(ctx,
                        GPoint(left, top - y_offset + STATUS_BAR_HEIGHT),
@@ -1567,8 +1416,7 @@ void draw_cell_walls(GContext *ctx,
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_left(g_player->direction) ==
-                          g_mission->entrance_direction)
-      {
+                          g_mission->entrance_direction) {
         exit_offset_x = (right - left) / 3;
 #ifdef PBL_COLOR
         fill_quad(ctx,
@@ -1602,21 +1450,16 @@ void draw_cell_walls(GContext *ctx,
 
   // Right wall:
   left = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
-  if (depth == 0)
-  {
+  if (depth == 0) {
     right = GRAPHICS_FRAME_WIDTH - 1;
-  }
-  else
-  {
+  } else {
     right = g_back_wall_coords[depth - 1][position][BOTTOM_RIGHT].x;
   }
-  if (position >= STRAIGHT_AHEAD)
-  {
+  if (position >= STRAIGHT_AHEAD) {
     cell_2 = get_cell_farther_away(cell,
                                get_direction_to_the_right(g_player->direction),
                                1);
-    if (get_cell_type(cell_2) >= SOLID)
-    {
+    if (get_cell_type(cell_2) >= SOLID) {
 #ifdef PBL_COLOR
       draw_shaded_quad(ctx,
                        GPoint(left, top + STATUS_BAR_HEIGHT),
@@ -1649,8 +1492,7 @@ void draw_cell_walls(GContext *ctx,
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_right(g_player->direction) ==
-                          g_mission->entrance_direction)
-      {
+                          g_mission->entrance_direction) {
         exit_offset_x = (right - left) / 3;
 #ifdef PBL_COLOR
         fill_quad(ctx,
@@ -1695,8 +1537,7 @@ void draw_cell_walls(GContext *ctx,
       (left_wall_drawn &&
        get_cell_type(get_cell_farther_away(cell_2,
                                 get_direction_to_the_left(g_player->direction),
-                                1)) < SOLID))
-  {
+                                1)) < SOLID)) {
 #ifdef PBL_COLOR
     graphics_draw_line(ctx,
                        GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x,
@@ -1719,8 +1560,7 @@ void draw_cell_walls(GContext *ctx,
       (right_wall_drawn &&
        get_cell_type(get_cell_farther_away(cell_2,
                                get_direction_to_the_right(g_player->direction),
-                               1)) < SOLID))
-  {
+                               1)) < SOLID)) {
 #ifdef PBL_COLOR
     graphics_draw_line(ctx,
                     GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
@@ -1755,16 +1595,13 @@ Description: Draws an NPC or any other contents present in a given cell.
 void draw_cell_contents(GContext *ctx,
                         const GPoint cell,
                         const int8_t depth,
-                        const int8_t position)
-{
+                        const int8_t position) {
   int8_t drawing_unit, // Reference variable for drawing contents at depth.
          content_type = get_cell_type(cell);
   GPoint floor_center_point, top_left_point;
 
-  if (content_type == EMPTY)
-  {
-    if (get_npc_at(cell) == NULL)
-    {
+  if (content_type == EMPTY) {
+    if (get_npc_at(cell) == NULL) {
       return;
     }
     content_type = get_npc_at(cell)->type;
@@ -1781,8 +1618,7 @@ void draw_cell_contents(GContext *ctx,
   drawing_unit = (g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
                   top_left_point.x) / 10;
   if ((g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
-       top_left_point.x) % 10 >= 5)
-  {
+       top_left_point.x) % 10 >= 5) {
     drawing_unit++;
   }
 
@@ -1797,8 +1633,7 @@ void draw_cell_contents(GContext *ctx,
                      GCornersAll);
 
   // Now draw the body, etc.:
-  if (content_type >= ALIEN_SOLDIER)
-  {
+  if (content_type >= ALIEN_SOLDIER) {
     // Legs:
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorOxfordBlue);
@@ -1863,16 +1698,11 @@ void draw_cell_contents(GContext *ctx,
 
     // Torso:
 #ifdef PBL_COLOR
-    if (content_type == ALIEN_OFFICER)
-    {
+    if (content_type == ALIEN_OFFICER) {
       graphics_context_set_fill_color(ctx, GColorRed);
-    }
-    else if (content_type == ALIEN_ELITE)
-    {
+    } else if (content_type == ALIEN_ELITE) {
       graphics_context_set_fill_color(ctx, GColorMidnightGreen);
-    }
-    else // content_type == ALIEN_SOLDIER
-    {
+    } else {  // content_type == ALIEN_SOLDIER
       graphics_context_set_fill_color(ctx, GColorCadetBlue);
     }
     graphics_fill_rect(ctx,
@@ -1883,8 +1713,7 @@ void draw_cell_contents(GContext *ctx,
                        NO_CORNER_RADIUS,
                        GCornerNone);
 #else
-    if (content_type == ALIEN_OFFICER)
-    {
+    if (content_type == ALIEN_OFFICER) {
       draw_shaded_quad(ctx,
                        GPoint(floor_center_point.x - drawing_unit * 2,
                               floor_center_point.y - drawing_unit * 8),
@@ -1895,9 +1724,7 @@ void draw_cell_contents(GContext *ctx,
                        GPoint(floor_center_point.x + drawing_unit * 2,
                               floor_center_point.y - drawing_unit * 4),
                        GPoint(top_left_point.x - 10, top_left_point.y - 10));
-    }
-    else // content_type == ALIEN_SOLDIER || content_type == ALIEN_ELITE
-    {
+    } else {  // content_type == ALIEN_SOLDIER || content_type == ALIEN_ELITE
       graphics_fill_rect(ctx,
                          GRect(floor_center_point.x - drawing_unit * 2,
                                floor_center_point.y - drawing_unit * 8,
@@ -1921,8 +1748,7 @@ void draw_cell_contents(GContext *ctx,
                              drawing_unit * 3),
                        drawing_unit / 2,
                        GCornersLeft);
-    if (content_type == ALIEN_ELITE)
-    {
+    if (content_type == ALIEN_ELITE) {
       graphics_fill_rect(ctx,
                          GRect(floor_center_point.x + drawing_unit * 2,
                                floor_center_point.y - drawing_unit * 8,
@@ -1946,9 +1772,7 @@ void draw_cell_contents(GContext *ctx,
 #else
       graphics_context_set_fill_color(ctx, GColorWhite);     // For the head.
 #endif
-    }
-    else
-    {
+    } else {
       graphics_fill_rect(ctx,
                          GRect(floor_center_point.x + drawing_unit * 2,
                                floor_center_point.y - drawing_unit * 8,
@@ -1992,9 +1816,7 @@ void draw_cell_contents(GContext *ctx,
                                 floor_center_point.y -
                                   (drawing_unit * 5 + drawing_unit / 2)),
                          drawing_unit / 2 + drawing_unit / 4);
-  }
-  else if (content_type == HUMAN)
-  {
+  } else if (content_type == HUMAN) {
     // Legs:
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorArmyGreen);
@@ -2119,9 +1941,7 @@ void draw_cell_contents(GContext *ctx,
                          GPoint(floor_center_point.x + drawing_unit / 4,
                                 floor_center_point.y - (drawing_unit * 9)),
                          drawing_unit / 6);
-  }
-  else if (content_type == ROBOT)
-  {
+  } else if (content_type == ROBOT) {
     // Tracks/wheels:
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorDarkGray);
@@ -2263,9 +2083,7 @@ void draw_cell_contents(GContext *ctx,
                                 floor_center_point.y -
                                   (drawing_unit * 4 + drawing_unit / 2)),
                          drawing_unit / 2);
-  }
-  else if (content_type == BEAST)
-  {
+  } else if (content_type == BEAST) {
     // Legs:
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorImperialPurple);
@@ -2342,9 +2160,7 @@ void draw_cell_contents(GContext *ctx,
                                0 : drawing_unit / 2)),
                        drawing_unit / 2,
                        GCornersAll);
-  }
-  else if (content_type == OOZE)
-  {
+  } else if (content_type == OOZE) {
     // Body:
     graphics_fill_circle(ctx,
                          GPoint(floor_center_point.x,
@@ -2377,9 +2193,7 @@ void draw_cell_contents(GContext *ctx,
                              drawing_unit),
                        drawing_unit / 2,
                        GCornersAll);
-  }
-  else if (content_type == FLOATING_MONSTROSITY)
-  {
+  } else if (content_type == FLOATING_MONSTROSITY) {
     draw_floating_monstrosity(ctx,
                               GPoint(floor_center_point.x,
                                      floor_center_point.y - drawing_unit * 6),
@@ -2390,9 +2204,7 @@ void draw_cell_contents(GContext *ctx,
                        1 + ((top_left_point.y -
                          g_back_wall_coords[depth - 1][position][TOP_LEFT].y) /
                          2) / MAX_VISIBILITY_DEPTH);
-  }
-  else // content_type == ITEM
-  {
+  } else {  // content_type == ITEM
 #ifdef PBL_COLOR
     graphics_context_set_fill_color(ctx, GColorLightGray);
     graphics_fill_rect(ctx,
@@ -2468,8 +2280,7 @@ Description: Draws a "floating monstrosity" with a spherical body according to
 void draw_floating_monstrosity(GContext *ctx,
                                GPoint center,
                                const int8_t radius,
-                               int8_t shading_offset)
-{
+                               int8_t shading_offset) {
   int16_t theta;
   uint8_t i, x_offset, y_offset;
 
@@ -2480,16 +2291,13 @@ void draw_floating_monstrosity(GContext *ctx,
   graphics_context_set_fill_color(ctx, GColorBlack);
 #endif
   graphics_fill_circle(ctx, center, radius);
-  for (i = radius; i > radius / 3; --i)
-  {
-    if (i == 2 * (radius / 3))
-    {
+  for (i = radius; i > radius / 3; --i) {
+    if (i == 2 * (radius / 3)) {
       shading_offset *= 2;
     }
     for (theta = i % 2 ? 0 : ((TRIG_MAX_RATIO / 360) * shading_offset) / 2;
          theta < NINETY_DEGREES;
-         theta += (TRIG_MAX_RATIO / 360) * shading_offset)
-    {
+         theta += (TRIG_MAX_RATIO / 360) * shading_offset) {
       x_offset = cos_lookup(theta) * i / TRIG_MAX_RATIO;
       y_offset = sin_lookup(theta) * i / TRIG_MAX_RATIO;
 #ifdef PBL_COLOR
@@ -2530,28 +2338,24 @@ void draw_shaded_quad(GContext *ctx,
                       const GPoint lower_left,
                       const GPoint upper_right,
                       const GPoint lower_right,
-                      const GPoint shading_ref)
-{
+                      const GPoint shading_ref) {
   int16_t i, j, shading_offset, half_shading_offset;
   float dy_over_dx     = (float) (upper_right.y - upper_left.y) /
                                  (upper_right.x - upper_left.x);
   GColor primary_color = GColorWhite;
 
-  for (i = upper_left.x; i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH; ++i)
-  {
+  for (i = upper_left.x; i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH; ++i) {
     // Determine vertical distance between points:
     shading_offset = 1 + ((shading_ref.y + (i - upper_left.x) * dy_over_dx) /
                           MAX_VISIBILITY_DEPTH);
     if ((int16_t) (shading_ref.y + (i - upper_left.x) * dy_over_dx) %
         MAX_VISIBILITY_DEPTH >= MAX_VISIBILITY_DEPTH / 2 +
-                                MAX_VISIBILITY_DEPTH % 2)
-    {
+                                MAX_VISIBILITY_DEPTH % 2) {
       shading_offset++;
     }
     half_shading_offset = (shading_offset / 2) + (shading_offset % 2);
 #ifdef PBL_COLOR
-    if (shading_offset - 3 > NUM_BACKGROUND_COLORS_PER_SCHEME)
-    {
+    if (shading_offset - 3 > NUM_BACKGROUND_COLORS_PER_SCHEME) {
       primary_color = g_background_colors[g_mission->wall_color_scheme]
                                         [NUM_BACKGROUND_COLORS_PER_SCHEME - 1];
     }
