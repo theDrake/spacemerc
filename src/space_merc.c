@@ -3144,6 +3144,7 @@ void init_graphics(void) {
                                    graphics_click_config_provider);
   layer_set_update_proc(window_get_root_layer(g_graphics_window), draw_scene);
 
+#ifdef PBL_COLOR
   // Blue background color scheme:
   g_background_colors[0][0] = GColorCeleste;
   g_background_colors[0][1] = GColorCeleste;
