@@ -127,7 +127,6 @@ enum {
 #define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME                   GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define NARRATION_TEXT_LAYER_FRAME       GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
-#define FLASH_TIMER_DURATION             20 // milliseconds
 #endif
 
 #define COMPASS_RADIUS                   5
@@ -282,9 +281,6 @@ player_t *g_player;
 GColor g_background_colors[NUM_BACKGROUND_COLOR_SCHEMES]
                           [NUM_BACKGROUND_COLORS_PER_SCHEME];
 StatusBarLayer *g_status_bar;
-#else
-AppTimer *g_flash_timer;
-InverterLayer *g_inverter_layer;
 #endif
 
 /******************************************************************************
@@ -375,9 +371,6 @@ void fill_quad(GContext *ctx,
 void draw_status_meter(GContext *ctx,
                        GPoint origin,
                        const float ratio);
-#ifdef PBL_BW
-static void flash_timer_callback(void *data);
-#endif
 static void player_timer_callback(void *data);
 #ifdef PBL_COLOR
 static void main_menu_window_appear(Window *window);

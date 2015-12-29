@@ -157,12 +157,6 @@ void damage_player(int16_t damage) {
   if (g_player->damage_vibes_on) {
     vibes_short_pulse();
   }
-#ifdef PBL_BW
-  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), false);
-  g_flash_timer = app_timer_register(FLASH_TIMER_DURATION,
-                                     flash_timer_callback,
-                                     NULL);
-#endif
   adjust_player_current_hp(damage * -1);
 }
 
@@ -2491,22 +2485,6 @@ void draw_status_meter(GContext *ctx,
 }
 
 /******************************************************************************
-   Function: flash_timer_callback
-
-Description: Called when the flash timer reaches zero. Hides the inverter
-             layer, ending the "flash" (Aplite watches only).
-
-     Inputs: data - Pointer to additional data (not used).
-
-    Outputs: None.
-******************************************************************************/
-#ifdef PBL_BW
-static void flash_timer_callback(void *data) {
-  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
-}
-#endif
-
-/******************************************************************************
    Function: player_timer_callback
 
 Description: Called when the player timer reaches zero.
@@ -2553,9 +2531,6 @@ Description: Called when the graphics window appears.
 static void graphics_window_appear(Window *window) {
   g_game_paused           = false;
   g_player_animation_mode = 0;
-#ifdef PBL_BW
-  layer_set_hidden(inverter_layer_get_layer(g_inverter_layer), true);
-#endif
 }
 
 /******************************************************************************
@@ -3169,12 +3144,6 @@ void init_graphics(void) {
                                    graphics_click_config_provider);
   layer_set_update_proc(window_get_root_layer(g_graphics_window), draw_scene);
 
-#ifdef PBL_BW
-  // Graphics frame inverter for "flash" effect (Aplite watches only):
-  g_inverter_layer = inverter_layer_create(GRAPHICS_FRAME);
-  layer_add_child(window_get_root_layer(g_graphics_window),
-                  inverter_layer_get_layer(g_inverter_layer));
-#else
   // Blue background color scheme:
   g_background_colors[0][0] = GColorCeleste;
   g_background_colors[0][1] = GColorCeleste;
@@ -3287,9 +3256,6 @@ Description: Deinitializes the graphics window.
 ******************************************************************************/
 void deinit_graphics(void) {
   tick_timer_service_unsubscribe();
-#ifdef PBL_BW
-  inverter_layer_destroy(g_inverter_layer);
-#endif
   window_destroy(g_graphics_window);
 }
 
