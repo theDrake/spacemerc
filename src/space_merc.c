@@ -807,10 +807,8 @@ void show_window(Window *window) {
       window_stack_pop(NOT_ANIMATED);
     }
   }
-#ifdef PBL_COLOR
   layer_add_child(window_get_root_layer(window),
                   status_bar_layer_get_layer(g_status_bar));
-#endif
 }
 
 /******************************************************************************
@@ -1141,18 +1139,13 @@ void draw_scene(Layer *layer, GContext *ctx) {
   // Draw compass:
 #ifdef PBL_COLOR
   graphics_context_set_fill_color(ctx, GColorLightGray);
+  graphics_context_set_stroke_color(ctx, GColorDarkGreen);
+#endif
   graphics_fill_circle(ctx,
                        GPoint(SCREEN_CENTER_POINT_X,
                               GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2 +
                                 STATUS_BAR_HEIGHT),
                        COMPASS_RADIUS);
-  graphics_context_set_stroke_color(ctx, GColorDarkGreen);
-#else
-  graphics_fill_circle(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X,
-                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT / 2),
-                       COMPASS_RADIUS);
-#endif
   graphics_context_set_fill_color(ctx, GColorBlack);
   gpath_draw_outline(ctx, g_compass_path);
   gpath_draw_filled(ctx, g_compass_path);
@@ -1175,45 +1168,32 @@ void draw_player_laser_beam(GContext *ctx) {
 
 #ifdef PBL_COLOR
   graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
+#else
+  graphics_context_set_stroke_color(ctx, GColorWhite);
+#endif
   graphics_draw_line(ctx,
                      GPoint(SCREEN_CENTER_POINT_X,
                             GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
                      GPoint(SCREEN_CENTER_POINT.x,
                             SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
-#else
-  graphics_context_set_stroke_color(ctx, GColorWhite);
-  graphics_draw_line(ctx,
-                     GPoint(SCREEN_CENTER_POINT_X, GRAPHICS_FRAME_HEIGHT),
-                     SCREEN_CENTER_POINT);
-#endif
   for (i = 0; i <= g_laser_base_width / 2; ++i) {
 #ifdef PBL_COLOR
     graphics_context_set_stroke_color(ctx, RANDOM_BRIGHT_COLOR);
-    graphics_draw_line(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X - i,
-                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
-                       GPoint(SCREEN_CENTER_POINT_X - i / 3,
-                              SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
-    graphics_draw_line(ctx,
-                       GPoint(SCREEN_CENTER_POINT_X + i,
-                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
-                       GPoint(SCREEN_CENTER_POINT_X + i / 3,
-                              SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
 #else
     if (i == g_laser_base_width / 2) {
       graphics_context_set_stroke_color(ctx, GColorBlack);
     }
+#endif
     graphics_draw_line(ctx,
                        GPoint(SCREEN_CENTER_POINT_X - i,
-                              GRAPHICS_FRAME_HEIGHT),
+                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
                        GPoint(SCREEN_CENTER_POINT_X - i / 3,
-                              SCREEN_CENTER_POINT_Y));
+                              SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
     graphics_draw_line(ctx,
                        GPoint(SCREEN_CENTER_POINT_X + i,
-                              GRAPHICS_FRAME_HEIGHT),
+                              GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT),
                        GPoint(SCREEN_CENTER_POINT_X + i / 3,
-                              SCREEN_CENTER_POINT_Y));
-#endif
+                              SCREEN_CENTER_POINT_Y + STATUS_BAR_HEIGHT));
   }
 }
 
@@ -1251,14 +1231,9 @@ void draw_floor_and_ceiling(GContext *ctx) {
          x < GRAPHICS_FRAME_WIDTH;
          x += shading_offset) {
       // Draw one point on the ceiling and another on the floor:
-#ifdef PBL_COLOR
       graphics_draw_pixel(ctx, GPoint(x, y + STATUS_BAR_HEIGHT));
       graphics_draw_pixel(ctx, GPoint(x, GRAPHICS_FRAME_HEIGHT - y +
                                            STATUS_BAR_HEIGHT));
-#else
-      graphics_draw_pixel(ctx, GPoint(x, y));
-      graphics_draw_pixel(ctx, GPoint(x, GRAPHICS_FRAME_HEIGHT - y));
-#endif
     }
   }
 }
@@ -1299,7 +1274,6 @@ void draw_cell_walls(GContext *ctx,
   back_wall_drawn = left_wall_drawn = right_wall_drawn = false;
   cell_2          = get_cell_farther_away(cell, g_player->direction, 1);
   if (get_cell_type(cell_2) >= SOLID) {
-#ifdef PBL_COLOR
     draw_shaded_quad(ctx,
                      GPoint(left, top + STATUS_BAR_HEIGHT),
                      GPoint(left, bottom + STATUS_BAR_HEIGHT),
@@ -1313,36 +1287,18 @@ void draw_cell_walls(GContext *ctx,
     graphics_draw_line(ctx,
                        GPoint(left, bottom + STATUS_BAR_HEIGHT),
                        GPoint(right, bottom + STATUS_BAR_HEIGHT));
-#else
-    draw_shaded_quad(ctx,
-                     GPoint(left, top),
-                     GPoint(left, bottom),
-                     GPoint(right, top),
-                     GPoint(right, bottom),
-                     GPoint(left, top));
-    graphics_context_set_stroke_color(ctx, GColorBlack);
-    graphics_draw_line(ctx, GPoint(left, top), GPoint(right, top));
-    graphics_draw_line(ctx, GPoint(left, bottom), GPoint(right, bottom));
-#endif
 
     // Ad hoc solution to a minor visual issue (remove if no longer relevant):
     if (top == g_back_wall_coords[1][0][TOP_LEFT].y) {
-#ifdef PBL_COLOR
       graphics_draw_line(ctx,
                          GPoint(left, bottom + 1 + STATUS_BAR_HEIGHT),
                          GPoint(right, bottom + 1 + STATUS_BAR_HEIGHT));
-#else
-      graphics_draw_line(ctx,
-                         GPoint(left, bottom + 1),
-                         GPoint(right, bottom + 1));
-#endif
     }
 
     // Entrance/exit:
     if (exit_present && g_player->direction == g_mission->entrance_direction) {
       graphics_context_set_fill_color(ctx, GColorBlack);
       exit_offset_x = (right - left) / 3;
-#ifdef PBL_COLOR
       graphics_fill_rect(ctx,
                          GRect(left + exit_offset_x,
                                top + exit_offset_y + STATUS_BAR_HEIGHT,
@@ -1350,15 +1306,6 @@ void draw_cell_walls(GContext *ctx,
                                bottom - top - exit_offset_y),
                          NO_CORNER_RADIUS,
                          GCornerNone);
-#else
-      graphics_fill_rect(ctx,
-                         GRect(left + exit_offset_x,
-                               top + exit_offset_y,
-                               exit_offset_x,
-                               bottom - top - exit_offset_y),
-                         NO_CORNER_RADIUS,
-                         GCornerNone);
-#endif
     }
 
     back_wall_drawn = true;
@@ -1378,7 +1325,6 @@ void draw_cell_walls(GContext *ctx,
                                 get_direction_to_the_left(g_player->direction),
                                 1);
     if (get_cell_type(cell_2) >= SOLID) {
-#ifdef PBL_COLOR
       draw_shaded_quad(ctx,
                        GPoint(left, top - y_offset + STATUS_BAR_HEIGHT),
                        GPoint(left, bottom + y_offset + STATUS_BAR_HEIGHT),
@@ -1392,27 +1338,11 @@ void draw_cell_walls(GContext *ctx,
       graphics_draw_line(ctx,
                          GPoint(left, bottom + y_offset + STATUS_BAR_HEIGHT),
                          GPoint(right, bottom + STATUS_BAR_HEIGHT));
-#else
-      draw_shaded_quad(ctx,
-                       GPoint(left, top - y_offset),
-                       GPoint(left, bottom + y_offset),
-                       GPoint(right, top),
-                       GPoint(right, bottom),
-                       GPoint(left, top - y_offset));
-      graphics_context_set_stroke_color(ctx, GColorBlack);
-      graphics_draw_line(ctx,
-                         GPoint(left, top - y_offset),
-                         GPoint(right, top));
-      graphics_draw_line(ctx,
-                         GPoint(left, bottom + y_offset),
-                         GPoint(right, bottom));
-#endif
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_left(g_player->direction) ==
                           g_mission->entrance_direction) {
         exit_offset_x = (right - left) / 3;
-#ifdef PBL_COLOR
         fill_quad(ctx,
                   GPoint(depth == 0 ? 0 : left + exit_offset_x,
                          top - (depth == 0 ? y_offset - 4: y_offset / 3) +
@@ -1425,17 +1355,6 @@ void draw_cell_walls(GContext *ctx,
                   GPoint(right - exit_offset_x,
                          bottom + 3 + STATUS_BAR_HEIGHT),
                   GColorBlack);
-#else
-        fill_quad(ctx,
-                  GPoint(depth == 0 ? 0 : left + exit_offset_x,
-                         top - (depth == 0 ? y_offset - 4: y_offset / 3) +
-                           exit_offset_y),
-                  GPoint(depth == 0 ? 0 : left + exit_offset_x,
-                         bottom + (depth == 0 ? y_offset : y_offset / 3)),
-                  GPoint(right - exit_offset_x, top + exit_offset_y),
-                  GPoint(right - exit_offset_x, bottom + 3),
-                  GColorBlack);
-#endif
       }
 
       left_wall_drawn = true;
@@ -1454,7 +1373,6 @@ void draw_cell_walls(GContext *ctx,
                                get_direction_to_the_right(g_player->direction),
                                1);
     if (get_cell_type(cell_2) >= SOLID) {
-#ifdef PBL_COLOR
       draw_shaded_quad(ctx,
                        GPoint(left, top + STATUS_BAR_HEIGHT),
                        GPoint(left, bottom + STATUS_BAR_HEIGHT),
@@ -1468,27 +1386,11 @@ void draw_cell_walls(GContext *ctx,
       graphics_draw_line(ctx,
                          GPoint(left, bottom + STATUS_BAR_HEIGHT),
                          GPoint(right, bottom + y_offset + STATUS_BAR_HEIGHT));
-#else
-      draw_shaded_quad(ctx,
-                       GPoint(left, top),
-                       GPoint(left, bottom),
-                       GPoint(right, top - y_offset),
-                       GPoint(right, bottom + y_offset),
-                       GPoint(left, top));
-      graphics_context_set_stroke_color(ctx, GColorBlack);
-      graphics_draw_line(ctx,
-                         GPoint(left, top),
-                         GPoint(right, top - y_offset));
-      graphics_draw_line(ctx,
-                         GPoint(left, bottom),
-                         GPoint(right, bottom + y_offset));
-#endif
 
       // Entrance/exit:
       if (exit_present && get_direction_to_the_right(g_player->direction) ==
                           g_mission->entrance_direction) {
         exit_offset_x = (right - left) / 3;
-#ifdef PBL_COLOR
         fill_quad(ctx,
                   GPoint(left + exit_offset_x,
                          top + exit_offset_y + STATUS_BAR_HEIGHT),
@@ -1502,19 +1404,6 @@ void draw_cell_walls(GContext *ctx,
                          bottom + (depth == 0 ? y_offset : y_offset / 3) +
                            STATUS_BAR_HEIGHT),
                   GColorBlack);
-#else
-        fill_quad(ctx,
-                  GPoint(left + exit_offset_x, top + exit_offset_y),
-                  GPoint(left + exit_offset_x, bottom + 4),
-                  GPoint(depth == 0 ? GRAPHICS_FRAME_WIDTH :
-                                      right - exit_offset_x,
-                         top - (depth == 0 ? y_offset - 5 : y_offset / 3) +
-                           exit_offset_y),
-                  GPoint(depth == 0 ? GRAPHICS_FRAME_WIDTH :
-                                      right - exit_offset_x,
-                         bottom + (depth == 0 ? y_offset : y_offset / 3)),
-                  GColorBlack);
-#endif
       }
 
       right_wall_drawn = true;
@@ -1532,7 +1421,6 @@ void draw_cell_walls(GContext *ctx,
        get_cell_type(get_cell_farther_away(cell_2,
                                 get_direction_to_the_left(g_player->direction),
                                 1)) < SOLID)) {
-#ifdef PBL_COLOR
     graphics_draw_line(ctx,
                        GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x,
                               g_back_wall_coords[depth][position][TOP_LEFT].y +
@@ -1540,12 +1428,6 @@ void draw_cell_walls(GContext *ctx,
                        GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x,
                           g_back_wall_coords[depth][position][BOTTOM_RIGHT].y +
                             STATUS_BAR_HEIGHT));
-#else
-    graphics_draw_line(ctx,
-                       g_back_wall_coords[depth][position][TOP_LEFT],
-                       GPoint(g_back_wall_coords[depth][position][TOP_LEFT].x,
-                         g_back_wall_coords[depth][position][BOTTOM_RIGHT].y));
-#endif
   }
   if ((back_wall_drawn && (right_wall_drawn ||
        get_cell_type(get_cell_farther_away(cell_2,
@@ -1555,7 +1437,6 @@ void draw_cell_walls(GContext *ctx,
        get_cell_type(get_cell_farther_away(cell_2,
                                get_direction_to_the_right(g_player->direction),
                                1)) < SOLID)) {
-#ifdef PBL_COLOR
     graphics_draw_line(ctx,
                     GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
                           g_back_wall_coords[depth][position][BOTTOM_RIGHT].y +
@@ -1563,12 +1444,6 @@ void draw_cell_walls(GContext *ctx,
                     GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
                            g_back_wall_coords[depth][position][TOP_LEFT].y +
                              STATUS_BAR_HEIGHT));
-#else
-    graphics_draw_line(ctx,
-                    g_back_wall_coords[depth][position][BOTTOM_RIGHT],
-                    GPoint(g_back_wall_coords[depth][position][BOTTOM_RIGHT].x,
-                           g_back_wall_coords[depth][position][TOP_LEFT].y));
-#endif
   }
 }
 
@@ -1600,13 +1475,10 @@ void draw_cell_contents(GContext *ctx,
     }
     content_type = get_npc_at(cell)->type;
   }
-  floor_center_point = get_floor_center_point(depth, position);
-  top_left_point     = g_back_wall_coords[depth][position][TOP_LEFT];
-
-#ifdef PBL_COLOR
+  floor_center_point   = get_floor_center_point(depth, position);
+  top_left_point       = g_back_wall_coords[depth][position][TOP_LEFT];
   floor_center_point.y += STATUS_BAR_HEIGHT;
   top_left_point.y     += STATUS_BAR_HEIGHT;
-#endif
 
   // Determine the drawing unit:
   drawing_unit = (g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
@@ -2512,12 +2384,10 @@ Description: Called when the main menu window appears (SDK 3 only).
 
     Outputs: None.
 ******************************************************************************/
-#ifdef PBL_COLOR
 static void main_menu_window_appear(Window *window) {
   layer_add_child(window_get_root_layer(window),
                   status_bar_layer_get_layer(g_status_bar));
 }
-#endif
 
 /******************************************************************************
    Function: graphics_window_appear
@@ -3310,11 +3180,9 @@ Description: Initializes the main menu.
 ******************************************************************************/
 void init_main_menu(void) {
   g_main_menu_window = window_create();
-#ifdef PBL_COLOR
   window_set_window_handlers(g_main_menu_window, (WindowHandlers) {
     .appear = main_menu_window_appear,
   });
-#endif
   g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks) {
     .get_num_rows = menu_get_num_rows_callback,
@@ -3361,17 +3229,11 @@ void init(void) {
   init_graphics();
   init_wall_coords();
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
-#ifdef PBL_COLOR
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
                                          STATUS_BAR_HEIGHT   +
                                          STATUS_BAR_HEIGHT / 2));
   g_status_bar = status_bar_layer_create();
-#else
-  gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
-                                       GRAPHICS_FRAME_HEIGHT +
-                                         STATUS_BAR_HEIGHT / 2));
-#endif
   show_window(g_main_menu_window);
 
   // Check for saved data and initialize the player struct, etc.:
@@ -3405,9 +3267,7 @@ void deinit(void) {
     persist_write_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
   }
   app_focus_service_unsubscribe();
-#ifdef PBL_COLOR
   status_bar_layer_destroy(g_status_bar);
-#endif
   deinit_upgrade_menu();
   deinit_narration();
   deinit_graphics();

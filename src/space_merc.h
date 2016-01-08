@@ -19,11 +19,11 @@ Description: Header file for SpaceMerc, a 3D first-person shooter developed for
 
 // Mission types:
 enum {
-  RETALIATE,   // Goal: Kill all enemies.
-  OBLITERATE,  // Goal: Kill all enemies.
-  EXPROPRIATE, // Goal: Steal an item.
-  EXTRICATE,   // Goal: Rescue a person.
-  ASSASSINATE, // Goal: Kill a Fim officer.
+  RETALIATE,    // Goal: Kill all enemies.
+  OBLITERATE,   // Goal: Kill all enemies.
+  EXPROPRIATE,  // Goal: Steal an item.
+  EXTRICATE,    // Goal: Rescue a person.
+  ASSASSINATE,  // Goal: Kill a Fim officer.
   NUM_MISSION_TYPES
 };
 
@@ -45,7 +45,7 @@ enum {
   HUMAN = -2,
   ITEM,
   EMPTY,
-  SOLID, // "Solid" runs from 1 to DEFAULT_CELL_HP.
+  SOLID,  // "Solid" runs from 1 to DEFAULT_CELL_HP.
   NUM_CELL_TYPES
 };
 
@@ -110,25 +110,10 @@ enum {
 #define SCREEN_CENTER_POINT_Y            (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
 #define SCREEN_CENTER_POINT              GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
 #define STATUS_BAR_HEIGHT                16 // Applies to top and bottom status bars.
-
-#ifdef PBL_COLOR
 #define FULL_SCREEN_FRAME                GRect(0, STATUS_BAR_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME                   GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
 #define NARRATION_TEXT_LAYER_FRAME       GRect(2, STATUS_BAR_HEIGHT, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
-#define NUM_BACKGROUND_COLOR_SCHEMES     8
-#define NUM_BACKGROUND_COLORS_PER_SCHEME 10
-#define RANDOM_COLOR                     GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
-#define RANDOM_DARK_COLOR                GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
-#define RANDOM_BRIGHT_COLOR              GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
-#define NPC_LASER_COLOR                  (rand() % 2 ? GColorSunsetOrange : GColorDarkCandyAppleRed)
-#else
-#define FULL_SCREEN_FRAME                GRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
-#define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
-#define GRAPHICS_FRAME                   GRect(0, 0, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
-#define NARRATION_TEXT_LAYER_FRAME       GRect(2, 0, SCREEN_WIDTH - 4, SCREEN_HEIGHT)
-#endif
-
 #define COMPASS_RADIUS                   5
 #define STATUS_METER_PADDING             4
 #define STATUS_METER_WIDTH               (GRAPHICS_FRAME_WIDTH / 2 - COMPASS_RADIUS - 2 * STATUS_METER_PADDING)
@@ -188,6 +173,14 @@ enum {
 #define ANIMATED                         true
 #define NOT_ANIMATED                     false
 #define RANDOM_NPC_TYPE                  (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
+#ifdef PBL_COLOR
+#define NUM_BACKGROUND_COLOR_SCHEMES     8
+#define NUM_BACKGROUND_COLORS_PER_SCHEME 10
+#define RANDOM_COLOR                     GColorFromRGB(rand() % 256, rand() % 256, rand() % 256)
+#define RANDOM_DARK_COLOR                GColorFromRGB(rand() % 128, rand() % 128, rand() % 128)
+#define RANDOM_BRIGHT_COLOR              GColorFromRGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128)
+#define NPC_LASER_COLOR                  (rand() % 2 ? GColorSunsetOrange : GColorDarkCandyAppleRed)
+#endif
 
 static const GPathInfo COMPASS_PATH_INFO = {
   .num_points = 4,
@@ -265,6 +258,7 @@ Window *g_graphics_window,
 MenuLayer *g_main_menu,
           *g_upgrade_menu;
 TextLayer *g_narration_text_layer;
+StatusBarLayer *g_status_bar;
 AppTimer *g_player_timer;
 GPoint g_back_wall_coords[MAX_VISIBILITY_DEPTH - 1]
                          [(STRAIGHT_AHEAD * 2) + 1]
@@ -276,11 +270,9 @@ int8_t g_current_narration,
 GPath *g_compass_path;
 mission_t *g_mission;
 player_t *g_player;
-
 #ifdef PBL_COLOR
 GColor g_background_colors[NUM_BACKGROUND_COLOR_SCHEMES]
                           [NUM_BACKGROUND_COLORS_PER_SCHEME];
-StatusBarLayer *g_status_bar;
 #endif
 
 /******************************************************************************
@@ -372,9 +364,7 @@ void draw_status_meter(GContext *ctx,
                        GPoint origin,
                        const float ratio);
 static void player_timer_callback(void *data);
-#ifdef PBL_COLOR
 static void main_menu_window_appear(Window *window);
-#endif
 static void graphics_window_appear(Window *window);
 static void graphics_window_disappear(Window *window);
 void graphics_up_single_repeating_click(ClickRecognizerRef recognizer,
@@ -409,4 +399,4 @@ void init(void);
 void deinit(void);
 int main(void);
 
-#endif // SPACE_MERC_H_
+#endif  // SPACE_MERC_H_
