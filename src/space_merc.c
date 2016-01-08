@@ -1124,7 +1124,8 @@ void draw_scene(Layer *layer, GContext *ctx) {
   // Draw health meter:
   draw_status_meter(ctx,
                     GPoint (STATUS_METER_PADDING,
-                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
+                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING +
+                              STATUS_BAR_HEIGHT),
                     (float) g_player->stats[CURRENT_HP] /
                       g_player->stats[MAX_HP]);
 
@@ -1132,7 +1133,8 @@ void draw_scene(Layer *layer, GContext *ctx) {
   draw_status_meter(ctx,
                     GPoint (SCREEN_CENTER_POINT_X + STATUS_METER_PADDING +
                               COMPASS_RADIUS + 1,
-                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING),
+                            GRAPHICS_FRAME_HEIGHT + STATUS_METER_PADDING +
+                              STATUS_BAR_HEIGHT),
                     (float) g_player->stats[CURRENT_ENERGY] /
                       g_player->stats[MAX_ENERGY]);
 
@@ -2309,7 +2311,6 @@ void draw_status_meter(GContext *ctx,
 #else
   uint8_t filled_meter_width = ratio * STATUS_METER_WIDTH;
 
-  origin.y += STATUS_BAR_HEIGHT;
   if (origin.x < SCREEN_CENTER_POINT_X) {  // Health meter:
     graphics_context_set_fill_color(ctx, GColorRed);
   } else {                                 // Energy (ammo) meter:
