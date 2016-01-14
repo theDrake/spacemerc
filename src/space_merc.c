@@ -32,7 +32,7 @@ void set_player_direction(const int8_t new_direction) {
     case EAST:
       gpath_rotate_to(g_compass_path, TRIG_MAX_ANGLE * 0.75);
       break;
-    default: // case WEST:
+    default:  // case WEST:
       gpath_rotate_to(g_compass_path, TRIG_MAX_ANGLE / 4);
       break;
   }
@@ -53,7 +53,7 @@ void move_player(const int8_t direction) {
 
   // Check for movement into the exit, ending the current mission:
   if (gpoint_equal(&g_player->position, &g_mission->entrance) &&
-      g_player->direction == g_mission->entrance_direction    &&
+      g_player->direction == g_mission->entrance_direction &&
       direction == g_mission->entrance_direction) {
     g_game_paused = true;
     show_window(g_main_menu_window);
@@ -116,10 +116,10 @@ void determine_npc_behavior(npc_t *npc) {
   GPoint cell;
 
   if (npc->type >= ROBOT && (diff_x == 0 || diff_y == 0)) {
-    i                    = 0;
-    cell                 = npc->position;
-    horizontal_direction = diff_x > 0 ? WEST  : EAST;
-    vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
+    i = 0;
+    cell = npc->position;
+    horizontal_direction = diff_x > 0 ? WEST : EAST;
+    vertical_direction = diff_y > 0 ? NORTH : SOUTH;
     do {
       cell = get_cell_farther_away(cell,
                                    diff_x == 0 ? vertical_direction :
@@ -374,11 +374,11 @@ GPoint get_floor_center_point(const int8_t depth, const int8_t position) {
   x_midpoint1 = 0.5 * (g_back_wall_coords[depth][position][TOP_LEFT].x +
                        g_back_wall_coords[depth][position][BOTTOM_RIGHT].x);
   if (depth == 0) {
-    if (position < STRAIGHT_AHEAD) {         // To the left of the player.
+    if (position < STRAIGHT_AHEAD) {  // To the left of the player.
       x_midpoint2 = -0.5 * GRAPHICS_FRAME_WIDTH;
     } else if (position > STRAIGHT_AHEAD) {  // To the right of the player.
       x_midpoint2 = 1.5 * GRAPHICS_FRAME_WIDTH;
-    } else {                                 // Directly under the player.
+    } else {  // Directly under the player.
       x_midpoint2 = x_midpoint1;
     }
     y = GRAPHICS_FRAME_HEIGHT;
@@ -418,7 +418,7 @@ GPoint get_cell_farther_away(const GPoint reference_point,
       return GPoint(reference_point.x, reference_point.y + distance);
     case EAST:
       return GPoint(reference_point.x + distance, reference_point.y);
-    default: // case WEST:
+    default:  // case WEST:
       return GPoint(reference_point.x - distance, reference_point.y);
   }
 }
@@ -436,12 +436,12 @@ Description: Determines in which direction a character at a given position
     Outputs: Integer representing the direction in which the NPC ought to move.
 ******************************************************************************/
 int8_t get_pursuit_direction(const GPoint pursuer, const GPoint pursuee) {
-  int8_t diff_x                     = pursuer.x - pursuee.x,
-         diff_y                     = pursuer.y - pursuee.y;
-  const int8_t horizontal_direction = diff_x > 0 ? WEST  : EAST,
-               vertical_direction   = diff_y > 0 ? NORTH : SOUTH;
+  int8_t diff_x = pursuer.x - pursuee.x,
+         diff_y = pursuer.y - pursuee.y;
+  const int8_t horizontal_direction = diff_x > 0 ? WEST : EAST,
+               vertical_direction = diff_y > 0 ? NORTH : SOUTH;
   bool checked_horizontal_direction = false,
-       checked_vertical_direction   = false;
+       checked_vertical_direction = false;
 
   // Check for alignment along the x-axis:
   if (diff_x == 0) {
@@ -509,7 +509,7 @@ int8_t get_direction_to_the_left(const int8_t reference_direction) {
       return SOUTH;
     case SOUTH:
       return EAST;
-    default: // case EAST:
+    default:  // case EAST:
       return NORTH;
   }
 }
@@ -533,7 +533,7 @@ int8_t get_direction_to_the_right(const int8_t reference_direction) {
       return SOUTH;
     case SOUTH:
       return WEST;
-    default: // case WEST:
+    default:  // case WEST:
       return NORTH;
   }
 }
@@ -556,7 +556,7 @@ int8_t get_opposite_direction(const int8_t direction) {
       return NORTH;
     case EAST:
       return WEST;
-    default: // case WEST:
+    default:  // case WEST:
       return EAST;
   }
 }
@@ -669,9 +669,9 @@ Description: Determines whether a given set of cell coordinates lies outside
     Outputs: "True" if the cell is out of bounds.
 ******************************************************************************/
 bool out_of_bounds(const GPoint cell) {
-  return cell.x < 0               ||
+  return cell.x < 0 ||
          cell.x >= LOCATION_WIDTH ||
-         cell.y < 0               ||
+         cell.y < 0 ||
          cell.y >= LOCATION_HEIGHT;
 }
 
@@ -688,7 +688,7 @@ Description: Determines whether the cell at a given set of coordinates may be
     Outputs: "True" if the cell is occupiable.
 ******************************************************************************/
 bool occupiable(const GPoint cell) {
-  return get_cell_type(cell) <= EMPTY              &&
+  return get_cell_type(cell) <= EMPTY &&
          !gpoint_equal(&g_player->position, &cell) &&
          get_npc_at(cell) == NULL;
 }
@@ -729,33 +729,33 @@ void show_narration(void) {
   if (g_current_narration < NUM_MISSION_TYPES) {
     strcpy(narration_str, "       OBJECTIVE\n");
     switch (g_current_narration) {
-      case RETALIATE: // Max. total chars: 78
+      case RETALIATE:  // Max. total chars: 78
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Defend a human %s from %d invading Fim",
                  g_location_strings[location],
                  (int) g_mission->total_num_npcs);
         break;
-      case OBLITERATE: // Max. total chars: 80
+      case OBLITERATE:  // Max. total chars: 80
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Eliminate all %d hostiles in this Fim %s",
                  (int) g_mission->total_num_npcs,
                  g_location_strings[location]);
         break;
-      case EXPROPRIATE: // Max. total chars: 71
+      case EXPROPRIATE:  // Max. total chars: 71
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Steal a device from this Fim %s",
                  g_location_strings[location]);
         break;
-      case EXTRICATE: // Max. total chars: 80
+      case EXTRICATE:  // Max. total chars: 80
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Rescue a human prisoner from this Fim %s",
                  g_location_strings[location]);
         break;
-      case ASSASSINATE: // Max. total chars: 78
+      case ASSASSINATE:  // Max. total chars: 78
         snprintf(narration_str + strlen(narration_str),
                  NARRATION_STR_LEN - strlen(narration_str) + 1,
                  "Neutralize the leader of this Fim %s",
@@ -884,7 +884,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
                                MenuIndex *cell_index,
                                void *data) {
   switch (cell_index->row) {
-    case 0: // New Mission / Continue
+    case 0:  // New Mission / Continue
       if (g_mission == NULL) {
         g_mission = malloc(sizeof(mission_t));
         init_mission(rand() % NUM_MISSION_TYPES);
@@ -892,7 +892,7 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         show_window(g_graphics_window);
       }
       break;
-    case 1: // Buy an Upgrade
+    case 1:  // Buy an Upgrade
       if (g_mission == NULL) {
         menu_layer_set_selected_index(g_upgrade_menu,
                                       (MenuIndex) {0, 0},
@@ -901,15 +901,15 @@ void main_menu_select_callback(MenuLayer *menu_layer,
         show_window(g_upgrade_menu_window);
       }
       break;
-    case 2: // Instructions
+    case 2:  // Instructions
       g_current_narration = INSTRUCTIONS_NARRATION_1;
       show_narration();
       break;
-    case 3: // About
+    case 3:  // About
       g_current_narration = GAME_INFO_NARRATION_1;
       show_narration();
       break;
-    default: // Vibrations On/Off
+    default:  // Vibrations On/Off
       g_player->damage_vibes_on = !g_player->damage_vibes_on;
       menu_layer_reload_data(menu_layer);
       break;
@@ -958,7 +958,7 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
                                            MenuIndex *cell_index,
                                            void *data) {
   int16_t new_stat_value;
-  char title_str[UPGRADE_TITLE_STR_LEN + 1]       = "",
+  char title_str[UPGRADE_TITLE_STR_LEN + 1] = "",
        subtitle_str[UPGRADE_SUBTITLE_STR_LEN + 1] = "";
 
   // Determine the upgrade's title:
@@ -972,7 +972,7 @@ static void upgrade_menu_draw_row_callback(GContext *ctx,
     case POWER:
       strcpy(title_str, "Laser Power");
       break;
-    default: // case MAX_ENERGY:
+    default:  // case MAX_ENERGY:
       strcpy(title_str, "Max. Energy");
       break;
   }
@@ -1264,17 +1264,17 @@ void draw_cell_walls(GContext *ctx,
   GPoint cell_2;
 
   // Back wall:
-  left          = g_back_wall_coords[depth][position][TOP_LEFT].x;
-  right         = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
-  top           = g_back_wall_coords[depth][position][TOP_LEFT].y;
-  bottom        = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
-  exit_present  = gpoint_equal(&cell, &g_mission->entrance);
+  left = g_back_wall_coords[depth][position][TOP_LEFT].x;
+  right = g_back_wall_coords[depth][position][BOTTOM_RIGHT].x;
+  top = g_back_wall_coords[depth][position][TOP_LEFT].y;
+  bottom = g_back_wall_coords[depth][position][BOTTOM_RIGHT].y;
+  exit_present = gpoint_equal(&cell, &g_mission->entrance);
   exit_offset_y = (right - left) / 4;
   if (bottom - top < MIN_WALL_HEIGHT) {
     return;
   }
   back_wall_drawn = left_wall_drawn = right_wall_drawn = false;
-  cell_2          = get_cell_farther_away(cell, g_player->direction, 1);
+  cell_2 = get_cell_farther_away(cell, g_player->direction, 1);
   if (get_cell_type(cell_2) >= SOLID) {
     draw_shaded_quad(ctx,
                      GPoint(left, top + STATUS_BAR_HEIGHT),
@@ -1316,10 +1316,10 @@ void draw_cell_walls(GContext *ctx,
   // Left wall:
   right = left;
   if (depth == 0) {
-    left     = 0;
+    left = 0;
     y_offset = top;
   } else {
-    left     = g_back_wall_coords[depth - 1][position][TOP_LEFT].x;
+    left = g_back_wall_coords[depth - 1][position][TOP_LEFT].x;
     y_offset = top - g_back_wall_coords[depth - 1][position][TOP_LEFT].y;
   }
   if (position <= STRAIGHT_AHEAD) {
@@ -1467,7 +1467,7 @@ void draw_cell_contents(GContext *ctx,
                         const GPoint cell,
                         const int8_t depth,
                         const int8_t position) {
-  int8_t drawing_unit, // Reference variable for drawing contents at depth.
+  int8_t drawing_unit,  // Reference variable for drawing contents at depth.
          content_type = get_cell_type(cell);
   GPoint floor_center_point, top_left_point;
 
@@ -1477,10 +1477,10 @@ void draw_cell_contents(GContext *ctx,
     }
     content_type = get_npc_at(cell)->type;
   }
-  floor_center_point   = get_floor_center_point(depth, position);
-  top_left_point       = g_back_wall_coords[depth][position][TOP_LEFT];
+  floor_center_point = get_floor_center_point(depth, position);
+  top_left_point = g_back_wall_coords[depth][position][TOP_LEFT];
   floor_center_point.y += STATUS_BAR_HEIGHT;
-  top_left_point.y     += STATUS_BAR_HEIGHT;
+  top_left_point.y += STATUS_BAR_HEIGHT;
 
   // Determine the drawing unit:
   drawing_unit = (g_back_wall_coords[depth][position][BOTTOM_RIGHT].x -
@@ -1636,9 +1636,9 @@ void draw_cell_contents(GContext *ctx,
                                     (drawing_unit * 5 + drawing_unit / 2)),
                            drawing_unit / 2 + drawing_unit / 4);
 #ifdef PBL_COLOR
-      graphics_context_set_fill_color(ctx, GColorMintGreen); // For the head.
+      graphics_context_set_fill_color(ctx, GColorMintGreen);  // For the head.
 #else
-      graphics_context_set_fill_color(ctx, GColorWhite);     // For the head.
+      graphics_context_set_fill_color(ctx, GColorWhite);  // For the head.
 #endif
     } else {
       graphics_fill_rect(ctx,
@@ -2208,8 +2208,8 @@ void draw_shaded_quad(GContext *ctx,
                       const GPoint lower_right,
                       const GPoint shading_ref) {
   int16_t i, j, shading_offset, half_shading_offset;
-  float dy_over_dx     = (float) (upper_right.y - upper_left.y) /
-                                 (upper_right.x - upper_left.x);
+  float dy_over_dx = (float) (upper_right.y - upper_left.y) /
+                             (upper_right.x - upper_left.x);
   GColor primary_color = GColorWhite;
 
   for (i = upper_left.x; i <= upper_right.x && i < GRAPHICS_FRAME_WIDTH; ++i) {
@@ -2313,7 +2313,7 @@ void draw_status_meter(GContext *ctx,
 
   if (origin.x < SCREEN_CENTER_POINT_X) {  // Health meter:
     graphics_context_set_fill_color(ctx, GColorRed);
-  } else {                                 // Energy (ammo) meter:
+  } else {  // Energy (ammo) meter:
     graphics_context_set_fill_color(ctx, GColorBlue);
   }
 #endif
@@ -2332,7 +2332,7 @@ void draw_status_meter(GContext *ctx,
   if (ratio < 1) {
     if (origin.x < SCREEN_CENTER_POINT_X) {  // Health meter:
       graphics_context_set_fill_color(ctx, GColorBulgarianRose);
-    } else {                                 // Energy (ammo) meter:
+    } else {  // Energy (ammo) meter:
       graphics_context_set_fill_color(ctx, GColorOxfordBlue);
     }
     graphics_fill_rect(ctx,
@@ -2400,7 +2400,7 @@ Description: Called when the graphics window appears.
     Outputs: None.
 ******************************************************************************/
 static void graphics_window_appear(Window *window) {
-  g_game_paused           = false;
+  g_game_paused = false;
   g_player_animation_mode = 0;
 }
 
@@ -2508,10 +2508,10 @@ void graphics_select_single_repeating_click(ClickRecognizerRef recognizer,
     // Deplete the player's ammo and set up the player's laser animation:
     adjust_player_current_ammo(ENERGY_LOSS_PER_SHOT * -1);
     g_player_animation_mode = NUM_PLAYER_ANIMATIONS;
-    g_laser_base_width      = MAX_LASER_BASE_WIDTH;
-    g_player_timer          = app_timer_register(PLAYER_TIMER_DURATION,
-                                                 player_timer_callback,
-                                                 NULL);
+    g_laser_base_width = MAX_LASER_BASE_WIDTH;
+    g_player_timer = app_timer_register(PLAYER_TIMER_DURATION,
+                                        player_timer_callback,
+                                        NULL);
 
     // Check for a damaged NPC or cell:
     cell = get_cell_farther_away(g_player->position, g_player->direction, 1);
@@ -2642,7 +2642,7 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     }
 
     // Determine whether a new NPC should be generated:
-    if (current_num_npcs < MAX_NPCS_AT_ONE_TIME                         &&
+    if (current_num_npcs < MAX_NPCS_AT_ONE_TIME &&
         g_mission->kills + current_num_npcs < g_mission->total_num_npcs &&
         rand() % 5 == 0) {
       add_new_npc(RANDOM_NPC_TYPE, get_npc_spawn_point());
@@ -2687,12 +2687,12 @@ Description: Initializes the global player character struct according to
     Outputs: None.
 ******************************************************************************/
 void init_player(void) {
-  g_player->stats[POWER]      = DEFAULT_PLAYER_POWER;
-  g_player->stats[ARMOR]      = DEFAULT_PLAYER_DEFENSE;
-  g_player->stats[MAX_HP]     = DEFAULT_PLAYER_MAX_HP;
+  g_player->stats[POWER] = DEFAULT_PLAYER_POWER;
+  g_player->stats[ARMOR] = DEFAULT_PLAYER_DEFENSE;
+  g_player->stats[MAX_HP] = DEFAULT_PLAYER_MAX_HP;
   g_player->stats[MAX_ENERGY] = DEFAULT_PLAYER_MAX_AMMO;
-  g_player->money             = DEFAULT_PLAYER_MONEY;
-  g_player->damage_vibes_on   = DEFAULT_VIBES_SETTING;
+  g_player->money = DEFAULT_PLAYER_MONEY;
+  g_player->damage_vibes_on = DEFAULT_VIBES_SETTING;
 }
 
 /******************************************************************************
@@ -2725,24 +2725,24 @@ Description: Initializes a non-player character (NPC) struct according to a
     Outputs: None.
 ******************************************************************************/
 void init_npc(npc_t *npc, const int8_t type, const GPoint position) {
-  npc->type     = type;
+  npc->type = type;
   npc->position = position;
 
   // NPC stats are based on the player's in an effort to maintain balance:
   npc->power = (g_player->stats[ARMOR] + g_player->stats[MAX_HP]) / 6;
-  npc->hp    = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
-  npc->hp    -= npc->hp / 3;
+  npc->hp = g_player->stats[POWER] + g_player->stats[MAX_ENERGY];
+  npc->hp -= npc->hp / 3;
 
   // Some NPCs have extra power or HP (or both):
   if (type == ALIEN_OFFICER ||
-      type == ALIEN_ELITE   ||
-      type == BEAST         ||
+      type == ALIEN_ELITE ||
+      type == BEAST ||
       type == FLOATING_MONSTROSITY) {
     npc->power *= 1.5;
   }
   if (type == ALIEN_OFFICER ||
-      type == ROBOT         ||
-      type == OOZE          ||
+      type == ROBOT ||
+      type == OOZE ||
       type == FLOATING_MONSTROSITY) {
     npc->hp *= 1.5;
   }
@@ -2771,11 +2771,11 @@ Description: Initializes the global "back_wall_coords" array so that it
 ******************************************************************************/
 void init_wall_coords(void) {
   uint8_t i, j, wall_width;
-  const float perspective_modifier = 2.0; // Helps determine FOV, etc.
+  const float perspective_modifier = 2.0;  // Helps determine FOV, etc.
 
   for (i = 0; i < MAX_VISIBILITY_DEPTH - 1; ++i) {
     for (j = 0; j < (STRAIGHT_AHEAD * 2) + 1; ++j) {
-      g_back_wall_coords[i][j][TOP_LEFT]     = GPoint(0, 0);
+      g_back_wall_coords[i][j][TOP_LEFT] = GPoint(0, 0);
       g_back_wall_coords[i][j][BOTTOM_RIGHT] = GPoint(0, 0);
     }
   }
@@ -2797,19 +2797,17 @@ void init_wall_coords(void) {
     wall_width = g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT].x -
                    g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT].x;
     for (j = 1; j <= STRAIGHT_AHEAD; ++j) {
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT]       =
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT] =
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT];
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT].x     -= wall_width *
-                                                                     j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT]   =
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][TOP_LEFT].x -= wall_width * j;
+      g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT] =
         g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT];
       g_back_wall_coords[i][STRAIGHT_AHEAD - j][BOTTOM_RIGHT].x -= wall_width *
                                                                      j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT]       =
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT] =
         g_back_wall_coords[i][STRAIGHT_AHEAD][TOP_LEFT];
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT].x     += wall_width *
-                                                                     j;
-      g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT]   =
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][TOP_LEFT].x += wall_width * j;
+      g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT] =
         g_back_wall_coords[i][STRAIGHT_AHEAD][BOTTOM_RIGHT];
       g_back_wall_coords[i][STRAIGHT_AHEAD + j][BOTTOM_RIGHT].x += wall_width *
                                                                      j;
@@ -2832,13 +2830,13 @@ void init_mission(const int8_t type) {
 
 #ifdef PBL_COLOR
   g_mission->floor_color_scheme = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
-  g_mission->wall_color_scheme  = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
+  g_mission->wall_color_scheme = rand() % NUM_BACKGROUND_COLOR_SCHEMES;
 #endif
-  g_mission->type            = type;
-  g_mission->completed       = false;
-  g_mission->total_num_npcs  = 5 * (rand() % 4 + 1);            // 5-20
-  g_mission->reward          = 600 * g_mission->total_num_npcs; // $3-12,000
-  g_mission->kills           = 0;
+  g_mission->type = type;
+  g_mission->completed = false;
+  g_mission->total_num_npcs = 5 * (rand() % 4 + 1);  // 5-20
+  g_mission->reward = 600 * g_mission->total_num_npcs;  // $3-12,000
+  g_mission->kills = 0;
   for (i = 0; i < MAX_NPCS_AT_ONE_TIME; ++i) {
     g_mission->npcs[i].type = NONE;
   }
@@ -2846,8 +2844,8 @@ void init_mission(const int8_t type) {
 
   // Move and orient the player and restore his/her HP and ammo:
   set_player_direction(get_opposite_direction(g_mission->entrance_direction));
-  g_player->position              = g_mission->entrance;
-  g_player->stats[CURRENT_HP]     = g_player->stats[MAX_HP];
+  g_player->position = g_mission->entrance;
+  g_player->stats[CURRENT_HP] = g_player->stats[MAX_HP];
   g_player->stats[CURRENT_ENERGY] = g_player->stats[MAX_ENERGY];
 
   // Finally, present mission information:
@@ -2880,24 +2878,24 @@ void init_mission_location(void) {
   switch (g_mission->entrance_direction = rand() % NUM_DIRECTIONS) {
     case NORTH:
       g_mission->entrance = RANDOM_POINT_NORTH;
-      end_point           = RANDOM_POINT_SOUTH;
+      end_point = RANDOM_POINT_SOUTH;
       break;
     case SOUTH:
       g_mission->entrance = RANDOM_POINT_SOUTH;
-      end_point           = RANDOM_POINT_NORTH;
+      end_point = RANDOM_POINT_NORTH;
       break;
     case EAST:
       g_mission->entrance = RANDOM_POINT_EAST;
-      end_point           = RANDOM_POINT_WEST;
+      end_point = RANDOM_POINT_WEST;
       break;
-    default: // case WEST:
+    default:  // case WEST:
       g_mission->entrance = RANDOM_POINT_WEST;
-      end_point           = RANDOM_POINT_EAST;
+      end_point = RANDOM_POINT_EAST;
       break;
   }
 
   // Now, carve a path between the starting and end points:
-  builder_position  = g_mission->entrance;
+  builder_position = g_mission->entrance;
   builder_direction = get_opposite_direction(g_mission->entrance_direction);
   while (!gpoint_equal(&builder_position, &end_point)) {
     set_cell_type(builder_position, EMPTY);
@@ -2917,7 +2915,7 @@ void init_mission_location(void) {
           builder_position.x++;
         }
         break;
-      default: // case WEST:
+      default:  // case WEST:
         if (builder_position.x > 0) {
           builder_position.x--;
         }
@@ -3007,7 +3005,7 @@ void init_graphics(void) {
   g_graphics_window = window_create();
   window_set_background_color(g_graphics_window, GColorBlack);
   window_set_window_handlers(g_graphics_window, (WindowHandlers) {
-    .appear    = graphics_window_appear,
+    .appear = graphics_window_appear,
     .disappear = graphics_window_disappear,
   });
   window_set_click_config_provider(g_graphics_window,
@@ -3142,13 +3140,13 @@ Description: Initializes the upgrade menu.
 ******************************************************************************/
 void init_upgrade_menu(void) {
   g_upgrade_menu_window = window_create();
-  g_upgrade_menu        = menu_layer_create(FULL_SCREEN_FRAME);
+  g_upgrade_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_upgrade_menu, NULL, (MenuLayerCallbacks) {
     .get_header_height = menu_get_header_height_callback,
-    .draw_header       = upgrade_menu_draw_header_callback,
-    .get_num_rows      = menu_get_num_rows_callback,
-    .draw_row          = upgrade_menu_draw_row_callback,
-    .select_click      = upgrade_menu_select_callback,
+    .draw_header = upgrade_menu_draw_header_callback,
+    .get_num_rows = menu_get_num_rows_callback,
+    .draw_row = upgrade_menu_draw_row_callback,
+    .select_click = upgrade_menu_select_callback,
   });
   menu_layer_set_click_config_onto_window(g_upgrade_menu,
                                           g_upgrade_menu_window);
@@ -3187,7 +3185,7 @@ void init_main_menu(void) {
   g_main_menu = menu_layer_create(FULL_SCREEN_FRAME);
   menu_layer_set_callbacks(g_main_menu, NULL, (MenuLayerCallbacks) {
     .get_num_rows = menu_get_num_rows_callback,
-    .draw_row     = main_menu_draw_row_callback,
+    .draw_row = main_menu_draw_row_callback,
     .select_click = main_menu_select_callback,
   });
   menu_layer_set_click_config_onto_window(g_main_menu, g_main_menu_window);
@@ -3222,7 +3220,7 @@ Description: Initializes the SpaceMerc app then displays the main menu (after
 void init(void) {
   srand(time(0));
   g_game_paused = true;
-  g_mission     = NULL;
+  g_mission = NULL;
   app_focus_service_subscribe(app_focus_handler);
   init_main_menu();
   init_upgrade_menu();
@@ -3232,7 +3230,7 @@ void init(void) {
   g_compass_path = gpath_create(&COMPASS_PATH_INFO);
   gpath_move_to(g_compass_path, GPoint(SCREEN_CENTER_POINT_X,
                                        GRAPHICS_FRAME_HEIGHT +
-                                         STATUS_BAR_HEIGHT   +
+                                         STATUS_BAR_HEIGHT +
                                          STATUS_BAR_HEIGHT / 2));
   g_status_bar = status_bar_layer_create();
   show_window(g_main_menu_window);
@@ -3244,7 +3242,7 @@ void init(void) {
     if (persist_exists(MISSION_STORAGE_KEY)) {
       g_mission = malloc(sizeof(mission_t));
       persist_read_data(MISSION_STORAGE_KEY, g_mission, sizeof(mission_t));
-      set_player_direction(g_player->direction); // To update compass.
+      set_player_direction(g_player->direction);  // To update compass.
     }
   } else {
     init_player();

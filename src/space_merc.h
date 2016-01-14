@@ -109,7 +109,7 @@ enum {
 #define SCREEN_CENTER_POINT_X            (SCREEN_WIDTH / 2)
 #define SCREEN_CENTER_POINT_Y            (SCREEN_HEIGHT / 2 - STATUS_BAR_HEIGHT * 0.75)
 #define SCREEN_CENTER_POINT              GPoint(SCREEN_CENTER_POINT_X, SCREEN_CENTER_POINT_Y)
-#define STATUS_BAR_HEIGHT                16 // Applies to top and bottom status bars.
+#define STATUS_BAR_HEIGHT                16  // Applies to top and bottom status bars.
 #define FULL_SCREEN_FRAME                GRect(0, STATUS_BAR_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT - STATUS_BAR_HEIGHT)
 #define STATUS_BAR_FRAME                 GRect(0, GRAPHICS_FRAME_HEIGHT + STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, STATUS_BAR_HEIGHT)
 #define GRAPHICS_FRAME                   GRect(0, STATUS_BAR_HEIGHT, GRAPHICS_FRAME_WIDTH, GRAPHICS_FRAME_HEIGHT)
@@ -121,13 +121,13 @@ enum {
 #define NO_CORNER_RADIUS                 0
 #define SMALL_CORNER_RADIUS              3
 #define NINETY_DEGREES                   (TRIG_MAX_ANGLE / 4)
-#define DEFAULT_ROTATION_RATE            (TRIG_MAX_ANGLE / 30) // 12 degrees
+#define DEFAULT_ROTATION_RATE            (TRIG_MAX_ANGLE / 30)  // 12 degrees
 #define MULTI_CLICK_MIN                  2
-#define MULTI_CLICK_MAX                  2 // We only care about double-clicks.
+#define MULTI_CLICK_MAX                  2  // We only care about double-clicks.
 #define MULTI_CLICK_TIMEOUT              0
 #define LAST_CLICK_ONLY                  true
-#define MOVEMENT_REPEAT_INTERVAL         250 // milliseconds
-#define ATTACK_REPEAT_INTERVAL           250 // milliseconds
+#define MOVEMENT_REPEAT_INTERVAL         250  // milliseconds
+#define ATTACK_REPEAT_INTERVAL           250  // milliseconds
 #define PLAYER_TIMER_DURATION            20  // milliseconds
 #define MAX_SMALL_INT_VALUE              9999
 #define MAX_SMALL_INT_DIGITS             4
@@ -140,10 +140,10 @@ enum {
 #define GRAPHICS_FRAME_HEIGHT            (SCREEN_HEIGHT - 2 * STATUS_BAR_HEIGHT)
 #define LOCATION_WIDTH                   15
 #define LOCATION_HEIGHT                  LOCATION_WIDTH
-#define MAX_VISIBILITY_DEPTH             6 // Helps determine no. of cells visible in a given line of sight.
-#define STRAIGHT_AHEAD                   (MAX_VISIBILITY_DEPTH - 1) // Index value for "g_back_wall_coords".
-#define TOP_LEFT                         0                          // Index value for "g_back_wall_coords".
-#define BOTTOM_RIGHT                     1                          // Index value for "g_back_wall_coords".
+#define MAX_VISIBILITY_DEPTH             6  // Helps determine no. of cells visible in a given line of sight.
+#define STRAIGHT_AHEAD                   (MAX_VISIBILITY_DEPTH - 1)  // Index value for "g_back_wall_coords".
+#define TOP_LEFT                         0  // Index value for "g_back_wall_coords".
+#define BOTTOM_RIGHT                     1  // Index value for "g_back_wall_coords".
 #define RANDOM_POINT_NORTH               GPoint(rand() % LOCATION_WIDTH, 0)
 #define RANDOM_POINT_SOUTH               GPoint(rand() % LOCATION_WIDTH, LOCATION_HEIGHT - 1)
 #define RANDOM_POINT_EAST                GPoint(LOCATION_WIDTH - 1, rand() % LOCATION_HEIGHT)
@@ -160,11 +160,11 @@ enum {
 #define DEFAULT_CELL_HP                  50
 #define STAT_BOOST_PER_UPGRADE           5
 #define UPGRADE_COST_MULTIPLIER          250
-#define NUM_PLAYER_ANIMATIONS            2 // No. of steps in the player's attack animation.
+#define NUM_PLAYER_ANIMATIONS            2  // No. of steps in the player's attack animation.
 #define MIN_LASER_BASE_WIDTH             8
 #define MAX_LASER_BASE_WIDTH             12
-#define HP_RECOVERY_RATE                 1 // HP per second.
-#define ENERGY_RECOVERY_RATE             1 // Energy (ammo) per second.
+#define HP_RECOVERY_RATE                 1  // HP per second.
+#define ENERGY_RECOVERY_RATE             1  // Energy (ammo) per second.
 #define MIN_DAMAGE                       (HP_RECOVERY_RATE + 1)
 #define ENERGY_LOSS_PER_SHOT             (ENERGY_RECOVERY_RATE + 1)
 #define PLAYER_STORAGE_KEY               417
@@ -172,7 +172,7 @@ enum {
 #define MAX_NPCS_AT_ONE_TIME             2
 #define ANIMATED                         true
 #define NOT_ANIMATED                     false
-#define RANDOM_NPC_TYPE                  (rand() % (NUM_NPC_TYPES - 1)) // Excludes ALIEN_OFFICER.
+#define RANDOM_NPC_TYPE                  (rand() % (NUM_NPC_TYPES - 1))  // Excludes ALIEN_OFFICER.
 #ifdef PBL_COLOR
 #define NUM_BACKGROUND_COLOR_SCHEMES     8
 #define NUM_BACKGROUND_COLORS_PER_SCHEME 10
